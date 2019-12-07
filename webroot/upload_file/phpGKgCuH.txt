@@ -1,0 +1,14 @@
+insert into classes(class, class_sort_number) values("１等空佐", 1);
+insert into classes(class, class_sort_number) values("２等空佐", 2);
+insert into classes(class, class_sort_number) values("３等空佐", 3);
+insert into classes(class, class_sort_number) values("１等空尉", 4);
+insert into classes(class, class_sort_number) values("２等空尉", 5);
+insert into classes(class, class_sort_number) values("３等空尉", 6);
+insert into classes(class, class_sort_number) values("空曹長", 7);
+insert into classes(class, class_sort_number) values("１等空曹", 8);
+insert into classes(class, class_sort_number) values("２等空曹", 9);
+insert into classes(class, class_sort_number) values("３等空曹", 10);
+insert into classes(class, class_sort_number) values("空士長", 11);
+insert into classes(class, class_sort_number) values("１等空士", 12);
+insert into classes(class, class_sort_number) values("２等空士", 13);
+
