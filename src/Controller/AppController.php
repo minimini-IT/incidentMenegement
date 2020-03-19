@@ -46,6 +46,29 @@ class AppController extends Controller
         ]);
         $this->loadComponent('Flash');
 
+        //認証機能
+        $this->loadComponent("Auth", [
+            //"authorize" => "Controller",
+            "authenticate" => [
+                "Form" => [
+                    "fields" => ["username" => "username", "password" => "password"]
+                ]
+            ],
+            "loginAction" => [
+                "controller" => "Users",
+                "action" => "login"
+            ],
+            "loginRedirect" => [
+                "controller" => "Dairy",
+                "action" => "index",
+            ],
+            "logoutRedirect" => [
+                "controller" => "Users",
+                "action" => "login"
+            ],
+            //未認証の場合は直前のページへ
+            //"unauthorizedRedirect" => $this->refere()
+        ]);
         /*
          * Enable the following component for recommended CakePHP security settings.
          * see https://book.cakephp.org/3.0/en/controllers/components/security.html
@@ -54,8 +77,16 @@ class AppController extends Controller
     }
 
     public function loadModels($models=[]){
-      foreach($models as $model){
-        $this->loadModel($model);
+        foreach($models as $model){
+            $this->loadModel($model);
       }
     }
+
+    /*
+    public function isAuthorized($user)
+    {
+        //デフォルトでアクセス拒否
+        return false;
+    }
+     */
 }

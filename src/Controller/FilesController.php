@@ -26,6 +26,9 @@ class FilesController extends AppController
      */
     public function index()
     {
+        $this->paginate = [
+            'contain' => ['CrewSends']
+        ];
         $files = $this->paginate($this->Files);
 
         $this->set(compact('files'));
@@ -41,7 +44,7 @@ class FilesController extends AppController
     public function view($id = null)
     {
         $file = $this->Files->get($id, [
-            'contain' => []
+            'contain' => ["CrewSends"]
         ]);
 
         $this->set('file', $file);
@@ -133,143 +136,88 @@ class FilesController extends AppController
      */
     public function delete($id = null)
     {
-        $this->request->allowMethod(['post', 'delete']);
-        $file = $this->Files->get($id);
-        if ($this->Files->delete($file)) {
-            //ファイル削除
-            $this->FileDelete = $this->loadComponent("FileDelete");
-            if($this->FileDelete->delete_file($file["unique_file_name"])){
-                $this->Flash->success(__('ファイル' . $file["unique_file_name"] . 'の削除に成功しました'));
-            }else{
-                $this->Flash->error(__('ファイル' . $file["unique_file_name"] . 'の削除に失敗しました'));
-            }
-            
-            $this->Flash->success(__('The file has been deleted.'));
+      $this->request->allowMethod(['post', 'delete']);
+      $File = $this->Files->get($id);
+      //ディレクトリ内のファイルを削除
+      $this->FileDelete = $this->loadComponent("FileDelete");
+      if($this->FileDelete->deleteFile($File->unique_file_name)){
+        $this->Flash->success(__('添付ファイルの削除成功'));
+        if ($this->Files->delete($File)) {
+            $this->Flash->success(__('The comment file has been deleted.'));
         } else {
-            $this->Flash->error(__('The file could not be deleted. Please, try again.'));
+            $this->Flash->error(__('添付ファイル自体は削除できたが、DBのデータでは削除できなかった。管理者に報告してください'));
+            $this->log("---files delete error---", LOG_DEBUG);
+            $this->log($File, LOG_DEBUG);
         }
+      }else{
+        $this->Flash->error(__('添付ファイルの削除失敗。DBの削除は行いません'));
+      }
 
-        return $this->redirect(["controller" => "CrewSends", 'action' => 'index']);
-    }
-
-    public function redirectDelete($id = [])
-    {
-        $file = $this->Files->get($id);
-        if ($this->Files->delete($file)) {
-            //ファイル削除
-            $this->FileDelete = $this->loadComponent("FileDelete");
-            if($this->FileDelete->delete_file($file["unique_file_name"])){
-                $this->Flash->success(__('ファイル' . $file["unique_file_name"] . 'の削除に成功しました'));
-            }else{
-                $this->Flash->error(__('ファイル' . $file["unique_file_name"] . 'の削除に失敗しました'));
+      return $this->redirect(["controller" => "crew_sends", 'action' => 'index']);
+      /*
+        $session = $this->request->session();
+        //redirectのdeleteからかどうか
+        if($session->check("delete.file")){
+            $this->log("---session check true---", LOG_DEBUG);
+            $ids = $session->consume("delete.file");
+            foreach($ids as $id){
+                $file = $this->Files->get($id);
+                if ($this->Files->delete($file)) {
+                    //ファイル削除
+                    $this->FileDelete = $this->loadComponent("FileDelete");
+                    if($this->FileDelete->deleteFile($file["unique_file_name"])){
+                        $this->log("---{$file['unique_file_name']} delete true---", LOG_DEBUG);
+                    }else{
+                        $this->log("---{$file['unique_file_name']} delete false---", LOG_DEBUG);
+                    }
+                    $this->Flash->success(__('The file has been deleted.'));
+                } else {
+                    $this->Flash->error(__('The file could not be deleted. Please, try again.'));
+                }
             }
-            
-            $this->Flash->success(__('The file has been deleted.'));
-        } else {
-            $this->Flash->error(__('The file could not be deleted. Please, try again.'));
-        }
+            $controller = $session->consume("delete.controller");
+            $action = $session->consume("delete.action");
+            return $this->redirect(["controller" => $controller, "action" => $action]);
 
-        return $this->redirect(["controller" => "CrewSends", 'action' => 'index']);
-    }
-
-    /*
-    //ファイルアップロードメソッド
-    public function file_upload($file = null, $dir = null, $limitFileSize = 1024 * 1024 * 200){
-      try{
-        //ファイルを保存するフォルダのチェック
-        if($dir){
-          if(!file_exists($dir)){
-            throw new RuntimeException("指定のディレクトリがありません");
-          }
         }else{
-          throw new RuntimeException("ディレクトリの指定がありません");
+            $this->log("---session check false---", LOG_DEBUG);
+            $this->request->allowMethod(['post', 'delete']);
+            $file = $this->Files->get($id);
+            if ($this->Files->delete($file)) {
+                //ファイル削除
+                $this->FileDelete = $this->loadComponent("FileDelete");
+                if($this->FileDelete->deleteFile($file["unique_file_name"])){
+                    $this->log("---{$file['unique_file_name']} delete true---", LOG_DEBUG);
+                }else{
+                    $this->log("---{$file['unique_file_name']} delete false---", LOG_DEBUG);
+                }
+                $this->Flash->success(__('The file has been deleted.'));
+            } else {
+                $this->Flash->error(__('The file could not be deleted. Please, try again.'));
+            }
         }
-
-        //未定義、破損攻撃は無効処理
-        if(!isset($file["error"])){
-          throw new RuntimeException("Invalid parameters");
-        }
-
-        //エラーチェック
-        switch($file["error"]){
-          case 0:
-            break;
-          case UPLOAD_ERR_OK:
-            break;
-          case UPLOAD_ERR_NO_FILE:
-            throw new RuntimeException("Exceeded filesize limit");
-          default:
-            throw new RuntimeException("Unknown errors");
-        }
-
-        //ファイル情報取得
-        $fileInfo = new File($file["name"]);
-
-        //ファイルサイズチェック
-        if($fileInfo->size() > $limitFileSize){
-          throw new RuntimeException("Exceeded filesize limit");
-        }
-
-        //拡張子取得
-        $file_ext = $fileInfo->ext();
-
-        //ファイル名取得
-        $uploadFile = $fileInfo->name() . "." . $file_ext;
-
-        //ユニークファイル名取得
-        $unique_file_name = substr($file["tmp_name"], 5) . "." . $file_ext;
-        
-
-        //ファイルの移動
-        if(!@move_uploaded_file($file["tmp_name"], $dir . "/" . $unique_file_name)){
-          throw new RuntimeException("Failed to move uploaded file");
-        }
-
-        //ファイルサイズ取得
-        $fileSize = filesize($dir . "/" . $unique_file_name);
-        $fileSize = $this->file_size_check($fileSize);
-
-      }catch(RuntimeException $e){
-        throw $e;
-      }
-      return array($uploadFile, $fileSize, $unique_file_name);
+        return $this->redirect(["controller" => "CrewSends", 'action' => 'index']);
+      */
     }
 
-    //ファイルサイズ整形メソッド
-    public function file_size_check($size){
-      $b = 1024;
-      $mb = pow($b, 2);
-      $gb = pow($b, 3);
-      switch(true){
-      case $size >= $gb:
-        $target = $gb;
-        $unit = "GB";
-        break;
-      
-      case $size >= $mb:
-        $target = $mb;
-        $unit = "MB";
-        break;
-      
-      default:
-        $target = $b;
-        $unit = "KB";
-        break;
-      }
-      $new_size = round($size / $target, 2);
-      $file_size = number_format($new_size, 2, ".", ",") . $unit;
-      return $file_size;
+//おそらくいらない↓
+    public function redirectDelete($ids = null)
+    {
+        $session = $this->request->session();
+        $ids = $session->read("delete_files.id");
+        //get()->主キーで検索してる？
+        foreach($ids as $id){
+            $file = $this->Files->get($id);
+            if ($this->Files->delete($file)) {
+                $this->Flash->success(__('The file has been deleted.'));
+                $this->log("---redirectDelete true---", LOG_DEBUG);
+            } else {
+                $this->Flash->error(__('The file could not be deleted. Please, try again.'));
+                $this->log("---redirectDelete false---", LOG_DEBUG);
+            }
+        }
+        $session->destroy();
+        return $this->redirect(["controller" => "CrewSends", 'action' => 'index']);
     }
-
-    //ファイルグループ確認メソッド
-    public function next_file_group(){
-        $query = TableRegistry::get("Files");
-        $query = $query->find("all");
-        $next_file_group = $query
-          ->select(["max_group" => $query->func()->max("file_group")])
-          ->first();
-        return (int)$next_file_group->max_group + 1;
-    }
-     */
 
 }

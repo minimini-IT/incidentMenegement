@@ -37,6 +37,7 @@ class CrewSend extends Entity
         'title' => true,
         'statuses_id' => true,
         'users_id' => true,
+        'incident_managements_id' => true,
         'period' => true,
         'file_group' => true,
         'comment' => true,

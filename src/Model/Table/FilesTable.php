@@ -33,6 +33,11 @@ class FilesTable extends Table
         $this->setTable('files');
         $this->setDisplayField('files_id');
         $this->setPrimaryKey('files_id');
+
+        $this->belongsTo('CrewSends', [
+            'foreignKey' => 'crew_sends_id',
+            'joinType' => 'INNER'
+        ]);
     }
 
     /**
@@ -46,11 +51,6 @@ class FilesTable extends Table
         $validator
             ->integer('files_id')
             ->allowEmptyFile('files_id', null, 'create');
-
-        $validator
-            ->integer('file_group')
-            ->requirePresence('file_group', 'create')
-            ->notEmptyFile('file_group');
 
         $validator
             ->scalar('file_name')
@@ -70,6 +70,18 @@ class FilesTable extends Table
             ->requirePresence('unique_file_name', 'create')
             ->notEmptyFile('unique_file_name');
 
+        $validator
+            ->integer('crew_sends_id')
+            ->requirePresence('crew_sends_id', 'create')
+            ->notEmptyFile('crew_sends_id');
+
         return $validator;
+    }
+
+    public function buildRules(RulesChecker $rules)
+    {
+        $rules->add($rules->existsIn(['crew_sends_id'], 'CrewSends'));
+
+        return $rules;
     }
 }

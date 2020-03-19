@@ -33,12 +33,10 @@ class Worker extends Entity
     protected $_accessible = [
         'date' => true,
         'users_id' => true,
-        //'classes_id' => true,
         'positions_id' => true,
         'shifts_id' => true,
         'duties_id' => true,
         'user' => true,
-        //'class' => true,
         'position' => true,
         'shift' => true,
         'duty' => true

@@ -16,13 +16,18 @@ class FileDeleteComponent extends Component
      */
     protected $_defaultConfig = [];
 
-    public function delete_file($unique_file_name = null){
+    public function deleteFiles($uniqueFileNames = null){
       $dir = realpath(WWW_ROOT . "/upload_file");
-      $file_path = $dir . "/" . $unique_file_name;
-      if(unlink($file_path)){
-        return true;
-      }else{
-        return false;
+      foreach($uniqueFileNames as $uniqueFileName){
+        $file_path = $dir . "/" . $uniqueFileName;
+        $this->log("file delete component deleteFiles", LOG_DEBUG);
+        if(unlink($file_path)){
+          //ログ
+          $this->log("{$uniqueFileName}を削除しました。", LOG_DEBUG);
+        }else{
+          $this->log("{$uniqueFileName}の削除に失敗しました。", LOG_DEBUG);
+        }
       }
+      return true;
     }
 }

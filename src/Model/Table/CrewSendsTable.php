@@ -42,6 +42,11 @@ class CrewSendsTable extends Table
 
         $this->addBehavior('Timestamp');
 
+        $this->belongsTo('IncidentManagements', [
+            'foreignKey' => 'incident_managements_id',
+            'joinType' => 'INNER'
+        ]);
+
         $this->belongsTo('Categories', [
             'foreignKey' => 'categories_id',
             'joinType' => 'INNER'
@@ -54,9 +59,11 @@ class CrewSendsTable extends Table
             'foreignKey' => 'users_id',
             'joinType' => 'INNER'
         ]);
-
-        $this->hasMany("files", [
-          "foreignKey" => "file_group"
+        $this->hasMany("Files", [
+            "foreignKey" => "crew_sends_id"
+        ]);
+        $this->hasMany("CrewSendComments", [
+            "foreignKey" => "crew_sends_id"
         ]);
 
     }
@@ -80,12 +87,9 @@ class CrewSendsTable extends Table
             ->notEmptyString('title');
 
         $validator
-            ->dateTime('period')
+            //->dateTime('period')
+            ->date('period')
             ->allowEmptyDateTime('period');
-
-        $validator
-            ->integer('file_group')
-            ->allowEmptyFile('file_group');
 
         $validator
             ->scalar('comment')

@@ -52,15 +52,6 @@ class FileuploadComponent extends Component
       return $file_size;
     }
 
-    //ファイルグループ確認メソッド
-    public function next_file_group(){
-        $query = $this->Files->find("all");
-        $next_file_group = $query
-          ->select(["max_group" => $query->func()->max("file_group")])
-          ->first();
-        return (int)$next_file_group->max_group + 1;
-    }
-
     //ファイルアップロードメソッド
     public function file_upload($file = null, $dir = null, $limitFileSize = 1024 * 1024 * 200){
       try{
@@ -124,52 +115,50 @@ class FileuploadComponent extends Component
     }
     
     //ファイルアップロードのデフォルト機能
-    public function default_upload($file_data){
-      //file_group取得
-      $file_group = $this->next_file_group();
-
+    //public function default_upload($file_data, $id){
+    public function default_upload($file_data, $id, $model){
       //格納するディレクトリ 
       $dir = realpath(WWW_ROOT . "/upload_file");
 
       //容量200M
       $limitFileSize = 1024 * 1024 * 200;
 
-      try {
-        //file_uploadメソッドのアウトプット用
-        $file_detail = array();
-        //$fileエンティティに一括でデータを埋め込む用
-        $file_entity = array();
+      //try {
+      //file_uploadメソッドのアウトプット用
+      $file_detail = array();
+      //$fileエンティティに一括でデータを埋め込む用
+      $file_entity = array();
 
-        foreach($file_data as $upload_file){
-          $file_detail = $this->file_upload($upload_file, $dir, $limitFileSize);
-          $file_entity[] = [
-            "file_group" => $file_group, 
-            "file_name" => $file_detail[0], 
-            "file_size" => $file_detail[1], 
-            "unique_file_name" => $file_detail[2]
-          ];
-        }
-        $file = $this->Files->newEntities($file_entity);
-        $file = $this->Files->patchEntities($file, $file_entity);
+      foreach($file_data as $upload_file){
+        $file_detail = $this->file_upload($upload_file, $dir, $limitFileSize);
+        $file_entity[] = [
+          //"crew_sends_id" => $id,
+          $model . "_id" => $id,
+          "file_name" => $file_detail[0], 
+          "file_size" => $file_detail[1], 
+          "unique_file_name" => $file_detail[2]
+        ];
+      }
+        /*
+        $file = $this->CommentFiles->newEntities($file_entity);
+        $files = $this->CommentFiles->patchEntities($file, $file_entity);
+        $this->log("---FileuploadComponent files---", LOG_DEBUG);
+        $this->log($files, LOG_DEBUG);
+        return $file_entity;
 
       }catch(RuntimeException $e){
         $this->Flash->error(__("ファイルのアップロードができませんでした"));
         $this->Flash->error(__($e->getMessage()));
       }
 
-      if ($this->Files->saveMany($file)) {
+/////
+      if ($this->Files->saveMany($files)) {
           $this->Flash->success(__('The file has been saved.'));
-
-          return true;
+//////
+      return $file_entity;
       }
-      $this->Flash->error(__('The file could not be saved. Please, try again.'));
+         */
+      //$this->Flash->error(__('The file could not be saved. Please, try again.'));
+      return $file_entity;
     }
-
-    public function template_file_upload($entity){
-      $sql = "select files_id, file_name, file_size from files where file_group = {$entity->file_group}";
-      $connection = ConnectionManager::get("default");
-      $files_info = $connection->execute($sql)->fetchAll("assoc");
-      return $files_info;
-    }
-
 }

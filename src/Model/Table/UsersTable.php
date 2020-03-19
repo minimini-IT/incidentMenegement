@@ -34,17 +34,23 @@ class UsersTable extends Table
         parent::initialize($config);
 
         $this->setTable('users');
-        //$this->setDisplayField('Array');
         $this->setDisplayField(['first_name', 'last_name']);
-        $this->setPrimaryKey('user_id');
+        $this->setPrimaryKey('users_id');
 
         $this->belongsTo('Belongs', [
-            'foreignKey' => 'belong_id',
+            'foreignKey' => 'belongs_id',
             'joinType' => 'INNER'
         ]);
         $this->belongsTo('Ranks', [
             'foreignKey' => 'ranks_id',
             'joinType' => 'INNER'
+        ]);
+        $this->belongsTo('Roles', [
+            'foreignKey' => 'roles_id',
+            'joinType' => 'INNER'
+        ]);
+        $this->hasMany('CrewSendComments', [
+            'foreignKey' => 'users_id',
         ]);
     }
 
@@ -57,8 +63,8 @@ class UsersTable extends Table
     public function validationDefault(Validator $validator)
     {
         $validator
-            ->integer('user_id')
-            ->allowEmptyString('user_id', null, 'create');
+            ->integer('users_id')
+            ->allowEmptyString('users_id', null, 'create');
 
         $validator
             ->scalar('first_name')
@@ -95,7 +101,7 @@ class UsersTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
-        $rules->add($rules->existsIn(['belong_id'], 'Belongs'));
+        $rules->add($rules->existsIn(['belongs_id'], 'Belongs'));
         $rules->add($rules->existsIn(['ranks_id'], 'Ranks'));
 
         return $rules;

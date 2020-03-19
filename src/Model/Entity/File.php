@@ -23,9 +23,9 @@ class File extends Entity
      * @var array
      */
     protected $_accessible = [
-        'file_group' => true,
         'file_name' => true,
         'file_size' => true,
-        'unique_file_name' => true
+        'unique_file_name' => true,
+        'crew_sends_id' => true
     ];
 }

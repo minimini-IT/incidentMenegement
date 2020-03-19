@@ -49,6 +49,9 @@ class CrewSendCommentsTable extends Table
             'foreignKey' => 'users_id',
             'joinType' => 'INNER'
         ]);
+        $this->hasMany('CommentFiles', [
+            'foreignKey' => 'crew_send_comments_id',
+        ]);
     }
 
     /**
@@ -62,11 +65,6 @@ class CrewSendCommentsTable extends Table
         $validator
             ->integer('crew_send_comments_id')
             ->allowEmptyString('crew_send_comments_id', null, 'create');
-
-        $validator
-            ->integer('file_group')
-            ->requirePresence('file_group', 'create')
-            ->notEmptyFile('file_group');
 
         $validator
             ->scalar('comment')

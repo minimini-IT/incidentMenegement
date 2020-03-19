@@ -1,0 +1,4 @@
+crew_sendsとcrew_send_commentsのファイルDBを分けて、
+それぞれ削除すると関連するファイルを削除するようにする
+
+filesのcrew_sends_idとの外部キーが張れてないので、crew_sendsをAllDeleteしてから再度やってみる（not nullのため）

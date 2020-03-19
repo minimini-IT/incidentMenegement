@@ -19,7 +19,7 @@
     <fieldset>
         <legend><?= __('Add Crew Send Comment') ?></legend>
         <?php
-            echo $this->Form->control('crew_sends_id', ['options' => $crewSends]);
+            echo $this->Form->control('crew_sends_id', ['value' => $crewSends->crew_sends_id]);
             echo $this->Form->control('users_id', ['options' => $users]);
             echo $this->Form->control('file_group');
             echo $this->Form->control('comment');

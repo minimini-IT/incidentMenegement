@@ -20,7 +20,6 @@ class WorkersController extends AppController
     public function index()
     {
         $this->paginate = [
-            //'contain' => ['Users', 'Classes', 'Positions', 'Shifts', 'Duties']
             'contain' => ['Users', 'Positions', 'Shifts', 'Duties']
         ];
         $workers = $this->paginate($this->Workers);
@@ -38,7 +37,6 @@ class WorkersController extends AppController
     public function view($id = null)
     {
         $worker = $this->Workers->get($id, [
-            //'contain' => ['Users', 'Classes', 'Positions', 'Shifts', 'Duties']
             'contain' => ['Users', 'Positions', 'Shifts', 'Duties']
         ]);
 

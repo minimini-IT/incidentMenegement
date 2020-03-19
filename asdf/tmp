@@ -1,0 +1,12 @@
+
+            //crew_sends_idで関連コメントを取得
+            $comments_id = $this->Files->find()
+              ->select(["crew_send_comments_id"])
+              ->where(["crew_sends_id" => $crewSend["crew_sends_id"]])
+              ->all();
+            $session = $this->request->session();
+            $session->write([
+              "delete_comments.id" => $comments_id,
+              "delete_comments.loop" => 1
+            ]);
+            return $this->redirect(["controller" => "crewSendComments", 'action' => 'delete']);

@@ -44,10 +44,6 @@ class WorkersTable extends Table
             'foreignKey' => 'users_id',
             'joinType' => 'INNER'
         ]);
-        /*$this->belongsTo('Classes', [
-            'foreignKey' => 'classes_id',
-            'joinType' => 'INNER'
-          ]);*/
         $this->belongsTo('Positions', [
             'foreignKey' => 'positions_id'
         ]);
@@ -85,7 +81,6 @@ class WorkersTable extends Table
     public function buildRules(RulesChecker $rules)
     {
         $rules->add($rules->existsIn(['users_id'], 'Users'));
-        //$rules->add($rules->existsIn(['classes_id'], 'Classes'));
         $rules->add($rules->existsIn(['positions_id'], 'Positions'));
         $rules->add($rules->existsIn(['shifts_id'], 'Shifts'));
         $rules->add($rules->existsIn(['duties_id'], 'Duties'));

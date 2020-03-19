@@ -522,3 +522,11 @@ table td {
     vertical-align: top;
     word-break: break-all;
 }
+
+.node{
+  display: none;
+}
+
+.choiceContent{
+  display: none;
+}

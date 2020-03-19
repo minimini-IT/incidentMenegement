@@ -28,6 +28,8 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
 
     <?= $this->Html->css('base.css') ?>
     <?= $this->Html->css('style.css') ?>
+    <?= $this->Html->script('jquery-3.4.1.js') ?>
+    <?= $this->Html->script('pullDown') ?>
 
     <?= $this->fetch('meta') ?>
     <?= $this->fetch('css') ?>
@@ -42,8 +44,13 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
         </ul>
         <div class="top-bar-section">
             <ul class="right">
+<!--
                 <li><a target="_blank" href="https://book.cakephp.org/3.0/">Documentation</a></li>
                 <li><a target="_blank" href="https://api.cakephp.org/3.0/">API</a></li>
+-->
+<?php if($this->request->session()->check("Auth.User.username")): ?>
+                <li><a href="http://192.168.1.51:8765/Users/logout/">LOGOUT</a></li>
+<?php endif ?>
             </ul>
         </div>
     </nav>
@@ -52,6 +59,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
         <?= $this->fetch('content') ?>
     </div>
     <footer>
+        <p>ログインID: <?= $this->request->session()->read("Auth.User.username") ?></p>
     </footer>
 </body>
 </html>

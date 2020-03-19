@@ -5,6 +5,7 @@ use App\Controller\AppController;
 use Cake\Controller\Component;
 use Cake\Controller\ComponentRegistry;
 use App\Controller\Component\FileDeleteComponent;
+use Cake\ORM\TableRegistry;
 
 /**
  * CrewSendComments Controller
@@ -53,34 +54,33 @@ class CrewSendCommentsController extends AppController
      */
     public function add()
     {
-        //なぜかpostで通らないのでif無し
-        //if ($this->request->is('post')) {
-        $crewSendComment = $this->CrewSendComments->newEntity();
+        if ($this->request->is(['post', "put"])) {
+            $crewSendComment = $this->CrewSendComments->newEntity();
+            $data = $this->request->getData();
+            $crewSendComment = $this->CrewSendComments->patchEntity($crewSendComment, $data);
+            if ($this->CrewSendComments->save($crewSendComment)) {
+                $this->Flash->success(__('The crew send comment has been saved.'));
 
-        $data = $this->request->getData();
-        //ファイルあればアップロード処理
-        if(isset($this->request->data["file"][0]["tmp_name"])){
-            $this->Fileupload = $this->loadComponent("Fileupload");
-            $this->loadModels(["Files"]);
+                //ファイルあればアップロード処理
+                if(!empty($data["file"][0]["tmp_name"])){
+                    $commentId = $crewSendComment->crew_send_comments_id;
+                    $this->Fileupload = $this->loadComponent("Fileupload");
+                    $this->loadModels(["CommentFiles"]);
 
-            //ファイルグループ取得
-            $data["file_group"] = $this->Fileupload->next_file_group();
-
-            //ファイルアップロード
-            $this->Fileupload->default_upload($this->request->data["file"]);
+                    //ファイルアップロード
+                    $entity = $this->Fileupload->default_upload($data["file"], $commentId, "crew_send_comments");
+                    $file = $this->CommentFiles->newEntities($entity);
+                    if($this->CommentFiles->saveMany($file)) {
+                        $this->Flash->success(__('The file has been saved.'));
+                    }else{
+                        $this->Flash->error(__('ファイルのアップロードに失敗しました。'));
+                    }
+                }
+                return $this->redirect(["controller" => "CrewSends", 'action' => 'index']);
+            }
+            $this->Flash->error(__('The crew send comment could not be saved. Please, try again.'));
         }
-        //$crewSendComment = $this->CrewSendComments->patchEntity($crewSendComment, $this->request->getData());
-        $crewSendComment = $this->CrewSendComments->patchEntity($crewSendComment, $data);
-        if ($this->CrewSendComments->save($crewSendComment)) {
-            $this->Flash->success(__('The crew send comment has been saved.'));
-
-            return $this->redirect(["controller" => "CrewSends", 'action' => 'index']);
-        }
-        $this->Flash->error(__('The crew send comment could not be saved. Please, try again.'));
-        //}
-        //$crewSends = $this->CrewSendComments->CrewSends->find('list', ['limit' => 200]);
-        //$users = $this->CrewSendComments->Users->find('list', ['limit' => 200]);
-        //$this->set(compact('crewSendComment', 'crewSends', 'users'));
+        return $this->redirect(["controller" => "CrewSends", 'action' => 'index']);
     }
 
     /**
@@ -92,17 +92,42 @@ class CrewSendCommentsController extends AppController
      */
     public function edit($id = null)
     {
+
         $crewSendComment = $this->CrewSendComments->get($id, [
-            'contain' => []
+            'contain' => ["CrewSends", "Users"]
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
-            $crewSendComment = $this->CrewSendComments->patchEntity($crewSendComment, $this->request->getData());
+            $this->log("---start comment edit---", LOG_DEBUG);
+            $data = $this->request->getData();
+            $crewSendComment = $this->CrewSendComments->patchEntity($crewSendComment, $data);
             if ($this->CrewSendComments->save($crewSendComment)) {
                 $this->Flash->success(__('The crew send comment has been saved.'));
-
+                if(!empty($data["file"][0]["tmp_name"])){
+                  $this->log("---ファイル有り---", LOG_DEBUG);
+                  $comments_id = $crewSendComment->crew_send_comments_id;
+                  $this->Fileupload = $this->loadComponent("Fileupload");
+                  $entity = $this->Fileupload->default_upload($data["file"], $comments_id, "crew_send_comments");
+                  $this->loadModels(["CommentFiles"]);
+                  try{
+                    $file = $this->CommentFiles->newEntities($entity);
+                    if($this->CommentFiles->saveMany($file)) {
+                      $this->log("---ファイルアップロード成功---", LOG_DEBUG);
+                      $this->Flash->success(__('The file has been saved.'));
+                    }else{
+                      $this->Flash->error(__('ファイルのアップロードに失敗しました。'));
+                    }
+                  }catch(RuntimeException $e){
+                    $this->Flash->error(__("ファイルのアップロードができませんでした"));
+                    $this->Flash->error(__($e->getMessage()));
+                  }
+                }else{
+                  $this->log("---ファイル無し---", LOG_DEBUG);
+                }
+                $this->log("---end comment edit---", LOG_DEBUG);
                 return $this->redirect(["controller" => "CrewSends", 'action' => 'index']);
+            }else{
+              $this->Flash->error(__('The crew send comment could not be saved. Please, try again.'));
             }
-            $this->Flash->error(__('The crew send comment could not be saved. Please, try again.'));
         }
         $crewSends = $this->CrewSendComments->CrewSends->find('list', ['limit' => 200]);
         $users = $this->CrewSendComments->Users->find('list', ['limit' => 200]);
@@ -118,25 +143,46 @@ class CrewSendCommentsController extends AppController
      */
     public function delete($id = null)
     {
-        $this->request->allowMethod(['post', 'delete']);
-        $crewSendComment = $this->CrewSendComments->get($id);
-        if ($this->CrewSendComments->delete($crewSendComment)) {
-          if($crewSendComment->file_group > 0){
-            //ファイルの削除
-            //file_idを求める
-            $this->loadModels(["Files"]);
-            $files_id = $this->Files->find()
-              ->select(["files_id"])
-              ->where(["file_group" => $crewSendComment["file_group"]]);
-              //->all();
-            //同じfile_groupのファイルを削除する
-            $this->redirect(["controller" => "Files", 'action' => 'redirect_delete', $files_id]);
-          }
-          $this->Flash->success(__('The crew send comment has been deleted.'));
+      $this->log("---start comment delete---", LOG_DEBUG);
+      $this->loadModels(["CommentFiles"]);
+      $this->request->allowMethod(['post', 'delete']);
+      $crewSendComment = $this->CrewSendComments->get($id,[
+        "contain" => ["CommentFiles"]
+      ]);
+      //ディレクトリ内のファイルを削除
+      $this->FileDelete = $this->loadComponent("FileDelete");
+      //コメントに関連するファイルがあれば、そのunique_file_nameを求める
+      if(!empty($crewSendComment->comment_files)){
+        $this->log("---comment file 有り 削除開始---", LOG_DEBUG);
+        $commentFiles = $crewSendComment->comment_files;
+        $uniqueFileNames = array();
+        foreach($commentFiles as $commentFile){
+          array_push($uniqueFileNames, $commentFile->unique_file_name);
+        }
+        //if($this->FileDelete->deleteFile($commentFile->unique_file_name)){
+        $this->log("---uniqueFileNames---", LOG_DEBUG);
+        $this->log($uniqueFileNames, LOG_DEBUG);
+        $this->FileDelete->deleteFiles($uniqueFileNames);
+        /*
+        if ($this->CommentFiles->delete($commentFile)) {
+            $this->log("---ファイル削除完了---", LOG_DEBUG);
+            $this->Flash->success(__('The comment file has been deleted.'));
         } else {
+            $this->log("---ファイル削除失敗---", LOG_DEBUG);
             $this->Flash->error(__('The crew send comment could not be deleted. Please, try again.'));
         }
-
-        return $this->redirect(["controller" => "CrewSends", 'action' => 'index']);
+         */
+      }else{
+        $this->log("---comment file 無し---", LOG_DEBUG);
+      }
+      if ($this->CrewSendComments->delete($crewSendComment)) {
+          $this->log("---削除完了---", LOG_DEBUG);
+          $this->Flash->success(__('The crew send comment has been deleted.'));
+      } else {
+          $this->log("---削除失敗---", LOG_DEBUG);
+          $this->Flash->error(__('The crew send comment could not be deleted. Please, try again.'));
+      }
+      $this->log("---end comment delete---", LOG_DEBUG);
+      return $this->redirect(["controller" => "crew_sends", 'action' => 'index']);
     }
 }
