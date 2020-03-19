@@ -1,0 +1,5 @@
+mysqlコマンド
+
+データ全削除
+delete from テーブル名;
+
