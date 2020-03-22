@@ -28,8 +28,16 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
 
     <?= $this->Html->css('base.css') ?>
     <?= $this->Html->css('style.css') ?>
+    <?= $this->Html->css('jquery-ui.css') ?>
     <?= $this->Html->script('jquery-3.4.1.js') ?>
+    <?= $this->Html->script('jquery-ui.js') ?>
+    <?= $this->Html->script('datepicker-ja.js') ?>
     <?= $this->Html->script('pullDown') ?>
+    <?= $this->Html->scriptStart() ?>
+        $(function() {
+            $(".datepicker").datepicker();
+        });
+    <?= $this->Html->scriptEnd() ?>
 
     <?= $this->fetch('meta') ?>
     <?= $this->fetch('css') ?>

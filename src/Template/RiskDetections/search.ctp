@@ -21,18 +21,17 @@
 </nav>
 <div class="riskDetections index large-9 medium-8 columns content">
     <h3><?= __('リスク検知') ?></h3>
+<?php /*
     <h5><?= __('検索') ?></h5>
     <div>
         <?= $this->Form->create("", [
-            //"type" => "post",
+            "type" => "get",
             "url" => [
                 "controller" => "risk_detections",
                 "action" => "search"
             ]
         ]) ?>
-        <?= $this->Form->control('response_start_time', ["label" => "対処開始日", "type" => "text", "class" => "datepicker"])?>
-        <?= $this->Form->label("から") ?>
-        <?= $this->Form->control('response_start_time_end', ["label" => "", "type" => "text", "class" => "datepicker"])?>
+        <?= $this->Form->control('response_start_time', ["label" => "対処開始時刻"])?>
         <?= $this->Form->control("systems_id", ["label" => "システム", "options" => $systems, "hiddenField" => false, "empty" => true])?>
         <?= $this->Form->control("bases_id", ["label" => "基地", "options" => $bases, "hiddenField" => false, "empty" => true])?>
         <?= $this->Form->control("units_id", ["label" => "部隊", "options" => $units, "hiddenField" => false, "empty" => true])?>
@@ -45,6 +44,7 @@
         <?= $this->Form->button(__('検索')) ?>
         <?= $this->Form->end() ?>
     </div>
+ */ ?>
 
 
     <table cellpadding="0" cellspacing="0">

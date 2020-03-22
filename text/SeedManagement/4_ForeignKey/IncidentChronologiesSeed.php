@@ -54,6 +54,34 @@ class IncidentChronologiesSeed extends AbstractSeed
               "users_id" => 3,
               "message" => "ログ受領",
               "reference" => null
+            ],
+            [
+              "risk_detections_id" => 3,
+              "created" => date("Y-m-d H:i", strtotime("+1 hour +30 min")),
+              "users_id" => 3,
+              "message" => "c4より通報あり。\n受信者に通報。",
+              "reference" => null
+            ],
+            [
+              "risk_detections_id" => 3,
+              "created" => date("Y-m-d H:i", strtotime("+1 hour +45 min")),
+              "users_id" => 3,
+              "message" => "削除完了",
+              "reference" => null
+            ],
+            [
+              "risk_detections_id" => 3,
+              "created" => date("Y-m-d H:i", strtotime("+1 hour +30 min")),
+              "users_id" => 3,
+              "message" => "c4より通報あり。\n受信者に通報。",
+              "reference" => null
+            ],
+            [
+              "risk_detections_id" => 3,
+              "created" => date("Y-m-d H:i", strtotime("+1 hour +45 min")),
+              "users_id" => 3,
+              "message" => "削除完了",
+              "reference" => null
             ]
         ];
 

@@ -23,6 +23,11 @@ class RiskDetectionsController extends AppController
 
     public function risk()
     {
+        $riskOnly = $this->RiskDetections->find("all")->where(["incident_cases_id" => 2]);
+        /*
+        $riskOnly = $this->RiskDetections->find("all");
+        $riskOnly = $riskOnly->where(["incident_cases_id" => 2]);
+         */
         $this->paginate = [
             'contain' => [
                 'Systems', 
@@ -33,14 +38,25 @@ class RiskDetectionsController extends AppController
                 'Positives', 
                 'SecLevels', 
                 "IncidentManagements.ManagementPrefixes",
+                "IncidentChronologies.Users",
                 'InfectionRoutes'
             ],
             "limit" => 5,
             "order" => ["risk_detections_id" => "desc"]
         ];
-        $riskDetections = $this->paginate($this->RiskDetections);
+        //$riskDetections = $this->paginate($this->RiskDetections);
+        //incident_caseがウイルス検知のもののみ
+        $riskDetections = $this->paginate($riskOnly);
+        $systems = $this->RiskDetections->Systems->find('list', ['limit' => 200]);
+        $bases = $this->RiskDetections->Bases->find('list', ['limit' => 200]);
+        $units = $this->RiskDetections->Units->find('list', ['limit' => 200]);
+        $statuses = $this->RiskDetections->Statuses->find('list', ['limit' => 200]);
+        $reports = $this->RiskDetections->Reports->find('list', ['limit' => 200]);
+        $positives = $this->RiskDetections->Positives->find('list', ['limit' => 200]);
+        $secLevels = $this->RiskDetections->SecLevels->find('list', ['limit' => 200]);
+        $infectionRoutes = $this->RiskDetections->InfectionRoutes->find('list', ['limit' => 200]);
 
-        $this->set(compact('riskDetections'));
+        $this->set(compact('riskDetections', "systems", 'bases', 'units', 'statuses', 'reports', 'positives', 'secLevels', 'infectionRoutes'));
     }
 
     public function malmail()
@@ -51,6 +67,68 @@ class RiskDetectionsController extends AppController
         $riskDetections = $this->paginate($this->RiskDetections);
 
         $this->set(compact('riskDetections'));
+    }
+
+    public function search()
+    {
+            $data = $this->request->getData();
+            $between = null;
+            if($data["response_start_time"] != "")
+            {
+                $searchStartDay = $data["response_start_time"];
+                $searchEndDay = $data["response_start_time_end"];
+                //betweenはfindより先に定義する必要がある
+                $between = ["conditions" => ["RiskDetections.response_start_time between '" . $searchStartDay . "' and '" . $searchEndDay . "'"]];
+            }
+
+            if($between === null)
+            {
+                $riskOnly = $this->RiskDetections->find("all")
+                ->where(["incident_cases_id" => 2]);
+            }
+            else
+            {
+                $riskOnly = $this->RiskDetections->find("all", $between)
+                ->where(["incident_cases_id" => 2]);
+            }
+            foreach($data as $key => $value)
+            {
+                if($value != "")
+                {
+                    if($key == "comment")
+                    {
+                        $riskOnly = $riskOnly->where(["RiskDetections." . $key => "%" . $value . "%"]);
+                    }
+                    else if($key == "response_start_time" || $key == "response_start_time_end")
+                    {
+                        //何もしない
+                    }
+                    else
+                    {
+                        $riskOnly = $riskOnly->where(["RiskDetections." . $key => (int)$value]);
+                    }
+                }
+            }
+            $this->paginate = [
+                'contain' => [
+                    'Systems', 
+                    'Bases', 
+                    'Units', 
+                    'Statuses', 
+                    'Reports', 
+                    'Positives', 
+                    'SecLevels', 
+                    "IncidentManagements.ManagementPrefixes",
+                    "IncidentChronologies.Users",
+                    'InfectionRoutes'
+                ],
+                "limit" => 5,
+                "order" => ["risk_detections_id" => "desc"]
+            ];
+            //$riskDetections = $this->paginate($this->RiskDetections);
+            //incident_caseがウイルス検知のもののみ
+            $riskDetections = $this->paginate($riskOnly);
+            $this->set(compact('riskDetections'));
     }
 
     /**
@@ -93,8 +171,10 @@ class RiskDetectionsController extends AppController
                 $data = array_merge($data, ["incident_managements_id" => $incidentNumber]);
                 $riskDetection = $this->RiskDetections->patchEntity($riskDetection, $data);
 
+                /*
                 $this->log("---riskDetection---", LOG_DEBUG);
                 $this->log($riskDetection, LOG_DEBUG);
+                 */
                 if ($this->RiskDetections->save($riskDetection)) 
                 {
                     $this->Flash->success(__('The risk detection has been saved.'));

@@ -83,6 +83,9 @@ class RiskDetectionsTable extends Table
             'foreignKey' => 'infection_routes_id',
             'joinType' => 'INNER'
         ]);
+        $this->hasMany('IncidentChronologies', [
+            'foreignKey' => 'risk_detections_id'
+        ]);
     }
 
     /**
