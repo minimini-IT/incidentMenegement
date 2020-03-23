@@ -191,19 +191,32 @@ class RiskDetectionsController extends AppController
         $this->set(compact('riskDetections', "systems", 'bases', 'units', 'statuses', 'reports', 'positives', 'secLevels'));
     }
 
-    public function incidentSpreadsheet($y = null)
+    public function incidentSpreadsheet()
     {
-        debug($y);
-        $year = date("Y");
-        $startDay = date("Y-m-01, time()");
-        //$startDay = date("Y-m-d", strtotime(""));
-        $endDay = date("Y-m-t, time()");
-        $between = ["conditions" => ["RiskDetections.response_start_time between '" . $startDay . "' and '" . $endDay . "'"]];
-        $query = $this->RiskDetections->find("all")
-            ->where(["incident_cases_id" => 1]);
-        $april = $query->count();
-        $this->set(compact("year", "april"));
-
+        $params = $this->request->query;
+        if($this->request->query == null)
+        {
+            $year = date("Y") . "-04-01";
+        }
+        else
+        {
+            $year = $params["year"] . "-04-01";
+        }
+        $searchYear = $year;
+        $incidents = [];
+        for($i = 0; $i <= 11; $i++)
+        {
+            //$startDay = date("Y-m-01, time()");
+            $startDay = date("Y-m-d", strtotime("first day of " . $searchYear));
+            //$endDay = date("Y-m-t, time()");
+            $endDay = date("Y-m-d", strtotime("last day of " . $searchYear));
+            $between = ["conditions" => ["RiskDetections.response_start_time between '" . $startDay . "' and '" . $endDay . "'"]];
+            $query = $this->RiskDetections->find("all", $between)
+                ->where(["incident_cases_id" => 1]);
+            $incident[$i] = $query->count();
+            $searchYear = date("Y-m-d", strtotime("+1 month", strtotime($searchYear)));
+        }
+        $this->set(compact("year", "incident"));
     }
 
     /*
