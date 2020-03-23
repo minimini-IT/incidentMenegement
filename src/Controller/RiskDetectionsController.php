@@ -23,11 +23,66 @@ class RiskDetectionsController extends AppController
 
     public function risk()
     {
-        $riskOnly = $this->RiskDetections->find("all")->where(["incident_cases_id" => 2]);
-        /*
-        $riskOnly = $this->RiskDetections->find("all");
-        $riskOnly = $riskOnly->where(["incident_cases_id" => 2]);
-         */
+        //検索結果用
+        if($this->request->is("post"))
+        {
+            $data = $this->request->getData();
+            $between = null;
+
+            //日付指定がある場合はfindよりさきにbetweenの定義が必要
+            if($data["response_start_time"] != "")
+            {
+                $searchStartDay = $data["response_start_time"];
+                $searchEndDay = $data["response_start_time_end"];
+                $between = ["conditions" => ["RiskDetections.response_start_time between '" . $searchStartDay . "' and '" . $searchEndDay . "'"]];
+            }
+
+            /*
+            $referer = $this->referer(null, true);
+            $incidentCase = $referer == "/risk-detections/risk" ? 2 : 1;
+             */
+
+            /*
+            $riskOnly = $between === null ? $this->Riskdetections->find("all")->where(["incident_cases_id" => 2]) : $this->Riskdetections->find("all", $between)->where(["incident_cases_id" => 2]);
+             */
+            if($between === null)
+            {
+                $riskOnly = $this->RiskDetections->find("all")
+                //->where(["incident_cases_id" => $incidentCase]);
+                ->where(["incident_cases_id" => 2]);
+            }
+            else
+            {
+                $riskOnly = $this->RiskDetections->find("all", $between)
+                //->where(["incident_cases_id" => $incidentCase]);
+                ->where(["incident_cases_id" => 2]);
+            }
+            foreach($data as $key => $value)
+            {
+                //全検索
+                if($value != "")
+                {
+                    if($key == "comment")
+                    {
+                        $riskOnly = $riskOnly->where(["RiskDetections." . $key => "%" . $value . "%"]);
+                    }
+                    else if($key == "response_start_time" || $key == "response_start_time_end")
+                    {
+                        //何もしない
+                    }
+                    else
+                    {
+                        $riskOnly = $riskOnly->where(["RiskDetections." . $key => (int)$value]);
+                    }
+                }
+            }
+        }
+        else
+        {
+            $riskOnly = $this->RiskDetections->find("all")
+                ->where(["RiskDetections.statuses_id !=" => 3])
+                ->where(["incident_cases_id" => 2]);
+        }
         $this->paginate = [
             'contain' => [
                 'Systems', 
@@ -61,16 +116,8 @@ class RiskDetectionsController extends AppController
 
     public function malmail()
     {
-        $this->paginate = [
-            'contain' => ['Systems', 'Bases', 'Units', 'Statuses', 'Reports', 'Positives', 'SecLevels', 'InfectionRoutes']
-        ];
-        $riskDetections = $this->paginate($this->RiskDetections);
-
-        $this->set(compact('riskDetections'));
-    }
-
-    public function search()
-    {
+        if($this->request->is("post"))
+        {
             $data = $this->request->getData();
             $between = null;
             if($data["response_start_time"] != "")
@@ -80,16 +127,15 @@ class RiskDetectionsController extends AppController
                 //betweenはfindより先に定義する必要がある
                 $between = ["conditions" => ["RiskDetections.response_start_time between '" . $searchStartDay . "' and '" . $searchEndDay . "'"]];
             }
-
             if($between === null)
             {
                 $riskOnly = $this->RiskDetections->find("all")
-                ->where(["incident_cases_id" => 2]);
+                ->where(["incident_cases_id" => 1]);
             }
             else
             {
                 $riskOnly = $this->RiskDetections->find("all", $between)
-                ->where(["incident_cases_id" => 2]);
+                ->where(["incident_cases_id" => 1]);
             }
             foreach($data as $key => $value)
             {
@@ -109,27 +155,122 @@ class RiskDetectionsController extends AppController
                     }
                 }
             }
-            $this->paginate = [
-                'contain' => [
-                    'Systems', 
-                    'Bases', 
-                    'Units', 
-                    'Statuses', 
-                    'Reports', 
-                    'Positives', 
-                    'SecLevels', 
-                    "IncidentManagements.ManagementPrefixes",
-                    "IncidentChronologies.Users",
-                    'InfectionRoutes'
-                ],
-                "limit" => 5,
-                "order" => ["risk_detections_id" => "desc"]
-            ];
-            //$riskDetections = $this->paginate($this->RiskDetections);
-            //incident_caseがウイルス検知のもののみ
-            $riskDetections = $this->paginate($riskOnly);
-            $this->set(compact('riskDetections'));
+        }
+        else
+        {
+            $riskOnly = $this->RiskDetections->find("all")
+                ->where(["RiskDetections.statuses_id !=" => 3])
+                ->where(["incident_cases_id" => 1]);
+        }
+        $this->paginate = [
+            'contain' => [
+                'Systems', 
+                'Bases', 
+                'Units', 
+                'Statuses', 
+                'Reports', 
+                'Positives', 
+                'SecLevels', 
+                "IncidentManagements.ManagementPrefixes",
+                "IncidentChronologies.Users",
+                'InfectionRoutes'
+            ],
+            "limit" => 5,
+            "order" => ["risk_detections_id" => "desc"]
+        ];
+        //incident_caseがウイルス検知のもののみ
+        $riskDetections = $this->paginate($riskOnly);
+        $systems = $this->RiskDetections->Systems->find('list', ['limit' => 200]);
+        $bases = $this->RiskDetections->Bases->find('list', ['limit' => 200]);
+        $units = $this->RiskDetections->Units->find('list', ['limit' => 200]);
+        $statuses = $this->RiskDetections->Statuses->find('list', ['limit' => 200]);
+        $reports = $this->RiskDetections->Reports->find('list', ['limit' => 200]);
+        $positives = $this->RiskDetections->Positives->find('list', ['limit' => 200]);
+        $secLevels = $this->RiskDetections->SecLevels->find('list', ['limit' => 200]);
+
+        $this->set(compact('riskDetections', "systems", 'bases', 'units', 'statuses', 'reports', 'positives', 'secLevels'));
     }
+
+    public function incidentSpreadsheet($y = null)
+    {
+        debug($y);
+        $year = date("Y");
+        $startDay = date("Y-m-01, time()");
+        //$startDay = date("Y-m-d", strtotime(""));
+        $endDay = date("Y-m-t, time()");
+        $between = ["conditions" => ["RiskDetections.response_start_time between '" . $startDay . "' and '" . $endDay . "'"]];
+        $query = $this->RiskDetections->find("all")
+            ->where(["incident_cases_id" => 1]);
+        $april = $query->count();
+        $this->set(compact("year", "april"));
+
+    }
+
+    /*
+    public function search()
+    {
+        $data = $this->request->getData();
+        $between = null;
+        if($data["response_start_time"] != "")
+        {
+            $searchStartDay = $data["response_start_time"];
+            $searchEndDay = $data["response_start_time_end"];
+            //betweenはfindより先に定義する必要がある
+            $between = ["conditions" => ["RiskDetections.response_start_time between '" . $searchStartDay . "' and '" . $searchEndDay . "'"]];
+        }
+        $referer = $this->referer(null, true);
+        $incidentCase = $referer == "/risk-detections/risk" ? 2 : 1;
+
+        if($between === null)
+        {
+            $riskOnly = $this->RiskDetections->find("all")
+            ->where(["incident_cases_id" => $incidentCase]);
+        }
+        else
+        {
+            $riskOnly = $this->RiskDetections->find("all", $between)
+            ->where(["incident_cases_id" => $incidentCase]);
+        }
+        foreach($data as $key => $value)
+        {
+            if($value != "")
+            {
+                if($key == "comment")
+                {
+                    $riskOnly = $riskOnly->where(["RiskDetections." . $key => "%" . $value . "%"]);
+                }
+                else if($key == "response_start_time" || $key == "response_start_time_end")
+                {
+                    //何もしない
+                }
+                else
+                {
+                    $riskOnly = $riskOnly->where(["RiskDetections." . $key => (int)$value]);
+                }
+            }
+        }
+        $this->paginate = [
+            'contain' => [
+                'Systems', 
+                'Bases', 
+                'Units', 
+                'Statuses', 
+                'Reports', 
+                'Positives', 
+                'SecLevels', 
+                "IncidentManagements.ManagementPrefixes",
+                "IncidentChronologies.Users",
+                'InfectionRoutes'
+            ],
+            "limit" => 5,
+            "order" => ["risk_detections_id" => "desc"]
+        ];
+        //$riskDetections = $this->paginate($this->RiskDetections);
+        //incident_caseがウイルス検知のもののみ
+        $riskDetections = $this->paginate($riskOnly);
+        $this->set(compact('riskDetections'));
+    }
+     */
 
     /**
      * View method

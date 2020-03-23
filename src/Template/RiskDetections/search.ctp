@@ -7,6 +7,7 @@
 <nav class="large-3 medium-4 columns" id="actions-sidebar">
     <ul class="side-nav">
         <li class="heading"><?= __('Actions') ?></li>
+        <li><?= $this->Html->link(__('一覧へ戻る'), ['action' => 'index']) ?></li>
         <li><?= $this->Html->link(__('TOPへ戻る'), ['controller' => 'Dairy', 'action' => 'index']) ?></li>
         <li><?= $this->Html->link(__('新規作成'), ['action' => 'riskAdd']) ?></li>
         <li><?= $this->Html->link(__('システム追加'), ['controller' => 'Systems', 'action' => 'add']) ?></li>
@@ -116,8 +117,8 @@
                     <th>侵入経路</th>
                 </tr>
                 <tr>
-                    <td><?= h($riskDetection->occurrence_datetime->format("Y-m-d H:i")) ?></td>
-                    <td><?= h($riskDetection->response_end_time->format("Y-m-d H:i")) ?></td>
+                    <td><?= $riskDetection->occurrence_datetime != null ? h($riskDetection->occurrence_datetime->format("Y-m-d H:i")) : "" ?></td>
+                    <td><?= $riskDetection->response_end_time != null ? h($riskDetection->response_end_time->format("Y-m-d H:i")) : "" ?></td>
                     <td><?= h($riskDetection->infection_route->infection_route) ?></td>
                 </tr>
             </table>

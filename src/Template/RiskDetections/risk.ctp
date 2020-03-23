@@ -7,6 +7,7 @@
 <nav class="large-3 medium-4 columns" id="actions-sidebar">
     <ul class="side-nav">
         <li class="heading"><?= __('Actions') ?></li>
+        <li><?= $this->Html->link(__('一覧へ戻る'), ['action' => 'index']) ?></li>
         <li><?= $this->Html->link(__('TOPへ戻る'), ['controller' => 'Dairy', 'action' => 'index']) ?></li>
         <li><?= $this->Html->link(__('新規作成'), ['action' => 'riskAdd']) ?></li>
         <li><?= $this->Html->link(__('システム追加'), ['controller' => 'Systems', 'action' => 'add']) ?></li>
@@ -18,16 +19,16 @@
         <li><?= $this->Html->link(__('SecLevel追加'), ['controller' => 'SecLevels', 'action' => 'add']) ?></li>
         <li><?= $this->Html->link(__('感染経路追加'), ['controller' => 'InfectionRoutes', 'action' => 'add']) ?></li>
     </ul>
+    <p>値を何も入れずに検索を押すと全検索となる</p>
 </nav>
 <div class="riskDetections index large-9 medium-8 columns content">
     <h3><?= __('リスク検知') ?></h3>
     <h5><?= __('検索') ?></h5>
     <div>
         <?= $this->Form->create("", [
-            //"type" => "post",
             "url" => [
                 "controller" => "risk_detections",
-                "action" => "search"
+                "action" => "risk"
             ]
         ]) ?>
         <?= $this->Form->control('response_start_time', ["label" => "対処開始日", "type" => "text", "class" => "datepicker"])?>
@@ -116,8 +117,8 @@
                     <th>侵入経路</th>
                 </tr>
                 <tr>
-                    <td><?= h($riskDetection->occurrence_datetime->format("Y-m-d H:i")) ?></td>
-                    <td><?= h($riskDetection->response_end_time->format("Y-m-d H:i")) ?></td>
+                    <td><?= $riskDetection->occurrence_datetime != null ? h($riskDetection->occurrence_datetime->format("Y-m-d H:i")) : "" ?></td>
+                    <td><?= $riskDetection->response_end_time != null ? h($riskDetection->response_end_time->format("Y-m-d H:i")) : "" ?></td>
                     <td><?= h($riskDetection->infection_route->infection_route) ?></td>
                 </tr>
             </table>

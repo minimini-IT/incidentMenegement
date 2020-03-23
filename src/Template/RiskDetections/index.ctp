@@ -15,7 +15,7 @@
                 <th scope="col"><?= $this->Html->link(__('不審メール'), ['controller' => 'RiskDetections', 'action' => 'malmail']) ?></th>
             </tr>
             <tr>
-                <th scope="col"><?= $this->Html->link(__('年度インシデント集計表'), ['controller' => '', 'action' => 'index']) ?></th>
+                <th scope="col"><?= $this->Html->link(__('年度インシデント集計表'), ['controller' => 'RiskDetections', 'action' => 'incidentSpreadsheet']) ?></th>
             </tr>
             <tr>
                 <th scope="col"><?= $this->Html->link(__('部内マルウェア検出数'), ['' => '', 'action' => 'index']) ?></th>
