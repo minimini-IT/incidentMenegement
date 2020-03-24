@@ -24,11 +24,12 @@ class RiskDetectionsController extends AppController
     public function risk()
     {
         //検索結果用
-        if($this->request->is("post"))
+        //if($this->request->is("post"))
+        $data = $this->request->query();
+        if($this->request->is("get") && $data != null)
         {
-            $data = $this->request->getData();
+            //$data = $this->request->getData();
             $between = null;
-
             //日付指定がある場合はfindよりさきにbetweenの定義が必要
             if($data["response_start_time"] != "")
             {
@@ -37,24 +38,15 @@ class RiskDetectionsController extends AppController
                 $between = ["conditions" => ["RiskDetections.response_start_time between '" . $searchStartDay . "' and '" . $searchEndDay . "'"]];
             }
 
-            /*
-            $referer = $this->referer(null, true);
-            $incidentCase = $referer == "/risk-detections/risk" ? 2 : 1;
-             */
 
-            /*
-            $riskOnly = $between === null ? $this->Riskdetections->find("all")->where(["incident_cases_id" => 2]) : $this->Riskdetections->find("all", $between)->where(["incident_cases_id" => 2]);
-             */
             if($between === null)
             {
                 $riskOnly = $this->RiskDetections->find("all")
-                //->where(["incident_cases_id" => $incidentCase]);
                 ->where(["incident_cases_id" => 2]);
             }
             else
             {
                 $riskOnly = $this->RiskDetections->find("all", $between)
-                //->where(["incident_cases_id" => $incidentCase]);
                 ->where(["incident_cases_id" => 2]);
             }
             foreach($data as $key => $value)
@@ -66,7 +58,7 @@ class RiskDetectionsController extends AppController
                     {
                         $riskOnly = $riskOnly->where(["RiskDetections." . $key => "%" . $value . "%"]);
                     }
-                    else if($key == "response_start_time" || $key == "response_start_time_end")
+                    else if($key == "response_start_time" || $key == "response_start_time_end" || $key == "page")
                     {
                         //何もしない
                     }
@@ -116,9 +108,11 @@ class RiskDetectionsController extends AppController
 
     public function malmail()
     {
-        if($this->request->is("post"))
+        //if($this->request->is("post"))
+        $data = $this->request->query();
+        if($this->request->is("get") && $data != null)
         {
-            $data = $this->request->getData();
+            //$data = $this->request->getData();
             $between = null;
             if($data["response_start_time"] != "")
             {
@@ -145,7 +139,7 @@ class RiskDetectionsController extends AppController
                     {
                         $riskOnly = $riskOnly->where(["RiskDetections." . $key => "%" . $value . "%"]);
                     }
-                    else if($key == "response_start_time" || $key == "response_start_time_end")
+                    else if($key == "response_start_time" || $key == "response_start_time_end" || $key == "page")
                     {
                         //何もしない
                     }
