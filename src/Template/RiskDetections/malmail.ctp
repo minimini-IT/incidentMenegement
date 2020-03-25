@@ -72,7 +72,7 @@
                     $riskDetection->incident_management->created->format("Ymd") . "-" .  
                     h($riskDetection->incident_management->number)
                 ?></td>
-                <td><?= h($riskDetection->response_start_time) ?></td>
+                <td><?= h($riskDetection->response_start_time->format("Y-m-d H:i")) ?></td>
                 <td><?= $riskDetection->system->system ?></td>
                 <td><?= $riskDetection->basis->base ?></td>
                 <td><?= $riskDetection->unit->unit ?></td>
@@ -81,6 +81,7 @@
                 <td><?= $riskDetection->positive->positive ?></td>
                 <td><?= $riskDetection->sec_level->sec_level ?></td>
                 <td><?= $riskDetection->attachment == 1 ? "あり" : "なし" ?></td>
+                <td><?= "" ?></td>
 <?php /*
                 <td><?= h($riskDetection->sim_live_flag) ?></td>
                 <td><?= h($riskDetection->samari_flag) ?></td>

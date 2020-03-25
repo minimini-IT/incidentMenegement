@@ -12,6 +12,7 @@ use App\Controller\AppController;
  */
 class RiskDetectionsController extends AppController
 {
+    //$this->log("", LOG_DEBUG);
     /**
      * Index method
      *
@@ -313,10 +314,6 @@ class RiskDetectionsController extends AppController
         {
             $this->IncidentManagement = $this->loadComponent("IncidentAdd");
             $data = $this->request->getData();
-            /*
-            $this->log("---発生時刻---", LOG_DEBUG);
-            $this->log($data["occurrence_datetime"], LOG_DEBUG);
-             */
 
             //save前にincident_managements更新
             if(is_int($incidentNumber = $this->IncidentManagement->incident_number(5)))
@@ -325,21 +322,14 @@ class RiskDetectionsController extends AppController
                 $data = array_merge($data, ["incident_managements_id" => $incidentNumber]);
                 $riskDetection = $this->RiskDetections->patchEntity($riskDetection, $data);
 
-                /*
-                $this->log("---riskDetection---", LOG_DEBUG);
-                $this->log($riskDetection, LOG_DEBUG);
-                 */
                 if ($this->RiskDetections->save($riskDetection)) 
                 {
-                    $this->Flash->success(__('The risk detection has been saved.'));
-                    $id = $riskDetection->risk_detections_id;
-
+                    $this->Flash->success(__('riskDetections 保存成功'));
                     return $this->redirect(['action' => 'risk']);
                 }
                 $this->Flash->error(__('インシデントID生成成功、risk_detections save 失敗'));
-                return $this->redirect(['action' => 'risk']);
+                return $this->redirect(['action' => 'riskAdd']);
             }
-
             $this->Flash->error(__('インシデントID生成失敗'));
         }
         $systems = $this->RiskDetections->Systems->find('list', ['limit' => 200]);
@@ -357,13 +347,25 @@ class RiskDetectionsController extends AppController
     {
         $riskDetection = $this->RiskDetections->newEntity();
         if ($this->request->is('post')) {
-            $riskDetection = $this->RiskDetections->patchEntity($riskDetection, $this->request->getData());
-            if ($this->RiskDetections->save($riskDetection)) {
-                $this->Flash->success(__('The risk detection has been saved.'));
+            $this->IncidentManagement = $this->loadComponent("IncidentAdd");
+            $data = $this->request->getData();
 
-                return $this->redirect(['action' => 'index']);
+            //save前にincident_managements更新
+            if(is_int($incidentNumber = $this->IncidentManagement->incident_number(5)))
+            {
+                //インシデント番号生成成功したら
+                $data = array_merge($data, ["incident_managements_id" => $incidentNumber]);
+                $riskDetection = $this->RiskDetections->patchEntity($riskDetection, $data);
+
+                if ($this->RiskDetections->save($riskDetection)) 
+                {
+                    $this->Flash->success(__('riskDetections 保存成功'));
+                    return $this->redirect(['action' => 'malmail']);
+                }
+                $this->Flash->error(__('インシデントID生成成功、risk_detections save 失敗'));
+                return $this->redirect(['action' => 'malmailAdd']);
             }
-            $this->Flash->error(__('The risk detection could not be saved. Please, try again.'));
+            $this->Flash->error(__('インシデントID生成失敗'));
         }
         $systems = $this->RiskDetections->Systems->find('list', ['limit' => 200]);
         $bases = $this->RiskDetections->Bases->find('list', ['limit' => 200]);
