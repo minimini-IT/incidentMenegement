@@ -25,6 +25,7 @@
     <h5><?= __('検索') ?></h5>
     <div>
         <?= $this->Form->create("", [
+            "type" => "get",
             "url" => [
                 "controller" => "risk_detections",
                 "action" => "malmail"
@@ -44,6 +45,18 @@
         <?= $this->Form->control("comment", ["label" => "基本情報"])?>
         <?= $this->Form->button(__('検索')) ?>
         <?= $this->Form->end() ?>
+
+        <!-- 検索初期化 -->
+        <?= $this->Form->create("", [
+            "type" => "post",
+            "url" => [
+                "controller" => "risk_detections",
+                "action" => "malmail"
+            ]
+        ]) ?>
+        <?= $this->Form->button(__('検索初期化')) ?>
+        <?= $this->Form->end() ?>
+
     </div>
     <table cellpadding="0" cellspacing="0">
         <thead>
@@ -115,18 +128,16 @@
                 <th>処置内容</th>
                 <th>備考</th>
             </tr>
+            <?php $countID = 1 ?>
             <?php foreach ($riskDetection->incident_chronologies as $incident_chronology): ?>
             <tr>
-                <td><?= 
-                    h($riskDetection->incident_management->management_prefix->management_prefix) . "-" .  
-                    $riskDetection->incident_management->created->format("Ymd") . "-" .  
-                    h($riskDetection->incident_management->number)
-                ?></td>
+                <td><?= $countID ?></td>
                 <td><?= $incident_chronology->created->format("Y-m-d H:i") ?></td>
                 <td><?= h($incident_chronology->user->first_name . $incident_chronology->user->last_name) ?></td>
                 <td><?= $incident_chronology->message ?></td>
                 <td><?= $incident_chronology->reference ?></td>
             </tr>
+            <?php $countID++ ?>
             <?php endforeach ?>
         </table>
     </div>

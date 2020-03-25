@@ -26,6 +26,7 @@
     <h5><?= __('検索') ?></h5>
     <div>
         <?= $this->Form->create("", [
+            "type" => "get",
             "url" => [
                 "controller" => "risk_detections",
                 "action" => "risk"
@@ -45,6 +46,18 @@
         <?= $this->Form->control("comment", ["label" => "基本情報"])?>
         <?= $this->Form->button(__('検索')) ?>
         <?= $this->Form->end() ?>
+
+        <!-- 検索初期化 -->
+        <?= $this->Form->create("", [
+            "type" => "post",
+            "url" => [
+                "controller" => "risk_detections",
+                "action" => "risk"
+            ]
+        ]) ?>
+        <?= $this->Form->button(__('検索初期化')) ?>
+        <?= $this->Form->end() ?>
+
     </div>
 
 
@@ -52,13 +65,7 @@
         <thead>
             <tr>
                 <th scope="col"><?= $this->Paginator->sort('ID') ?></th>
-<?php /*
-                <th scope="col"><?= $this->Paginator->sort('発生時刻') ?></th>
- */ ?>
                 <th scope="col"><?= $this->Paginator->sort('対処開始時刻') ?></th>
-<?php /*
-                <th scope="col"><?= $this->Paginator->sort('対処完了時刻') ?></th>
- */ ?>
                 <th scope="col"><?= $this->Paginator->sort('システム') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('基地') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('部隊') ?></th>
@@ -67,9 +74,6 @@
                 <th scope="col"><?= $this->Paginator->sort('正・誤検知') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('SecLevel') ?></th>
                 <th scope="col"><?= $this->Paginator->sort('基本情報') ?></th>
-<?php /*
-                <th scope="col"><?= $this->Paginator->sort('感染経路') ?></th>
- */ ?>
                 <th scope="col" class="actions"><?= __('Actions') ?></th>
             </tr>
         </thead>
@@ -83,13 +87,7 @@
                     $riskDetection->incident_management->created->format("Ymd") . "-" .  
                     h($riskDetection->incident_management->number)
                 ?></td>
-<?php /*
-                <td><?= h($riskDetection->occurrence_datetime) ?></td>
- */ ?>
                 <td><?= h($riskDetection->response_start_time->format("Y-m-d H:i")) ?></td>
-<?php /*
-                <td><?= h($riskDetection->response_end_time) ?></td>
- */ ?>
                 <td><?= $riskDetection->system->system ?></td>
                 <td><?= $riskDetection->basis->base ?></td>
                 <td><?= $riskDetection->unit->unit ?></td>
@@ -97,9 +95,6 @@
                 <td><?= $riskDetection->report->report ?></td>
                 <td><?= $riskDetection->positive->positive ?></td>
                 <td><?= $riskDetection->sec_level->sec_level ?></td>
-<?php /*
-                <td><?= $riskDetection->infection_route->infection_route ?></td>
- */ ?>
                 <td><?= $riskDetection->comment ?></td>
                 <td class="actions">
                     <?= $this->Html->link(__('Edit'), ['action' => 'edit', $riskDetection->risk_detections_id]) ?>
@@ -131,19 +126,18 @@
                 <th>処置内容</th>
                 <th>備考</th>
             </tr>
+            <?php $countID = 1 ?>
             <?php foreach ($riskDetection->incident_chronologies as $incident_chronology): ?>
             <tr>
-                <td><?= 
-                    h($riskDetection->incident_management->management_prefix->management_prefix) . "-" .  
-                    $riskDetection->incident_management->created->format("Ymd") . "-" .  
-                    h($riskDetection->incident_management->number)
-                ?></td>
+                <td><?= $countID ?></td>
                 <td><?= $incident_chronology->created->format("Y-m-d H:i") ?></td>
                 <td><?= h($incident_chronology->user->first_name . $incident_chronology->user->last_name) ?></td>
                 <td><?= $incident_chronology->message ?></td>
                 <td><?= $incident_chronology->reference ?></td>
             </tr>
+            <?php $countID++ ?>
             <?php endforeach ?>
+            <?php $countID = 1 ?>
         </table>
     </div>
     <?php endforeach ?>
