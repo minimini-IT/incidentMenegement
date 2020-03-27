@@ -41,15 +41,15 @@ class WorkersTable extends Table
         $this->setPrimaryKey(['date', 'users_id']);
 
         $this->belongsTo('Users', [
-            'foreignKey' => 'users_id',
-            'joinType' => 'INNER'
+            'foreignKey' => 'users_id'
+            //'joinType' => 'INNER'
         ]);
         $this->belongsTo('Positions', [
             'foreignKey' => 'positions_id'
         ]);
         $this->belongsTo('Shifts', [
-            'foreignKey' => 'shifts_id',
-            'joinType' => 'INNER'
+            'foreignKey' => 'shifts_id'
+            //'joinType' => 'INNER'
         ]);
         $this->belongsTo('Duties', [
             'foreignKey' => 'duties_id'

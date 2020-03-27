@@ -72,6 +72,9 @@ class MessageBordsController extends AppController
             //MessageBord save前にincident_managements更新
             if(is_int($incidentNumber = $this->IncidentManagement->incident_number(4)))
             {
+                //インシデント番号生成成功したら
+                $data = array_merge($data, ["incident_managements_id" => $incidentNumber]);
+                $messageBord = $this->MessageBords->patchEntity($messageBord, $data);
                 if ($this->MessageBords->save($messageBord)) 
                 {
                     $this->Flash->success(__('The message bord has been saved.'));

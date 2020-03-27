@@ -1,9 +1,13 @@
+<?php 
+    $this->assign("title", "日誌"); 
+?>
 <nav class="large-3 medium-4 columns" id="actions-sidebar">
   <ul class="side-nav">
     <li class="heading"><?= __('Actions') ?></li>
     <li><?= $this->Html->link(__('サイバー攻撃等'), ['controller' => 'RiskDetections', 'action' => 'index']) ?></li>
     <li><?= $this->Html->link(__('クルー申し送り'), ["controller" => "CrewSends", 'action' => 'index']) ?></li>
     <li><?= $this->Html->link(__('メッセージボード'), ['controller' => 'MessageBords', 'action' => 'index']) ?></li>
+    <li><?= $this->Html->link(__('勤務者入力'), ['controller' => 'Workers', 'action' => 'add']) ?></li>
     <li><?= $this->Html->link(__('ユーザ一覧'), ['controller' => 'Users', 'action' => 'index']) ?></li>
   </ul>
 <!--説明-->
@@ -55,6 +59,10 @@
 -->
             </tr>
             <?php endforeach; ?>
+        </tbody>
+    </table>
+    <table>
+        <tbody>
             <tr>
                 <th>今週の予定</th>
             </tr>
@@ -83,8 +91,12 @@
                 <td><?= h($schedule["schedule_start_date"]) . "〜" . h($schedule["schedule_end_date"]) ?></td>
             </tr>
             <?php endforeach; ?>
+        </tbody>
+    </table>
+    <table>
+        <tbody>
             <tr>
-                <th>命令</th>
+                <th>命令会報等</th>
             </tr>
 
             <?php foreach ($orderNews as $ordernews): ?>
@@ -111,6 +123,42 @@
                 <td><?= h($ordernews->comment) ?></td>
             </tr>
             <?php endforeach; ?>
+        </tbody>
+    </table>
+    <table>
+        <tbody>
+            <tr>
+                <th>勤務者</th>
+            </tr>
+            <?php foreach ($workers as $worker): ?>
+                <tr>
+                    <td><?= h($worker->user->first_name . $worker->user->last_name) ?></td>
+                    <td><?= h($worker->position->position) ?></td>
+                    <?php if($worker->shift == null): ?>
+                        <td></td>
+                    <?php else: ?>
+                        <td><?= h($worker->shift->shift) ?></td>
+                    <?php endif ?>
+                    <?php if($worker->duty == null): ?>
+                        <td></td>
+                    <?php else: ?>
+                        <td><?= h($worker->duty->duty) ?></td>
+                    <?php endif ?>
+                </tr>
+            <?php endforeach ?>
+        </tbody>
+    </table>
+    <table>
+        <tbody>
+            <tr>
+                <th>サイバー攻撃等対処状況</th>
+            </tr>
+            <?php foreach ($nowStatus as $key=>$value): ?>
+                <tr>
+                    <td><?= h($key) ?></td>
+                    <td><?= h($value) ?></td>
+                </tr>
+            <?php endforeach ?>
         </tbody>
     </table>
 </div>

@@ -34,6 +34,7 @@ class MessageBord extends Entity
     protected $_accessible = [
         'title' => true,
         'message_statuses_id' => true,
+        'incident_managements_id' => true,
         'users_id' => true,
         'choice' => true,
         'message' => true,

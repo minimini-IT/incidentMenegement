@@ -56,18 +56,28 @@ class WorkersController extends AppController
             if ($this->Workers->save($worker)) {
                 $this->Flash->success(__('The worker has been saved.'));
 
-                return $this->redirect(['action' => 'index']);
+                return $this->redirect(['action' => 'add']);
             }
             $this->Flash->error(__('The worker could not be saved. Please, try again.'));
         }
 
+        $this->paginate = [
+            'contain' => [
+                'Users', 
+                'Positions', 
+                'Shifts', 
+                'Duties', 
+            ]
+        ];
         $users = $this->Workers->Users->find('list', ['limit' => 200]);
-        //$classes = $this->Workers->Classes->find('list', ['limit' => 200]);
         $positions = $this->Workers->Positions->find('list', ['limit' => 200]);
         $shifts = $this->Workers->Shifts->find('list', ['limit' => 200]);
         $duties = $this->Workers->Duties->find('list', ['limit' => 200]);
-        //$this->set(compact('worker', 'users', 'classes', 'positions', 'shifts', 'duties'));
-        $this->set(compact('worker', 'users', 'positions', 'shifts', 'duties'));
+        $today = date("Y-m-d");
+        $todayWorkers = $this->Workers->find("all")
+            ->where(["date" => $today]);
+        $todayWorkers = $this->paginate($todayWorkers);
+        $this->set(compact('worker', 'users', 'positions', 'shifts', 'duties', "todayWorkers"));
     }
 
     /**

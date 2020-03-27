@@ -2,6 +2,13 @@
 namespace App\Controller;
 
 use App\Controller\AppController;
+use Cake\Filesystem\Folder;
+use Cake\Filesystem\File;
+use RuntimeException;
+use Cake\Controller\Component;
+use Cake\Controller\ComponentRegistry;
+use App\Controller\Component\FileuploadComponent;
+use Cake\ORM\TableRegistry;
 
 /**
  * RiskDetections Controller
@@ -103,8 +110,12 @@ class RiskDetectionsController extends AppController
         $positives = $this->RiskDetections->Positives->find('list', ['limit' => 200]);
         $secLevels = $this->RiskDetections->SecLevels->find('list', ['limit' => 200]);
         $infectionRoutes = $this->RiskDetections->InfectionRoutes->find('list', ['limit' => 200]);
+        $this->loadModels(["incidentChronologies"]);
+        $incidentChronology = $this->incidentChronologies->newEntity();
+        $users = $this->RiskDetections->incidentChronologies->Users->find('list', ['limit' => 200])
+          ->where(["delete_flag" => 0]);
 
-        $this->set(compact('riskDetections', "systems", 'bases', 'units', 'statuses', 'reports', 'positives', 'secLevels', 'infectionRoutes'));
+        $this->set(compact('riskDetections', "systems", 'bases', 'units', 'statuses', 'reports', 'positives', 'secLevels', 'infectionRoutes', "incidentChronology", "users"));
     }
 
     public function malmail()
@@ -182,8 +193,12 @@ class RiskDetectionsController extends AppController
         $reports = $this->RiskDetections->Reports->find('list', ['limit' => 200]);
         $positives = $this->RiskDetections->Positives->find('list', ['limit' => 200]);
         $secLevels = $this->RiskDetections->SecLevels->find('list', ['limit' => 200]);
+        $this->loadModels(["incidentChronologies"]);
+        $incidentChronology = $this->incidentChronologies->newEntity();
+        $users = $this->RiskDetections->incidentChronologies->Users->find('list', ['limit' => 200])
+          ->where(["delete_flag" => 0]);
 
-        $this->set(compact('riskDetections', "systems", 'bases', 'units', 'statuses', 'reports', 'positives', 'secLevels'));
+        $this->set(compact('riskDetections', "systems", 'bases', 'units', 'statuses', 'reports', 'positives', 'secLevels', "incidentChronology", "users"));
     }
 
     public function incidentSpreadsheet()
@@ -322,7 +337,6 @@ class RiskDetectionsController extends AppController
                     return $this->redirect(['action' => 'risk']);
                 }
                 $this->Flash->error(__('インシデントID生成成功、risk_detections save 失敗'));
-                return $this->redirect(['action' => 'riskAdd']);
             }
             $this->Flash->error(__('インシデントID生成失敗'));
         }

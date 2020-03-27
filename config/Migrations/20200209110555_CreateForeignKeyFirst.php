@@ -263,12 +263,12 @@ class CreateForeignKeyFirst extends AbstractMigration
             ->addColumn('positions_id', 'integer', [
                 'default' => null,
                 'limit' => 11,
-                'null' => true,
+                'null' => false,
             ])
             ->addColumn('shifts_id', 'integer', [
                 'default' => null,
                 'limit' => 11,
-                'null' => false,
+                'null' => true,
             ])
             ->addColumn('duties_id', 'integer', [
                 'default' => null,
@@ -886,6 +886,10 @@ class CreateForeignKeyFirst extends AbstractMigration
                 'null' => false,
             ])
             ->addColumn('attachment', 'boolean', [
+                'default' => 0,
+                'null' => false,
+            ])
+            ->addColumn('link', 'boolean', [
                 'default' => 0,
                 'null' => false,
             ])

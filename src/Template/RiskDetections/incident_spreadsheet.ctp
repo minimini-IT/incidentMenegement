@@ -1,6 +1,7 @@
 <nav class="large-3 medium-4 columns" id="actions-sidebar">
   <ul class="side-nav">
     <li class="heading"><?= __('Actions') ?></li>
+    <li><?= $this->Html->link(__('一覧へ戻る'), ['controller' => 'RiskDetections', 'action' => 'index']) ?></li>
     <li><?= $this->Html->link(__('TOPへ戻る'), ['controller' => 'Dairy', 'action' => 'index']) ?></li>
   </ul>
 </nav>

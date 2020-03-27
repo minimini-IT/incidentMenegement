@@ -13,7 +13,6 @@
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 
-$cakeDescription = 'CakePHP: the rapid development php framework';
 ?>
 <!DOCTYPE html>
 <html>
@@ -21,7 +20,6 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
     <?= $this->Html->charset() ?>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>
-        <?= $cakeDescription ?>:
         <?= $this->fetch('title') ?>
     </title>
     <?= $this->Html->meta('icon') ?>
@@ -56,7 +54,8 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
                 <li><a target="_blank" href="https://book.cakephp.org/3.0/">Documentation</a></li>
                 <li><a target="_blank" href="https://api.cakephp.org/3.0/">API</a></li>
 -->
-<?php if($this->request->session()->check("Auth.User.username")): ?>
+<?php //if($this->request->session()->check("Auth.User.username")): ?>
+<?php if($this->getRequest()->getSession()->check("Auth.User.username")): ?>
                 <li><a href="http://192.168.1.51:8765/Users/logout/">LOGOUT</a></li>
 <?php endif ?>
             </ul>
@@ -67,7 +66,7 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
         <?= $this->fetch('content') ?>
     </div>
     <footer>
-        <p>ログインID: <?= $this->request->session()->read("Auth.User.username") ?></p>
+        <p>ログインID: <?= $this->getRequest()->getSession()->read("Auth.User.username") ?></p>
     </footer>
 </body>
 </html>

@@ -37,6 +37,7 @@ class RiskDetectionsSeed extends AbstractSeed
                 "sim_live_flag" => 1,
                 "samari_flag" => 1,
                 "attachment" => 0,
+                "link" => 0,
                 "comment" => "事案2"
             ],
             [
@@ -56,6 +57,7 @@ class RiskDetectionsSeed extends AbstractSeed
                 "sim_live_flag" => 0,
                 "samari_flag" => 0,
                 "attachment" => 0,
+                "link" => 1,
                 "comment" => "事案1"
             ],
             [
@@ -75,6 +77,7 @@ class RiskDetectionsSeed extends AbstractSeed
                 "sim_live_flag" => 1,
                 "samari_flag" => 1,
                 "attachment" => 0,
+                "link" => 1,
                 "comment" => "不審メール"
             ],
             [
@@ -94,6 +97,7 @@ class RiskDetectionsSeed extends AbstractSeed
                 "sim_live_flag" => 1,
                 "samari_flag" => 1,
                 "attachment" => 0,
+                "link" => 1,
                 "comment" => "事案2"
             ],
             [
@@ -113,6 +117,7 @@ class RiskDetectionsSeed extends AbstractSeed
                 "sim_live_flag" => 1,
                 "samari_flag" => 2,
                 "attachment" => 1,
+                "link" => 1,
                 "comment" => "asdf"
             ],
             [
@@ -132,6 +137,7 @@ class RiskDetectionsSeed extends AbstractSeed
                 "sim_live_flag" => 1,
                 "samari_flag" => 1,
                 "attachment" => 1,
+                "link" => 1,
                 "comment"=> ";lkj"
             ],
             [
@@ -151,6 +157,7 @@ class RiskDetectionsSeed extends AbstractSeed
                 "sim_live_flag" => 1,
                 "samari_flag" => 2,
                 "attachment" => 0,
+                "link" => 0,
                 "comment" => "kd;fsdkjfo;aiwejf;iahrgsa"
             ],
             [
@@ -170,6 +177,7 @@ class RiskDetectionsSeed extends AbstractSeed
                 "sim_live_flag" => 1,
                 "samari_flag" => 1,
                 "attachment" => 1,
+                "link" => 1,
                 "comment" => "dknvkfdhgiurhgehrfg"
             ],
             [
@@ -189,6 +197,7 @@ class RiskDetectionsSeed extends AbstractSeed
                 "sim_live_flag" => 1,
                 "samari_flag" => 2,
                 "attachment" => 1,
+                "link" => 1,
                 "comment" => "ssssssssssssssssssss"
             ],
             [
@@ -208,6 +217,7 @@ class RiskDetectionsSeed extends AbstractSeed
                 "sim_live_flag" => 2,
                 "samari_flag" => 1,
                 "attachment" => 0,
+                "link" => 0,
                 "comment" => "lllllllllliiiiiiiiiilllllllliiiiiiiiiiiii"
             ],
             [
@@ -227,6 +237,7 @@ class RiskDetectionsSeed extends AbstractSeed
                 "sim_live_flag" => 2,
                 "samari_flag" => 2,
                 "attachment" => 1,
+                "link" => 1,
                 "comment" => "-------------------------------------------"
             ],
             [
@@ -246,6 +257,7 @@ class RiskDetectionsSeed extends AbstractSeed
                 "sim_live_flag" => 2,
                 "samari_flag" => 1,
                 "attachment" => 1,
+                "link" => 1,
                 "comment" => "444444444483929298732983"
             ],
             [
@@ -265,6 +277,7 @@ class RiskDetectionsSeed extends AbstractSeed
                 "sim_live_flag" => 2,
                 "samari_flag" => 2,
                 "attachment" => 0,
+                "link" => 0,
                 "comment" => "kkkksdfasdkfjsa;ovihavheao;"
             ],
             [
@@ -284,6 +297,7 @@ class RiskDetectionsSeed extends AbstractSeed
                 "sim_live_flag" => 2,
                 "samari_flag" => 1,
                 "attachment" => 1,
+                "link" => 1,
                 "comment" => "0000000000000000000000000000000000000000000000000000000000"
             ],
             [
@@ -303,6 +317,7 @@ class RiskDetectionsSeed extends AbstractSeed
                 "sim_live_flag" => 2,
                 "samari_flag" => 2,
                 "attachment" => 1,
+                "link" => 1,
                 "comment" => "s"
             ],
             [
@@ -322,6 +337,7 @@ class RiskDetectionsSeed extends AbstractSeed
                 "sim_live_flag" => 2,
                 "samari_flag" => 1,
                 "attachment" => 0,
+                "link" => 0,
                 "comment" => "test"
             ]
         ];

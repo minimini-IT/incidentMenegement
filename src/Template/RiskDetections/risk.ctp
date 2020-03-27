@@ -139,6 +139,29 @@
             <?php endforeach ?>
             <?php $countID = 1 ?>
         </table>
+        <div>
+        <!-- incident_chronology 入力 -->
+          <?php
+            //ログインしているユーザ
+            $loginUser = $this->request->session()->read("Auth.User.users_id");
+
+            echo $this->Form->create($incidentChronology, [
+              "url" => [
+                "controller" => "incident_chronologies",
+                "action" => "add"
+              ]
+            ]); 
+            echo "<fieldset>";
+            echo str_replace(";", " ", $this->Form->control('users_id', ["value" => $loginUser, "type" => "select", "options" => $users])); 
+            echo $this->Form->control('created');
+            echo $this->Form->control('message', ["type" => "textarea", "value" => ""]);
+            echo $this->Form->control('reference', ["type" => "textarea", "value" => ""]);
+            echo $this->Form->control('risk_detections_id', ["type" => "hidden", 'value' => $riskDetection->risk_detections_id]);
+            echo $this->Form->button(__('Submit'));
+            echo $this->Form->end();
+          ?>
+
+        </div>
     </div>
     <?php endforeach ?>
 

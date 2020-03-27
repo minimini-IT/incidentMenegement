@@ -114,8 +114,12 @@ class UsersController extends AppController
     {
         $this->request->allowMethod(['post', 'delete']);
         $user = $this->Users->get($id);
+        $this->log("---getしたuser---", LOG_DEBUG);
+        $this->log($user, LOG_DEBUG);
+/*
         $this->Authority = $this->loadComponent("Authority");
         if($this->Authority->userAuthorityCheck($user)){
+ */
           /*
             //削除ではなくdelete_flagを立てる
             $user = $this->Users->get($id, [
@@ -132,10 +136,12 @@ class UsersController extends AppController
                 $this->Flash->error(__('The user could not be deleted. Please, try again.'));
             }
            */
+/*
         }else{
             $this->Flash->error(__('権限がありません'));
             return $this->redirect($this->referer());
         }
+ */
         return $this->redirect(['action' => 'index']);
     }
 

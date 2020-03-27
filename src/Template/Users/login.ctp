@@ -1,3 +1,6 @@
+<?php 
+    $this->assign("title", "ログイン"); 
+?>
 <div class="users form large-9 medium-8 columns content">
     <?= $this->Flash->render() ?>
     <h3><?= __('ログイン') ?></h3>
