@@ -9,6 +9,7 @@ use Cake\Controller\Component;
 use Cake\Controller\ComponentRegistry;
 use App\Controller\Component\FileuploadComponent;
 use Cake\ORM\TableRegistry;
+use Cake\datasource\ConnectionManager;
 
 /**
  * RiskDetections Controller
@@ -136,12 +137,12 @@ class RiskDetectionsController extends AppController
             if($between === null)
             {
                 $riskOnly = $this->RiskDetections->find("all")
-                ->where(["incident_cases_id" => 1]);
+                    ->where(["incident_cases_id" => 1]);
             }
             else
             {
                 $riskOnly = $this->RiskDetections->find("all", $between)
-                ->where(["incident_cases_id" => 1]);
+                    ->where(["incident_cases_id" => 1]);
             }
             foreach($data as $key => $value)
             {
@@ -201,99 +202,38 @@ class RiskDetectionsController extends AppController
         $this->set(compact('riskDetections', "systems", 'bases', 'units', 'statuses', 'reports', 'positives', 'secLevels', "incidentChronology", "users"));
     }
 
-    public function incidentSpreadsheet()
+    public function spreadsheet()
     {
-        $params = $this->request->query;
-        if($this->request->query == null)
+        $year = date("Y") . "-04-01";
+        $startDay = $year;
+        //$incidents = [];
+        //$malwares = [];
+        for($i = 0; $i <= 4; $i++)
         {
-            $year = date("Y") . "-04-01";
-        }
-        else
-        {
-            $year = $params["year"] . "-04-01";
-        }
-        $searchYear = $year;
-        $incidents = [];
-        for($i = 0; $i <= 11; $i++)
-        {
-            //$startDay = date("Y-m-01, time()");
-            $startDay = date("Y-m-d", strtotime("first day of " . $searchYear));
-            //$endDay = date("Y-m-t, time()");
-            $endDay = date("Y-m-d", strtotime("last day of " . $searchYear));
+            $endDay = date("Y-m-d", strtotime("+1 year", strtotime($startDay)));
             $between = ["conditions" => ["RiskDetections.response_start_time between '" . $startDay . "' and '" . $endDay . "'"]];
             $query = $this->RiskDetections->find("all", $between)
-                ->where(["incident_cases_id" => 1]);
+                ->where(["reports_id" => 3]);
+            $malware[$i] = $query->count();
+            $query = $this->RiskDetections->find("all", $between);
             $incident[$i] = $query->count();
-            $searchYear = date("Y-m-d", strtotime("+1 month", strtotime($searchYear)));
+            $startDay = date("Y-m-d", strtotime("-1 year", strtotime($startDay)));
         }
-        $this->set(compact("year", "incident"));
+        $this->set(compact("year", "incident", "malware"));
     }
 
-    /*
-    public function search()
+    public function malmailDestination()
     {
-        $data = $this->request->getData();
-        $between = null;
-        if($data["response_start_time"] != "")
-        {
-            $searchStartDay = $data["response_start_time"];
-            $searchEndDay = $data["response_start_time_end"];
-            //betweenはfindより先に定義する必要がある
-            $between = ["conditions" => ["RiskDetections.response_start_time between '" . $searchStartDay . "' and '" . $searchEndDay . "'"]];
-        }
-        $referer = $this->referer(null, true);
-        $incidentCase = $referer == "/risk-detections/risk" ? 2 : 1;
-
-        if($between === null)
-        {
-            $riskOnly = $this->RiskDetections->find("all")
-            ->where(["incident_cases_id" => $incidentCase]);
-        }
-        else
-        {
-            $riskOnly = $this->RiskDetections->find("all", $between)
-            ->where(["incident_cases_id" => $incidentCase]);
-        }
-        foreach($data as $key => $value)
-        {
-            if($value != "")
-            {
-                if($key == "comment")
-                {
-                    $riskOnly = $riskOnly->where(["RiskDetections." . $key => "%" . $value . "%"]);
-                }
-                else if($key == "response_start_time" || $key == "response_start_time_end")
-                {
-                    //何もしない
-                }
-                else
-                {
-                    $riskOnly = $riskOnly->where(["RiskDetections." . $key => (int)$value]);
-                }
-            }
-        }
-        $this->paginate = [
-            'contain' => [
-                'Systems', 
-                'Bases', 
-                'Units', 
-                'Statuses', 
-                'Reports', 
-                'Positives', 
-                'SecLevels', 
-                "IncidentManagements.ManagementPrefixes",
-                "IncidentChronologies.Users",
-                'InfectionRoutes'
-            ],
-            "limit" => 5,
-            "order" => ["risk_detections_id" => "desc"]
-        ];
-        //$riskDetections = $this->paginate($this->RiskDetections);
-        //incident_caseがウイルス検知のもののみ
-        $riskDetections = $this->paginate($riskOnly);
-        $this->set(compact('riskDetections'));
+        $this->loadModels(["suspiciousDestinationAddresses"]);
+        $sql = "select count(destination_address) duplicate_count, destination_address from suspicious_destination_addresses group by destination_address having count(destination_address) > 2 order by duplicate_count desc";
+        $connection = ConnectionManager::get("default");
+        $suspiciousAddresses = $connection->execute($sql)->fetchAll("assoc");
+        /*
+        $suspiciousAddresses = $this->suspiciousDestinationAddresses->find("all")
+            ->select("destination_address");
+         */
+        $this->set(compact("suspiciousAddresses"));
     }
-     */
 
     /**
      * View method

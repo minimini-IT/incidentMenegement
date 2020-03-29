@@ -97,7 +97,11 @@ class DairyController extends AppController{
                 ->where(["statuses_id" => $i]);
             $count = $count->count();
             //$nowStatus = array_merge($nowStatus, [$status => $count]);
-            $nowStatus[$status->status] = $count;
+            //収束は表示しなくてよし
+            if($status->status != "収束")
+            {
+                $nowStatus[$status->status] = $count;
+            }
             $i++;
         }
         /*

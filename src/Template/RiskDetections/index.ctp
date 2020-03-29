@@ -9,22 +9,16 @@
     <table cellpadding="0" cellspacing="0">
         <thead>
             <tr>
-                <th scope="col"><?= $this->Html->link(__('リスク検知'), ['controller' => 'RiskDetections', 'action' => 'risk']) ?></th>
+                <th scope="col"><?= $this->Html->link(__('リスク検知'), ['action' => 'risk']) ?></th>
             </tr>
             <tr>
-                <th scope="col"><?= $this->Html->link(__('不審メール'), ['controller' => 'RiskDetections', 'action' => 'malmail']) ?></th>
+                <th scope="col"><?= $this->Html->link(__('不審メール'), ['action' => 'malmail']) ?></th>
             </tr>
             <tr>
-                <th scope="col"><?= $this->Html->link(__('年度インシデント集計表'), ['controller' => 'RiskDetections', 'action' => 'incidentSpreadsheet']) ?></th>
+                <th scope="col"><?= $this->Html->link(__('インシデント集計表'), ['action' => 'spreadsheet']) ?></th>
             </tr>
             <tr>
-                <th scope="col"><?= $this->Html->link(__('部内マルウェア検出数'), ['' => '', 'action' => 'index']) ?></th>
-            </tr>
-            <tr>
-                <th scope="col"><?= $this->Html->link(__('年度不審メール件数'), ['' => '', 'action' => 'index']) ?></th>
-            </tr>
-            <tr>
-                <th scope="col"><?= $this->Html->link(__('不審メール宛先一覧'), ['' => '', 'action' => 'index']) ?></th>
+                <th scope="col"><?= $this->Html->link(__('不審メール宛先一覧'), ['action' => 'malmailDestination']) ?></th>
             </tr>
         </thead>
     </table>

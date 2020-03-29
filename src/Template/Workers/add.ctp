@@ -27,7 +27,9 @@
                 <?php if($todayWorker->duty != null): ?>
                     <td><?= $todayWorker->duty->duty ?></td>
                 <?php endif ?>
-                    <td><?= $this->Form->postLink(__('削除'), ['action' => 'delete', [$todayWorker->date, $todayWorker->users_id]], ['confirm' => __('{0} この申し送りを削除してよろしいですか？', $crewSend->title)]) ?></td>
+                <!--
+                    <td><?= $this->Form->postLink(__('削除'), ['action' => 'delete', [$todayWorker->date, $todayWorker->users_id]], ['confirm' => __('{0} この申し送りを削除してよろしいですか？', $todayWorker->user->first_name . $todayWorker->user->last_name)]) ?></td>
+-->
             </tr>
         <?php endforeach ?>
     </table>

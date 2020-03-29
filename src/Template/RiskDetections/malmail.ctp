@@ -94,7 +94,7 @@
                 <td><?= $riskDetection->positive->positive ?></td>
                 <td><?= $riskDetection->sec_level->sec_level ?></td>
                 <td><?= $riskDetection->attachment == 1 ? "あり" : "なし" ?></td>
-                <td><?= "" ?></td>
+                <td><?= $riskDetection->link == 1 ? "あり" : "なし" ?></td>
 <?php /*
                 <td><?= h($riskDetection->sim_live_flag) ?></td>
                 <td><?= h($riskDetection->samari_flag) ?></td>
