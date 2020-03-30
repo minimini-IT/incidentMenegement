@@ -60,5 +60,4 @@ $(function(){
         $("#reload").prop("disabled", false);
         //$(".contentInput").attr("value", "null");
     });
-
 });
