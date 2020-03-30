@@ -178,6 +178,8 @@ class RiskDetectionsController extends AppController
                 'Reports', 
                 'Positives', 
                 'SecLevels', 
+                'SuspiciousDestinationAddresses', 
+                'SuspiciousLinks', 
                 "IncidentManagements.ManagementPrefixes",
                 "IncidentChronologies.Users",
                 'InfectionRoutes'
@@ -194,12 +196,27 @@ class RiskDetectionsController extends AppController
         $reports = $this->RiskDetections->Reports->find('list', ['limit' => 200]);
         $positives = $this->RiskDetections->Positives->find('list', ['limit' => 200]);
         $secLevels = $this->RiskDetections->SecLevels->find('list', ['limit' => 200]);
-        $this->loadModels(["incidentChronologies"]);
+        $this->loadModels(["incidentChronologies", "suspiciousDestinationAddresses", "suspiciousLinks"]);
         $incidentChronology = $this->incidentChronologies->newEntity();
+        $destinationAddress = $this->suspiciousDestinationAddresses->newEntity();
+        $link = $this->suspiciousLinks->newEntity();
         $users = $this->RiskDetections->incidentChronologies->Users->find('list', ['limit' => 200])
           ->where(["delete_flag" => 0]);
 
-        $this->set(compact('riskDetections', "systems", 'bases', 'units', 'statuses', 'reports', 'positives', 'secLevels', "incidentChronology", "users"));
+        $this->set(compact(
+            'riskDetections', 
+            "systems", 
+            'bases', 
+            'units', 
+            'statuses', 
+            'reports', 
+            'positives', 
+            'secLevels', 
+            "incidentChronology", 
+            'destinationAddress', 
+            "users",
+            "link"
+        ));
     }
 
     public function spreadsheet()

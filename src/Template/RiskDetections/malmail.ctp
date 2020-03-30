@@ -119,6 +119,61 @@
                     <td><?= $riskDetection->response_end_time != null ? h($riskDetection->response_end_time->format("Y-m-d H:i")) : "" ?></td>
                 </tr>
             </table>
+            <table>
+                <tr>
+                    <th>受信者</th>
+                </tr>
+                <tr>
+                    <?php foreach($riskDetection->suspicious_destination_addresses as $address): ?>
+                        <td><?= $address->destination_address ?></td>
+                    <?php endforeach ?>
+                </tr>
+            </table>
+            <div>
+                <?php 
+                    echo $this->Form->create($destinationAddress, [
+                      "url" => [
+                        "controller" => "suspicious_destination_addresses",
+                        "action" => "add"
+                      ]
+                    ]);
+                    echo "<fieldset>";
+                    echo $this->Form->control('risk_detections_id', ["type" => "hidden", 'value' => $riskDetection->risk_detections_id]);
+                    echo $this->Form->control('destination_address', ["label" => "受信者", "class" => "address", "id" => null, "name" => "destination_address[0]"]);
+                    echo "<input class='addAddress' type='button' value='追加' />";
+                    echo "<input class='removeAddress' type='button' value='削除' />";
+                    echo $this->Form->button(__('Submit'));
+                    echo $this->Form->end();
+                ?>
+            </div>
+            <table>
+                <tr>
+                    <th>リンク先</th>
+                </tr>
+                <tr>
+                    <?php foreach($riskDetection->suspicious_links as $suspiciousLink): ?>
+                        <td><?= $suspiciousLink->link ?></td>
+                    <?php endforeach ?>
+                </tr>
+            </table>
+            <div>
+                <?php 
+                    echo $this->Form->create($link, [
+                      "url" => [
+                        "controller" => "suspicious_links",
+                        "action" => "add"
+                      ]
+                    ]);
+                    echo "<fieldset>";
+                    echo $this->Form->control('risk_detections_id', ["type" => "hidden", 'value' => $riskDetection->risk_detections_id]);
+                    //echo $this->Form->control('link', ["type" => "text", "value" => ""]);
+                    echo $this->Form->control('link', ["type" => "text", "label" => "リンク", "class" => "link", "id" => null, "name" => "link[0]"]);
+                    echo "<input class='addLink' type='button' value='追加' />";
+                    echo "<input class='removeLink' type='button' value='削除' />";
+                    echo $this->Form->button(__('Submit'));
+                    echo $this->Form->end();
+                ?>
+            </div>
         </div>
         <table>
             <tr>
@@ -144,7 +199,8 @@
         <!-- incident_chronology 入力 -->
           <?php
             //ログインしているユーザ
-            $loginUser = $this->request->session()->read("Auth.User.users_id");
+            //$loginUser = $this->request->session()->read("Auth.User.users_id");
+            $loginUser = $this->getRequest()->getSession()->read("Auth.User.users_id");
 
             echo $this->Form->create($incidentChronology, [
               "url" => [

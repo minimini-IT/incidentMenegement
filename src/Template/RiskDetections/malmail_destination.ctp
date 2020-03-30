@@ -10,6 +10,7 @@
 </nav>
 <div class="cyberAttacks index large-9 medium-8 columns content">
     <h3><?= "不審メール宛先一覧" ?></h3>
+    <p>３件以上の宛先表示</p>
     <table cellpadding="0" cellspacing="0">
         <?php foreach($suspiciousAddresses as $address): ?>
             <tr>
