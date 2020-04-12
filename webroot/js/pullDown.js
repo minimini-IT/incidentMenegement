@@ -3,7 +3,6 @@ $(function(){
     var addressCount = 1;
     var linkCount = 1;
     $(".addAddress").click(function(){
-        //console.log("add click");
         $(".address").eq(0).clone(true).appendTo($(this).prev()).addClass("cloneAddress").attr("name", "destination_address["+addressCount+"]");
         addressCount++;
     });
@@ -35,7 +34,7 @@ $(function(){
         if(choice == 1){
             $(".choiceContent").css("display", "inline");
             $(".choiceContent_sec").css("display", "inline");
-        }else if(choice >= 2){
+        }else if(choice >= 2 && choice < 7){
             if($(".choiceContent").length){
                 $(".choiceContent").css("display", "inline");
                 for(var i = 1; i < choice; i++){
@@ -60,4 +59,5 @@ $(function(){
         $("#reload").prop("disabled", false);
         //$(".contentInput").attr("value", "null");
     });
+
 });

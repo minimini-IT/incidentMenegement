@@ -45,6 +45,8 @@ class MessageBord extends Entity
         'message_status' => true,
         'message_destinations' => true,
         'message_choices' => true,
-        'message_files' => true
+        'message_files' => true,
+        'message_bord_chronologies' => true,
+        'chronology_flag' => true
     ];
 }

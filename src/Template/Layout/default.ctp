@@ -31,6 +31,7 @@
     <?= $this->Html->script('jquery-ui.js') ?>
     <?= $this->Html->script('datepicker-ja.js') ?>
     <?= $this->Html->script('pullDown') ?>
+    <?= $this->Html->script('checkBox') ?>
     <?= $this->Html->scriptStart() ?>
         $(function() {
             $(".datepicker").datepicker();
@@ -56,7 +57,7 @@
 -->
 <?php //if($this->request->session()->check("Auth.User.username")): ?>
 <?php if($this->getRequest()->getSession()->check("Auth.User.username")): ?>
-                <li><a href="http://192.168.1.51:8765/Users/logout/">LOGOUT</a></li>
+                <li><?= $this->Html->link(__('logout'), ["controller" => "users", 'action' => 'logout']) ?></li>
 <?php endif ?>
             </ul>
         </div>

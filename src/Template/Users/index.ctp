@@ -22,7 +22,7 @@
     <table cellpadding="0" cellspacing="0">
         <thead>
             <tr>
-                <th scope="col"><?= $this->Paginator->sort('username', "ユーザID") ?></th>
+<!--                <th scope="col"><?= $this->Paginator->sort('username', "ユーザID") ?></th> -->
                 <th scope="col"><?= $this->Paginator->sort('first_name', "姓") ?></th>
                 <th scope="col"><?= $this->Paginator->sort('last_name', "名") ?></th>
                 <th scope="col"><?= $this->Paginator->sort('belongs_id', "所属班") ?></th>
@@ -35,7 +35,7 @@
         <tbody>
             <?php foreach ($users as $user): ?>
             <tr>
-                <td><?= h($user->username) ?></td>
+<!--                <td><?= h($user->username) ?></td> -->
                 <td><?= h($user->first_name) ?></td>
                 <td><?= h($user->last_name) ?></td>
                 <td><?= h($user->belong->belong) ?></td>

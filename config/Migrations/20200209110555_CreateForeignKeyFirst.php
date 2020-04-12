@@ -143,9 +143,9 @@ class CreateForeignKeyFirst extends AbstractMigration
                 'limit' => 11,
                 'null' => false,
             ])
-            ->addColumn('username', 'string', [
+            ->addColumn('username', 'integer', [
                 'default' => null,
-                'limit' => 30,
+                'limit' => 11,
                 'null' => false,
             ])
             ->addColumn('first_name', 'string', [
@@ -572,6 +572,14 @@ class CreateForeignKeyFirst extends AbstractMigration
             ])
             ->addColumn('period', 'date', [
                 'default' => null,
+                'null' => false,
+            ])
+            ->addColumn('chronology_flag', 'boolean', [
+                'default' => 0,
+                'null' => false,
+            ])
+            ->addColumn('private_message_flag', 'boolean', [
+                'default' => 0,
                 'null' => false,
             ])
             ->addColumn('created', 'datetime', [

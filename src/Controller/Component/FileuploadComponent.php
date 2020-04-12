@@ -54,7 +54,9 @@ class FileuploadComponent extends Component
 
     //ファイルアップロードメソッド
     public function file_upload($file = null, $dir = null, $limitFileSize = 1024 * 1024 * 200){
+        $this->log("---component file_upload---", LOG_DEBUG);
       try{
+        $this->log("---component file_upload try---", LOG_DEBUG);
         //ファイルを保存するフォルダのチェック
         if($dir){
           if(!file_exists($dir)){
@@ -109,6 +111,7 @@ class FileuploadComponent extends Component
         $fileSize = $this->file_size_check($fileSize);
 
       }catch(RuntimeException $e){
+        $this->log("---component file_upload catch---", LOG_DEBUG);
         throw $e;
       }
       return array($uploadFile, $fileSize, $unique_file_name);
@@ -117,6 +120,7 @@ class FileuploadComponent extends Component
     //ファイルアップロードのデフォルト機能
     //public function default_upload($file_data, $id){
     public function default_upload($file_data, $id, $model){
+        $this->log("---component default upload---", LOG_DEBUG);
       //格納するディレクトリ 
       $dir = realpath(WWW_ROOT . "/upload_file");
 
@@ -159,6 +163,7 @@ class FileuploadComponent extends Component
       }
          */
       //$this->Flash->error(__('The file could not be saved. Please, try again.'));
+        $this->log("---component default_upload end---", LOG_DEBUG);
       return $file_entity;
     }
 }

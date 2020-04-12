@@ -136,12 +136,16 @@ class CrewSendsController extends AppController
         //認証
         $this->Authority = $this->loadComponent("Authority");
         if($this->Authority->authorityCheck($crewSend)){
+            $this->log("---認証　許可---", LOG_DEBUG);
             if ($this->request->is(['patch', 'post', 'put'])) {
+                $this->log("---post---", LOG_DEBUG);
                 $data = $this->request->getData();
                 $crewSend = $this->CrewSends->patchEntity($crewSend, $data);
                 if ($this->CrewSends->save($crewSend)) {
+                    $this->log("---crewSend save---", LOG_DEBUG);
                     $this->Flash->success(__('The crew send has been saved.'));
                     if(!empty($data["file"][0]["tmp_name"])){
+                        $this->log("---file upload---", LOG_DEBUG);
                         //ファイルアップロード
                         $crewSendsId = $crewSend->crew_sends_id;
                         $this->Fileupload = $this->loadComponent("Fileupload");
@@ -150,6 +154,7 @@ class CrewSendsController extends AppController
                         try{
                             $file = $this->Files->newEntities($entity);
                             if($this->Files->saveMany($file)) {
+                                $this->log("---file saveMany---", LOG_DEBUG);
                                 $this->Flash->success(__('The file has been saved.'));
                             }else{
                                 $this->Flash->error(__('ファイルのアップロードに失敗しました。'));

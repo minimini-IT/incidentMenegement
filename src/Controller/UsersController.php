@@ -1,6 +1,7 @@
 <?php
 namespace App\Controller;
 
+use Cake\Auth\DefaultPasswordHasher;
 use App\Controller\AppController;
 use Cake\Event\Event;
 

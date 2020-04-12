@@ -4,8 +4,8 @@
 <div class="users form large-9 medium-8 columns content">
     <?= $this->Flash->render() ?>
     <h3><?= __('ログイン') ?></h3>
-    <p>ユーザID ： nagano</p>
-    <p>パスワード ： 123456</p>
+    <p>ユーザID ： 認識番号</p>
+    <p>初期パスワード ：123456 </p>
     <?= $this->Form->create() ?>
     <fieldset>
         <legend><?= __('ユーザIDとパスワードを入力してください') ?></legend>

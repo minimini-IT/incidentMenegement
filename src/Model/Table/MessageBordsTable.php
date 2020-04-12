@@ -66,7 +66,13 @@ class MessageBordsTable extends Table
         $this->hasMany('MessageChoices', [
             'foreignKey' => 'message_bords_id',
         ]);
+        $this->hasMany('MessageBordChronologies', [
+            'foreignKey' => 'message_bords_id',
+        ]);
         $this->hasMany('MessageFiles', [
+            'foreignKey' => 'message_bords_id',
+        ]);
+        $this->hasMany('PrivateMessages', [
             'foreignKey' => 'message_bords_id',
         ]);
     }
@@ -101,6 +107,12 @@ class MessageBordsTable extends Table
             ->date('period')
             ->requirePresence('period', 'create')
             ->notEmptyDate('period');
+
+        /*
+        $validator
+            ->multiple()
+            ->requirePresence("private");
+         */
 
         return $validator;
     }
