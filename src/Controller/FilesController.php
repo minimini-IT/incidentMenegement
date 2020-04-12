@@ -138,9 +138,11 @@ class FilesController extends AppController
     {
       $this->request->allowMethod(['post', 'delete']);
       $File = $this->Files->get($id);
+      $deleteFiles[] = $File->unique_file_name;
       //ディレクトリ内のファイルを削除
       $this->FileDelete = $this->loadComponent("FileDelete");
-      if($this->FileDelete->deleteFile($File->unique_file_name)){
+      //if($this->FileDelete->deleteFiles($File->unique_file_name)){
+      if($this->FileDelete->deleteFiles($deleteFiles)){
         $this->Flash->success(__('添付ファイルの削除成功'));
         if ($this->Files->delete($File)) {
             $this->Flash->success(__('The comment file has been deleted.'));
