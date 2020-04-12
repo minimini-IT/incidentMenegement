@@ -100,14 +100,30 @@ class PrivateMessagesController extends AppController
      */
     public function delete($id = null)
     {
-        $this->request->allowMethod(['post', 'delete']);
         $privateMessage = $this->PrivateMessages->get($id);
-        if ($this->PrivateMessages->delete($privateMessage)) {
-            $this->Flash->success(__('The private message has been deleted.'));
-        } else {
-            $this->Flash->error(__('The private message could not be deleted. Please, try again.'));
-        }
+        $this->loadModels(["MessageBords"]);
+        $messageBord = $this->MessageBords->get($privateMessage->message_bords_id, [
+            'contain' => ["Users"]
+        ]);
 
-        return $this->redirect(["controller" => "MessageBords", 'action' => 'index']);
+        //認証
+        $this->Authority = $this->loadComponent("Authority");
+        if($this->Authority->authorityCheck($messageBord))
+        {
+            $this->request->allowMethod(['post', 'delete']);
+            $privateMessage = $this->PrivateMessages->get($id);
+            if ($this->PrivateMessages->delete($privateMessage)) {
+                $this->Flash->success(__('The private message has been deleted.'));
+            } else {
+                $this->Flash->error(__('The private message could not be deleted. Please, try again.'));
+            }
+
+            return $this->redirect(["controller" => "MessageBords", 'action' => 'index']);
+        }
+        else
+        {
+            $this->Flash->error(__('権限がありません'));
+            return $this->redirect($this->referer());
+        }
     }
 }

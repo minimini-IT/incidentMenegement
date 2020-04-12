@@ -31,12 +31,12 @@
             echo str_replace(";", " ", $this->Form->control('users_id', ["value" => $loginUser, "label" => "作成者", "type" => "select", "options" => $users]));
             echo $this->Form->control('message_statuses_id', ["label" => "ステータス", 'options' => $messageStatuses]);
             echo "<p style='color:red;'>選択肢は必ず１つは作成してください</p>";
-            echo $this->Form->control('choice', ["value" => 1, "label" => "選択肢の数", "max" => 6, "min" => 1]);
+            echo $this->Form->control('choice', ["value" => 0, "label" => "追加する選択肢の数", "max" => 5, "min" => 0]);
             echo "<input id='reload' type='button' value='選択肢作成' />";
             echo "<input id='reset' type='button' value='やり直し' />";
             echo "<div class='choiceContent'>";
             echo "<label id='contentLabel' for='content'>選択肢</label>";
-            echo "<input class='contentInput' name='content[0]' type='text' />";
+            echo "<input class='contentInput' name='content[0]' type='text' required />";
             echo "</div>";
 
             echo str_replace(";", " ", $this->Form->control("allUser", ["label" => "閲覧可能ユーザ", "multiple" => "checkbox", "options" => $allUser, "class" => "privateAllUser"]));

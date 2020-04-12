@@ -12,13 +12,13 @@
     </ul>
 </nav>
 <div class="messageBords view large-9 medium-8 columns content">
+<?php $count = count($messageBords->message_choices) ?>
     <table>
-<?php $count = count($messageBords->private_messages) ?>
-        <?php foreach($messageBords->private_messages as $private): ?>
+        <?php foreach($messageBords->message_choices as $choice): ?>
             <tr>
-                <td><?= $private->user->first_name . $private->user->last_name ?></td>
-                <?php if($private->user->users_id != $addUser && $count != 1 && $private->user->users_id != 7): ?>
-                    <td><?= $this->Form->postLink(__('削除'), ["controller" => "PrivateMessages", 'action' => 'delete', $private->private_messages_id], ['confirm' => __('このユーザを閲覧禁止にしますか？ # {0}?', $private->user->first_name . $private->user->last_name)]) ?></td>
+                <td><?= $choice->content ?></td>
+                <?php if($count != 1): ?>
+                    <td><?= $this->Form->postLink(__('削除'), ["controller" => "MessageChoices", 'action' => 'delete', $choice->message_choices_id], ['confirm' => __('この選択肢を削除しますか？ # {0}', $choice->content)]) ?></td>
                 <?php endif ?>
             </tr>
         <?php endforeach ?>

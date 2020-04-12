@@ -102,7 +102,30 @@ class MessageBordsController extends AppController
             'contain' => ['PrivateMessages.Users']
         ]);
 
-        $this->set(compact('messageBords'));
+        $addUser = $this->MessageBords->get($id,[
+            "contain" => ["Users"]
+        ]);
+        $addUser = $addUser->user->users_id;
+
+        $this->set(compact('messageBords', "addUser"));
+    }
+
+    public function destinationView($id = null)
+    {
+        $messageBords = $this->MessageBords->get($id, [
+            'contain' => ['MessageDestinations.Users']
+        ]);
+
+        $this->set(compact('messageBords', "addUser"));
+    }
+
+    public function choiceView($id = null)
+    {
+        $messageBords = $this->MessageBords->get($id, [
+            'contain' => ['MessageChoices']
+        ]);
+
+        $this->set(compact('messageBords', "addUser"));
     }
 
     /**
@@ -112,9 +135,10 @@ class MessageBordsController extends AppController
      */
     public function add()
     {
+        //選択肢ないとエラーにする
         $loginUser = $this->getRequest()->getSession()->read("Auth.User.users_id");
         $messageBord = $this->MessageBords->newEntity();
-        $this->loadModels(["MessageChoices", "MessageDestinations", "Users", "MessageFiles"]);
+        $this->loadModels(["MessageChoices", "MessageDestinations", "Users", "PrivateMessages", "MessageFiles"]);
         if ($this->request->is('post')) {
             $this->IncidentManagement = $this->loadComponent("IncidentAdd");
             $data = $this->request->getdata();
@@ -143,6 +167,7 @@ class MessageBordsController extends AppController
                         !empty($data["systemPrv"]) || 
                         !empty($data["systemPrv"]))
                     {
+                        $this->userEntityEdit($data, "Prv", "private", $loginUser, true, $bordId);
                         /*
                         $group = [
                             "soukatuPrv",
@@ -168,7 +193,28 @@ class MessageBordsController extends AppController
                         $this->privateSave($privateUser, $bordId, $loginUser, true);
                          */
                     }
-                    $this->log("---private User なし---", LOG_DEBUG);
+                    else
+                    {
+                        $this->log("作成者のみ閲覧可", LOG_DEBUG);
+                        $privateMessage = $this->PrivateMessages->newEntity();
+                        $privateEntity = [
+                            "message_bords_id" => $bordId,
+                            "users_id" => $loginUser
+                        ];
+                        $this->log("---privateMessage---", LOG_DEBUG);
+                        $this->log($privateMessage, LOG_DEBUG);
+                        $this->log("---privateEntity---", LOG_DEBUG);
+                        $this->log($privateEntity, LOG_DEBUG);
+                        $privateMessage = $this->PrivateMessages->patchEntity($privateMessage, $privateEntity);
+                        if ($this->PrivateMessages->save($privateMessage)) 
+                        {
+                            $this->log("プライベートユーザにログイン中のユーザを登録", LOG_DEBUG);
+                        }
+                        else
+                        {
+                            $this->log("プライベートユーザ登録失敗", LOG_DEBUG);
+                        }
+                    }
 
                     //choiceを保存
                     if(!empty($data["content"][0]))
@@ -416,12 +462,7 @@ class MessageBordsController extends AppController
                         $this->log("---allCheck list---", LOG_DEBUG);
                         $this->log($allCheck->toList(), LOG_DEBUG);
                         $this->privateAllUserSave($data["allUser"][0], $bordId);
-                        /*
-                        if($allCheck == null)
-                        {
-                            $this->privateAllUserSave($data["allUser"][0], $bordId);
-                        }
-                         */
+
                         //editの場合、各ユーザが登録されたあとにallUserを登録するならば、
                         //各ユーザは削除する処理を記述する
                         //$this->log("---allではない---", LOG_DEBUG);
@@ -459,7 +500,24 @@ class MessageBordsController extends AppController
                     }
                     else
                     {
-                        $this->log("private user not add", LOG_DEBUG);
+                        $this->log("閲覧権限追加なし", LOG_DEBUG);
+                        /*
+                         * editにはいらなかった
+                        $privateMessage = $this->PrivateMessages->newEntiy();
+                        $privateEntity = [
+                            "message_bords_id" => $id,
+                            "users_id" => $loginUser
+                        ];
+                        $privateMessages = $this->PrivateMessages->patchEntity($privateMessages, $privateEntity);
+                        if ($this->MessageBords->save($messageBord)) 
+                        {
+                            $this->log("プライベートユーザにログイン中のユーザを登録", LOG_DEBUG);
+                        }
+                        else
+                        {
+                            $this->log("プライベートユーザ登録失敗", LOG_DEBUG);
+                        }
+                         */
                     }
 
                     //choiceを保存
@@ -518,6 +576,7 @@ class MessageBordsController extends AppController
 
         $messageStatuses = $this->MessageBords->MessageStatuses->find('list', ['limit' => 200]);
         $messageDestinations = $messageBord->message_destinations;
+        $messageChoices = $messageBord->message_choices;
 
         $privateUser = $this->MessageBords->get($id, [
             'contain' => ['PrivateMessages.Users']
@@ -631,6 +690,7 @@ class MessageBordsController extends AppController
             "users", 
             "allUser", 
             "messageDestinations", 
+            "messageChoices", 
             "privateSoukatu", 
             "privateKenkyo", 
             "privateSystem", 
@@ -642,6 +702,195 @@ class MessageBordsController extends AppController
             "destinationKintai",
             "destinationUser"
         ));
+    }
+
+    public function chronoloEdit($id = null)
+    {
+        $loginUser = $this->getRequest()->getSession()->read("Auth.User.users_id");
+        $messageBord = $this->MessageBords->get($id, [
+            'contain' => ["MessageChoices", "MessageDestinations", "Users", "PrivateMessages"]
+        ]);
+        //認証
+        $this->Authority = $this->loadComponent("Authority");
+        if($this->Authority->authorityCheck($messageBord)){
+            $this->loadModels(["Users", "MessageFiles", "PrivateMessages"]);
+            if ($this->request->is(['patch', 'post', 'put'])) {
+                $data = $this->request->getdata();
+                $this->log("---data---", LOG_DEBUG);
+                $this->log($data, LOG_DEBUG);
+                $messageBord = $this->MessageBords->patchEntity($messageBord, $data);
+                if ($this->MessageBords->save($messageBord)) {
+                    $this->Flash->success(__('The message bord has been saved.'));
+                    //$bordId = $messageBord->message_bords_id;
+
+                    //privateMessage保存
+                    //allUserが登録されているか確認
+                    $allCheck = $this->PrivateMessages->find()
+                        ->select(["users_id"])
+                        ->where(["message_bords_id" => $id])
+                        ->where(["users_id" => 7]);
+                    $this->log("---allCheck sql---", LOG_DEBUG);
+                    $this->log($allCheck, LOG_DEBUG);
+
+                    if(!empty($data["allUser"][0]))
+                    {
+                        if(empty($allCheck->toArray()))
+                        {
+                            $this->log("---allUser 登録なし---", LOG_DEBUG);
+                            //すべてのユーザに閲覧許可を与えたら、個々のユーザは削除する
+                            //そうしないと重複してメッセージボードが表示される
+                            $deletePrivateMessage = $this->PrivateMessages->find("all")
+                                ->select(["message_bords_id"])
+                                ->where(["message_bords_id" => $id]);
+                            $tmp = $deletePrivateMessage->toArray();
+                            $deletePrivateMessage = ["message_bords_id" => $tmp[0]["message_bords_id"]];
+                            $this->log("---deletePrivateMessage->toArray()[0][message_bords_id]---", LOG_DEBUG);
+                            //$this->log($deletePrivateMessage[0]["message_bords_id"], LOG_DEBUG);
+                            $this->log($deletePrivateMessage, LOG_DEBUG);
+                            if($this->PrivateMessages->deleteAll($deletePrivateMessage))
+                            {
+                                $this->log("deleteAll complate. allUser save", LOG_DEBUG);
+                                $this->privateAllUserSave($data["allUser"][0], $bordId);
+                            }
+                            else
+                            {
+                                $this->log("deleteAll error. not allSave", LOG_DEBUG);
+                            }
+
+                        }
+                        else
+                        {
+                            $this->log("---allUserすでに登録あり---", LOG_DEBUG);
+                        }
+                        
+                        //editの場合、各ユーザが登録されたあとにallUserを登録するならば、
+                        //各ユーザは削除する処理を記述する
+                    }
+                    else if(
+                        !empty($data["soukatuPrv"]) || 
+                        !empty($data["kenkyoPrv"]) || 
+                        !empty($data["systemPrv"]) || 
+                        !empty($data["kintaiPrv"]))
+                    {
+                        if(!empty($allCheck->toArray()))
+                        {
+                            $this->log("---allUser登録済みだけど、ユーザを登録しようとしている---", LOG_DEBUG);
+                            $this->log("---allUser削除して、ユーザを登録する---", LOG_DEBUG);
+                            $privateMessagesId = $messageBord->private_messages[0]["private_messages_id"];
+
+                            $privateMessage = $this->PrivateMessages->get($privateMessagesId);
+                            if ($this->PrivateMessages->delete($privateMessage)) 
+                            {
+                                $this->log("---allUser private message 削除---", LOG_DEBUG);
+                                //allUser削除したら作成者の閲覧権限を登録
+                                $entity[] = $messageBord->users_id;
+                                $this->privateSave($entity, $id, $loginUser, false);
+                            }
+                            else
+                            {
+                                $this->log("---allUser private message 削除失敗---", LOG_DEBUG);
+                            }
+
+                        }
+                        $this->log("---ユーザ選択されている---", LOG_DEBUG);
+                        $this->userEntityEdit($data, "Prv", "private", $loginUser, false, $id);
+                    }
+                    else
+                    {
+                        $this->log("閲覧権限追加なし", LOG_DEBUG);
+                    }
+
+                    //file保存
+                    if(!empty($data["file"][0]["tmp_name"])){
+                        $this->Fileupload = $this->loadComponent("Fileupload");
+                        $entity = $this->Fileupload->default_upload($data["file"], $bordId, "message_bords");
+                        $file = $this->MessageFiles->newEntities($entity);
+                        if($this->MessageFiles->saveMany($file)) {
+                          $this->Flash->success(__('ファイルのアップロードに成功しました。'));
+                        }else{
+                          $this->Flash->error(__('ファイルのアップロードに失敗しました。'));
+                        }
+                    }
+                    return $this->redirect(['action' => 'index']);
+                }
+                $this->Flash->error(__('The message bord could not be saved. Please, try again.'));
+            }
+        }else{
+            $this->Flash->error(__('権限がありません'));
+            return $this->redirect($this->referer());
+        }
+
+        $messageStatuses = $this->MessageBords->MessageStatuses->find('list', ['limit' => 200]);
+        $messageDestinations = $messageBord->message_destinations;
+        $messageChoices = $messageBord->message_choices;
+
+        $privateUser = $this->MessageBords->get($id, [
+            'contain' => ['PrivateMessages.Users']
+        ]);
+
+        //各班ごとでユーザ取得
+        //private用
+        $privateSoukatu = $this->Users->find("list", ["limit" => 200])
+            ->where(["belongs_id" => 1])
+            ->where(["users_id !=" => 7],["users_id !=" => $loginUser])
+            ->where(["delete_flag" => 0]);
+        $privateKenkyo = $this->Users->find("list", ["limit" => 200])
+            ->where(["belongs_id" => 2])
+            ->where(["users_id !=" => 7],["users_id !=" => $loginUser])
+            ->where(["delete_flag" => 0]);
+        $privateSystem = $this->Users->find("list", ["limit" => 200])
+            ->where(["belongs_id" => 3])
+            ->where(["users_id !=" => 7],["users_id !=" => $loginUser])
+            ->where(["delete_flag" => 0]);
+        $privateKintai = $this->Users->find("list", ["limit" => 200])
+            ->where(["belongs_id" => 4])
+            ->where(["users_id !=" => 7],["users_id !=" => $loginUser])
+            ->where(["delete_flag" => 0]);
+
+
+        //private用
+        foreach($privateUser->private_messages as $user)
+        {
+            if($user->user->belongs_id == 1)
+            {
+                $privateSoukatu->where(["users_id !=" => $user->users_id]);
+            }
+            elseif($user->user->belongs_id == 2)
+            {
+                $privateKenkyo->where(["users_id !=" => $user->users_id]);
+            }
+            elseif($user->user->belongs_id == 3)
+            {
+                $privateSystem->where(["users_id !=" => $user->users_id]);
+            }
+            elseif($user->user->belongs_id == 4)
+            {
+                $privateKintai->where(["users_id !=" => $user->users_id]);
+            }
+        }
+
+        $users = $this->Users->find('list', ['limit' => 200])
+            ->order(["user_sort_number" => "asc"])
+            ->where(["users_id !=" => 7])
+            ->where(["delete_flag" => 0]);
+
+        $allUser = $this->Users->find("list", ["limit" => 200])
+            ->where(["users_id" => 7]);
+
+
+        $this->set(compact(
+            'messageBord', 
+            'messageStatuses', 
+            "users", 
+            "allUser", 
+            "messageChoices", 
+            "privateSoukatu", 
+            "privateKenkyo", 
+            "privateSystem", 
+            "privateKintai", 
+            "privateUser"
+        ));
+
     }
 
     /**
@@ -657,6 +906,7 @@ class MessageBordsController extends AppController
         $messageBord = $this->MessageBords->get($id,[
             "contain" => ["MessageFiles", "Users"]
         ]);
+        //認証
         $this->Authority = $this->loadComponent("Authority");
         if($this->Authority->authorityCheck($messageBord)){
             if ($this->MessageBords->delete($messageBord)) {
