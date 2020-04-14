@@ -40,6 +40,7 @@
     </table>
 <?php $c = 0 ?>
 <?php foreach ($messageBords as $messageBord): ?>
+
     <table class="branch">
         <tbody>
             <tr>
@@ -56,7 +57,9 @@
                 <td><?= h($messageBord->message_bord->modified) ?></td>
                 <td class="actions">
                     <?= $this->Html->link(__('閲覧権限確認'), ['action' => 'privateView', $messageBord->message_bord->message_bords_id]) ?>
-                    <?= $this->Html->link(__('宛先削除'), ['action' => 'destinationView', $messageBord->message_bord->message_bords_id]) ?>
+                    <?php if($messageBord->message_bord->chronology_flag === false): ?>
+                        <?= $this->Html->link(__('宛先削除'), ['action' => 'destinationView', $messageBord->message_bord->message_bords_id]) ?>
+                    <?php endif ?>
                     <!-- chronoloならchronoloEditへ -->
                     <?php if($messageBord->message_bord->chronology_flag): ?>
                         <?= $this->Html->link(__('編集'), ['action' => 'chronoloEdit', $messageBord->message_bord->message_bords_id]) ?>

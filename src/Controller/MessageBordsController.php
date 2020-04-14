@@ -128,11 +128,6 @@ class MessageBordsController extends AppController
         $this->set(compact('messageBords', "addUser"));
     }
 
-    /**
-     * Add method
-     *
-     * @return \Cake\Http\Response|null Redirects on successful add, renders view otherwise.
-     */
     public function add()
     {
         //選択肢ないとエラーにする
@@ -155,7 +150,6 @@ class MessageBordsController extends AppController
                     $this->Flash->success(__('The message bord has been saved.'));
                     $bordId = $messageBord->message_bords_id;
 
-
                     //privateMessage保存
                     if(!empty($data["allUser"][0]))
                     {
@@ -168,30 +162,6 @@ class MessageBordsController extends AppController
                         !empty($data["systemPrv"]))
                     {
                         $this->userEntityEdit($data, "Prv", "private", $loginUser, true, $bordId);
-                        /*
-                        $group = [
-                            "soukatuPrv",
-                            "kenkyoPrv",
-                            "systemPrv",
-                            "kintaiPrv"
-                        ];
-                        $privateUser = null;
-                        foreach($group as $private)
-                        {
-                            $this->log("---foreach group as private---", LOG_DEBUG);
-                            $this->log($private, LOG_DEBUG);
-                            if(!empty($data[$private][0]))
-                            {
-                                foreach($data[$private] as $prvUser)
-                                {
-                                    $this->log("---foreach data[private] as destUser---", LOG_DEBUG);
-                                    $this->log($prvUser, LOG_DEBUG);
-                                    $privateUser[] = $prvUser;
-                                }
-                            }
-                        }
-                        $this->privateSave($privateUser, $bordId, $loginUser, true);
-                         */
                     }
                     else
                     {
@@ -309,7 +279,12 @@ class MessageBordsController extends AppController
             ->order(["user_sort_number" => "asc"])
             ->where(["users_id !=" => 7])
             ->where(["delete_flag" => 0]);
-        $this->set(compact('messageBord', 'messageStatuses', "users", "allUser", "soukatu", "kenkyo", "system", "kintai"));
+
+        $createUser = $this->Users->find("list", ["limit" => 200])
+            ->where(["users_id" => $loginUser]);
+
+        //$this->set(compact('messageBord', 'messageStatuses', "users", "allUser", "soukatu", "kenkyo", "system", "kintai", "createUser"));
+        $this->set(compact('messageBord', 'messageStatuses', "allUser", "soukatu", "kenkyo", "system", "kintai", "createUser"));
     }
 
     public function chronoloAdd()
@@ -420,22 +395,20 @@ class MessageBordsController extends AppController
             ->order(["user_sort_number" => "asc"])
             ->where(["users_id !=" => 7])
             ->where(["delete_flag" => 0]);
-        $this->set(compact('messageBord', 'messageStatuses', "users", "allUser", "soukatu", "kenkyo", "system", "kintai"));
+        $createUser = $this->Users->find("list", ["limit" => 200])
+            ->where(["users_id" => $loginUser]);
+
+        //$this->set(compact('messageBord', 'messageStatuses', "users", "allUser", "soukatu", "kenkyo", "system", "kintai", "createUser"));
+        $this->set(compact('messageBord', 'messageStatuses', "allUser", "soukatu", "kenkyo", "system", "kintai", "createUser"));
     }
 
-    /**
-     * Edit method
-     *
-     * @param string|null $id Message Bord id.
-     * @return \Cake\Http\Response|null Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
     public function edit($id = null)
     {
         $loginUser = $this->getRequest()->getSession()->read("Auth.User.users_id");
         $messageBord = $this->MessageBords->get($id, [
-            'contain' => ["MessageChoices", "MessageDestinations", "Users"]
+            'contain' => ["MessageChoices", "MessageDestinations", "Users", "PrivateMessages"]
         ]);
+        $privateMessagesId = $messageBord->private_messages[0]["private_messages_id"];
         //認証
         $this->Authority = $this->loadComponent("Authority");
         if($this->Authority->authorityCheck($messageBord)){
@@ -444,80 +417,84 @@ class MessageBordsController extends AppController
                 $data = $this->request->getdata();
                 $this->log("---data---", LOG_DEBUG);
                 $this->log($data, LOG_DEBUG);
-                $messageBord = $this->MessageBords->patchEntity($messageBord, $data);
-                if ($this->MessageBords->save($messageBord)) {
+                $messageBordSave = $this->MessageBords->patchEntity($messageBord, $data);
+                if ($this->MessageBords->save($messageBordSave)) {
                     $this->Flash->success(__('The message bord has been saved.'));
-                    $bordId = $messageBord->message_bords_id;
+
+                    $allCheck = $this->PrivateMessages->find("list", ["list" => 200])
+                        ->select(["users_id"])
+                        ->where(["message_bords_id" => $id])
+                        ->where(["users_id" => 7]);
 
                     //privateMessage保存
                     if(!empty($data["allUser"][0]))
                     {
                         //allUserがすでに登録されていないことを確認
-                        $allCheck = $this->PrivateMessages->find("list", ["list" => 200])
-                            ->select(["users_id"])
-                            ->where(["message_bords_id" => $id])
-                            ->where(["users_id" => 7]);
                         $this->log("---allCheck sql---", LOG_DEBUG);
                         $this->log($allCheck, LOG_DEBUG);
                         $this->log("---allCheck list---", LOG_DEBUG);
                         $this->log($allCheck->toList(), LOG_DEBUG);
-                        $this->privateAllUserSave($data["allUser"][0], $bordId);
+                        //$this->privateAllUserSave($data["allUser"][0], $id);
+                        if(empty($allCheck->toArray()))
+                        {
+                            //パターン　user->all
+                            
+                            //allUserは登録されていない
+                            //すべてのユーザに閲覧許可を与えたら、個々のユーザは削除する
+                            //そうしないと重複してメッセージボードが表示される
+                            
+                            //削除するprivateMessageのmessage_bords_id取得
+                            $deletePrivateMessage = $this->PrivateMessages->find("all")
+                                ->select(["message_bords_id"])
+                                ->where(["message_bords_id" => $id]);
+                            $tmp = $deletePrivateMessage->toArray();
+                            $deletePrivateMessage = ["message_bords_id" => $tmp[0]["message_bords_id"]];
+
+                            //一括削除
+                            if($this->PrivateMessages->deleteAll($deletePrivateMessage))
+                            {
+                                //削除成功したらallUserを登録
+                                $this->privateAllUserSave($data["allUser"][0], $id);
+                            }
+
+                        }
+
+                        //パターン　all->all
+                        //すでにallUserが登録されていたらなにもしない
 
                         //editの場合、各ユーザが登録されたあとにallUserを登録するならば、
                         //各ユーザは削除する処理を記述する
-                        //$this->log("---allではない---", LOG_DEBUG);
                     }
-                    else if(
-                        !empty($data["soukatuPrv"]) || 
-                        !empty($data["kenkyoPrv"]) || 
-                        !empty($data["systemPrv"]) || 
-                        !empty($data["kintaiPrv"]))
+                    else if(!empty($data["soukatuPrv"]) || !empty($data["kenkyoPrv"]) || !empty($data["systemPrv"]) || !empty($data["kintaiPrv"]))
                     {
-                        $this->log("---ユーザ選択されている---", LOG_DEBUG);
-                        $this->userEntityEdit($data, "Prv", "private", $loginUser, false, $bordId);
-                        /*
-                        $group = [
-                            "soukatuPrv",
-                            "kenkyoPrv",
-                            "systemPrv",
-                            "kintaiPrv"
-                        ];
-                        $privateUser = null;
-                        foreach($group as $private)
+                        if(!empty($allCheck->toArray()))
                         {
-                            if(!empty($data[$private][0]))
+                            //パターン　all->user
+
+                            //allUser登録済みだけど、ユーザを登録しようとしている
+                            //allUser削除して、ユーザを登録する
+
+                            $privateMessage = $this->PrivateMessages->get($privateMessagesId);
+                            if ($this->PrivateMessages->delete($privateMessage)) 
                             {
-                                foreach($data[$private] as $prvUser)
-                                {
-                                    $privateUser[] = $prvUser;
-                                }
+                                //allUser削除したら作成者の閲覧権限を登録
+                                $entity[] = $messageBord->users_id;
+                                $this->privateSave($entity, $id, $loginUser, false);
                             }
+                            else
+                            {
+                                //$this->log("---allUser private message 削除失敗---", LOG_DEBUG);
+                            }
+
                         }
-                        $this->log("---privateUser---", LOG_DEBUG);
-                        $this->log($privateUser, LOG_DEBUG);
-                        $this->privateSave($privateUser, $bordId, $loginUser, false);
-                         */
+                        //パターン　user->user
+                        //パターン　all->user
+                        //共通処理
+                        $this->userEntityEdit($data, "Prv", "private", $loginUser, false, $id);
                     }
                     else
                     {
-                        $this->log("閲覧権限追加なし", LOG_DEBUG);
-                        /*
-                         * editにはいらなかった
-                        $privateMessage = $this->PrivateMessages->newEntiy();
-                        $privateEntity = [
-                            "message_bords_id" => $id,
-                            "users_id" => $loginUser
-                        ];
-                        $privateMessages = $this->PrivateMessages->patchEntity($privateMessages, $privateEntity);
-                        if ($this->MessageBords->save($messageBord)) 
-                        {
-                            $this->log("プライベートユーザにログイン中のユーザを登録", LOG_DEBUG);
-                        }
-                        else
-                        {
-                            $this->log("プライベートユーザ登録失敗", LOG_DEBUG);
-                        }
-                         */
+                        //$this->log("閲覧権限追加なし", LOG_DEBUG);
                     }
 
                     //choiceを保存
@@ -527,6 +504,17 @@ class MessageBordsController extends AppController
                     }
 
                     //destination保存
+                    if(!empty($data["soukatuDest"]) || !empty($data["kenkyoDest"]) || !empty($data["systemDest"]) || !empty($data["kintaiDest"]))
+                    {
+                        //登録ユーザあり
+                        $entity[] = $messageBord->users_id;
+                        $this->userEntityEdit($data, "Dest", "destination", $loginUser, false, $id);
+                    }
+                    else
+                    {
+                        $this->log("宛先追加なし", LOG_DEBUG);
+                    }
+                    /*
                     $group = [
                         "soukatuDest",
                         "kenkyoDest",
@@ -543,14 +531,6 @@ class MessageBordsController extends AppController
                     if(!empty($destinationUser))
                     {
                         $this->destinationSave($destinationUser, $bordId);
-                    }
-                    /*
-                     * 全消しなし edit 追加のみ
-                    //いっぺん全消し
-                    $this->MessageDestinations->deleteAll(["message_bords_id" => $bordId]);
-                    if(!empty($data["user"]))
-                    {
-                        $this->destinationSave($data["user"], $bordId);
                     }
                      */
 
@@ -582,23 +562,30 @@ class MessageBordsController extends AppController
             'contain' => ['PrivateMessages.Users']
         ]);
 
+        //作成者非表示用
+        $entity = $messageBord->users_id;
+
         //各班ごとでユーザ取得
         //private用
         $privateSoukatu = $this->Users->find("list", ["limit" => 200])
             ->where(["belongs_id" => 1])
-            ->where(["users_id !=" => 7],["users_id !=" => $loginUser])
+            ->where(["users_id !=" => 7])
+            ->where(["users_id !=" => $entity])
             ->where(["delete_flag" => 0]);
         $privateKenkyo = $this->Users->find("list", ["limit" => 200])
             ->where(["belongs_id" => 2])
-            ->where(["users_id !=" => 7],["users_id !=" => $loginUser])
+            ->where(["users_id !=" => 7])
+            ->where(["users_id !=" => $entity])
             ->where(["delete_flag" => 0]);
         $privateSystem = $this->Users->find("list", ["limit" => 200])
             ->where(["belongs_id" => 3])
-            ->where(["users_id !=" => 7],["users_id !=" => $loginUser])
+            ->where(["users_id !=" => 7])
+            ->where(["users_id !=" => $entity])
             ->where(["delete_flag" => 0]);
         $privateKintai = $this->Users->find("list", ["limit" => 200])
             ->where(["belongs_id" => 4])
-            ->where(["users_id !=" => 7],["users_id !=" => $loginUser])
+            ->where(["users_id !=" => 7])
+            ->where(["users_id !=" => $entity])
             ->where(["delete_flag" => 0]);
 
 
@@ -624,14 +611,6 @@ class MessageBordsController extends AppController
         }
 
 
-        /*
-        $privateSoukatu = $privateSoukatu->toList();
-        $privateKenkyo = $privateKenkyo->toList();
-        $privateSystem = $privateSystem->toList();
-        $privateKintai = $privateKintai->toList();
-         */
-
-
         $destinationUser = $this->MessageBords->get($id, [
             'contain' => ['MessageDestinations.Users']
         ]);
@@ -640,19 +619,23 @@ class MessageBordsController extends AppController
         //destination用
         $destinationSoukatu = $this->Users->find("list", ["limit" => 200])
             ->where(["belongs_id" => 1])
-            ->where(["users_id !=" => 7],["users_id !=" => $loginUser])
+            ->where(["users_id !=" => 7])
+            ->where(["users_id !=" => $loginUser])
             ->where(["delete_flag" => 0]);
         $destinationKenkyo = $this->Users->find("list", ["limit" => 200])
             ->where(["belongs_id" => 2])
-            ->where(["users_id !=" => 7],["users_id !=" => $loginUser])
+            ->where(["users_id !=" => 7])
+            ->where(["users_id !=" => $loginUser])
             ->where(["delete_flag" => 0]);
         $destinationSystem = $this->Users->find("list", ["limit" => 200])
             ->where(["belongs_id" => 3])
-            ->where(["users_id !=" => 7],["users_id !=" => $loginUser])
+            ->where(["users_id !=" => 7])
+            ->where(["users_id !=" => $loginUser])
             ->where(["delete_flag" => 0]);
         $destinationKintai = $this->Users->find("list", ["limit" => 200])
             ->where(["belongs_id" => 4])
-            ->where(["users_id !=" => 7],["users_id !=" => $loginUser])
+            ->where(["users_id !=" => 7])
+            ->where(["users_id !=" => $loginUser])
             ->where(["delete_flag" => 0]);
 
         foreach($destinationUser->message_destinations as $user)
@@ -683,11 +666,15 @@ class MessageBordsController extends AppController
         $allUser = $this->Users->find("list", ["limit" => 200])
             ->where(["users_id" => 7]);
 
+        $createUser = $messageBord->users_id;
+
+
 
         $this->set(compact(
             'messageBord', 
             'messageStatuses', 
             "users", 
+            "createUser", 
             "allUser", 
             "messageDestinations", 
             "messageChoices", 
@@ -710,6 +697,7 @@ class MessageBordsController extends AppController
         $messageBord = $this->MessageBords->get($id, [
             'contain' => ["MessageChoices", "MessageDestinations", "Users", "PrivateMessages"]
         ]);
+        $privateMessagesId = $messageBord->private_messages[0]["private_messages_id"];
         //認証
         $this->Authority = $this->loadComponent("Authority");
         if($this->Authority->authorityCheck($messageBord)){
@@ -719,24 +707,31 @@ class MessageBordsController extends AppController
                 $this->log("---data---", LOG_DEBUG);
                 $this->log($data, LOG_DEBUG);
                 $messageBord = $this->MessageBords->patchEntity($messageBord, $data);
+                $this->log("---patchEntity messageBord---", LOG_DEBUG);
+                $this->log($messageBord, LOG_DEBUG);
                 if ($this->MessageBords->save($messageBord)) {
                     $this->Flash->success(__('The message bord has been saved.'));
                     //$bordId = $messageBord->message_bords_id;
 
                     //privateMessage保存
                     //allUserが登録されているか確認
-                    $allCheck = $this->PrivateMessages->find()
+                    $allCheck = $this->PrivateMessages->find("list", ["list" => 200])
                         ->select(["users_id"])
                         ->where(["message_bords_id" => $id])
                         ->where(["users_id" => 7]);
-                    $this->log("---allCheck sql---", LOG_DEBUG);
-                    $this->log($allCheck, LOG_DEBUG);
+                    $this->log("---allCheck->toArray() ---", LOG_DEBUG);
+                    $this->log($allCheck->toArray(), LOG_DEBUG);
+
+                    $this->log("---empty allUser---" , LOG_DEBUG);
+                    $this->log($data["allUser"], LOG_DEBUG);
 
                     if(!empty($data["allUser"][0]))
                     {
+                        $this->log("---allUser not empty---" , LOG_DEBUG);
                         if(empty($allCheck->toArray()))
                         {
                             $this->log("---allUser 登録なし---", LOG_DEBUG);
+                            $this->log("---private user 削除して allUser登録---", LOG_DEBUG);
                             //すべてのユーザに閲覧許可を与えたら、個々のユーザは削除する
                             //そうしないと重複してメッセージボードが表示される
                             $deletePrivateMessage = $this->PrivateMessages->find("all")
@@ -745,12 +740,11 @@ class MessageBordsController extends AppController
                             $tmp = $deletePrivateMessage->toArray();
                             $deletePrivateMessage = ["message_bords_id" => $tmp[0]["message_bords_id"]];
                             $this->log("---deletePrivateMessage->toArray()[0][message_bords_id]---", LOG_DEBUG);
-                            //$this->log($deletePrivateMessage[0]["message_bords_id"], LOG_DEBUG);
                             $this->log($deletePrivateMessage, LOG_DEBUG);
                             if($this->PrivateMessages->deleteAll($deletePrivateMessage))
                             {
                                 $this->log("deleteAll complate. allUser save", LOG_DEBUG);
-                                $this->privateAllUserSave($data["allUser"][0], $bordId);
+                                $this->privateAllUserSave($data["allUser"][0], $id);
                             }
                             else
                             {
@@ -766,17 +760,13 @@ class MessageBordsController extends AppController
                         //editの場合、各ユーザが登録されたあとにallUserを登録するならば、
                         //各ユーザは削除する処理を記述する
                     }
-                    else if(
-                        !empty($data["soukatuPrv"]) || 
-                        !empty($data["kenkyoPrv"]) || 
-                        !empty($data["systemPrv"]) || 
-                        !empty($data["kintaiPrv"]))
+                    else if(!empty($data["soukatuPrv"]) || !empty($data["kenkyoPrv"]) || !empty($data["systemPrv"]) || !empty($data["kintaiPrv"])) 
                     {
                         if(!empty($allCheck->toArray()))
                         {
-                            $this->log("---allUser登録済みだけど、ユーザを登録しようとしている---", LOG_DEBUG);
-                            $this->log("---allUser削除して、ユーザを登録する---", LOG_DEBUG);
-                            $privateMessagesId = $messageBord->private_messages[0]["private_messages_id"];
+                            //$this->log("---allUser登録済みだけど、ユーザを登録しようとしている---", LOG_DEBUG);
+                            //$this->log("---allUser削除して、ユーザを登録する---", LOG_DEBUG);
+                            //$privateMessagesId = $messageBord->private_messages[0]["private_messages_id"];
 
                             $privateMessage = $this->PrivateMessages->get($privateMessagesId);
                             if ($this->PrivateMessages->delete($privateMessage)) 
@@ -794,10 +784,6 @@ class MessageBordsController extends AppController
                         }
                         $this->log("---ユーザ選択されている---", LOG_DEBUG);
                         $this->userEntityEdit($data, "Prv", "private", $loginUser, false, $id);
-                    }
-                    else
-                    {
-                        $this->log("閲覧権限追加なし", LOG_DEBUG);
                     }
 
                     //file保存
@@ -828,23 +814,29 @@ class MessageBordsController extends AppController
             'contain' => ['PrivateMessages.Users']
         ]);
 
+        //作成者非表示用
+        $entity = $messageBord->users_id;
         //各班ごとでユーザ取得
         //private用
         $privateSoukatu = $this->Users->find("list", ["limit" => 200])
             ->where(["belongs_id" => 1])
-            ->where(["users_id !=" => 7],["users_id !=" => $loginUser])
+            ->where(["users_id !=" => 7])
+            ->where(["users_id !=" => $entity])
             ->where(["delete_flag" => 0]);
         $privateKenkyo = $this->Users->find("list", ["limit" => 200])
             ->where(["belongs_id" => 2])
-            ->where(["users_id !=" => 7],["users_id !=" => $loginUser])
+            ->where(["users_id !=" => 7])
+            ->where(["users_id !=" => $entity])
             ->where(["delete_flag" => 0]);
         $privateSystem = $this->Users->find("list", ["limit" => 200])
             ->where(["belongs_id" => 3])
-            ->where(["users_id !=" => 7],["users_id !=" => $loginUser])
+            ->where(["users_id !=" => 7])
+            ->where(["users_id !=" => $entity])
             ->where(["delete_flag" => 0]);
         $privateKintai = $this->Users->find("list", ["limit" => 200])
             ->where(["belongs_id" => 4])
-            ->where(["users_id !=" => 7],["users_id !=" => $loginUser])
+            ->where(["users_id !=" => 7])
+            ->where(["users_id !=" => $entity])
             ->where(["delete_flag" => 0]);
 
 
@@ -877,11 +869,13 @@ class MessageBordsController extends AppController
         $allUser = $this->Users->find("list", ["limit" => 200])
             ->where(["users_id" => 7]);
 
+        $createUser = $messageBord->users_id;
 
         $this->set(compact(
             'messageBord', 
             'messageStatuses', 
             "users", 
+            "createUser", 
             "allUser", 
             "messageChoices", 
             "privateSoukatu", 
@@ -893,13 +887,6 @@ class MessageBordsController extends AppController
 
     }
 
-    /**
-     * Delete method
-     *
-     * @param string|null $id Message Bord id.
-     * @return \Cake\Http\Response|null Redirects to index.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
     public function delete($id = null)
     {
         $this->request->allowMethod(['post', 'delete']);
@@ -950,11 +937,14 @@ class MessageBordsController extends AppController
     public function destinationSave($data = null, $id = null)
     {
         $this->loadModels(["MessageDestinations"]);
-        foreach($data as $user){
-            $destinationEntity[] = [
-                "message_bords_id" => $id,
-                "users_id" => $user
-            ];
+        if($data != null)
+        {
+            foreach($data as $user){
+                $destinationEntity[] = [
+                    "message_bords_id" => $id,
+                    "users_id" => $user
+                ];
+            }
         }
         $messageDestination = $this->MessageDestinations->newEntities($destinationEntity);
         if($this->MessageDestinations->saveMany($messageDestination)){
@@ -965,7 +955,8 @@ class MessageBordsController extends AppController
 
     public function privateSave($data = null, $id = null, $loginUser = null, $isAdd = null)
     {
-        $this->loadModels(["PrivateMessages", "Users"]);
+        //$this->loadModels(["PrivateMessages", "Users"]);
+        $this->loadModels(["PrivateMessages"]);
         if($data != null)
         {
             foreach($data as $user){
@@ -975,7 +966,7 @@ class MessageBordsController extends AppController
                 ];
             }
         }
-        //addのみログインユーザも追加
+        //addのみログインユーザ(作成ユーザも兼ねてる)も追加
         if($isAdd)
         {
             $privateEntity[] = [
@@ -984,9 +975,11 @@ class MessageBordsController extends AppController
             ];
         }
 
+        /*
         $normalUsers = $this->Users->find('list', ['limit' => 200])
             ->where(["delete_flag" => 0])
             ->order(["user_sort_number" => "asc"]);
+         */
 
 
         $privateMessages = $this->PrivateMessages->newEntities($privateEntity);
@@ -999,45 +992,16 @@ class MessageBordsController extends AppController
     public function privateAllUserSave($allUser = null, $id = null)
     {
         $this->loadModels(["PrivateMessages"]);
-        /*
-        $this->log("---privateAllUserSave---", LOG_DEBUG);
-        $this->log("---allUser---", LOG_DEBUG);
-        $this->log($allUser, LOG_DEBUG);
-        $this->log("---id---", LOG_DEBUG);
-        $this->log($id, LOG_DEBUG);
-         */
         $privateEntity = [
             "message_bords_id" => $id,
             "users_id" => $allUser
         ];
-        /*
-        $this->log("---privateEntity---", LOG_DEBUG);
-        $this->log($privateEntity, LOG_DEBUG);
-         */
-        /*
-        foreach($data as $user){
-            $privateEntity[] = [
-                "message_bords_id" => $id,
-                "users_id" => $user
-            ];
-        }
-         */
         $privateMessages = $this->PrivateMessages->newEntity();
-        /*
-        $this->log("---newEntity privateMessages---", LOG_DEBUG);
-        $this->log($privateMessages, LOG_DEBUG);
-         */
         $privateMessages = $this->PrivateMessages->patchEntity($privateMessages, $privateEntity);
-        /*
-        $this->log("---patchEntity privateMessages---", LOG_DEBUG);
-        $this->log($privateMessages, LOG_DEBUG);
-         */
         if($this->PrivateMessages->save($privateMessages))
         {
-           // $this->log("---save true---", LOG_DEBUG);
             return true;
         }
-        //$this->log("---save false---", LOG_DEBUG);
         return false;
     }
 
@@ -1073,4 +1037,15 @@ class MessageBordsController extends AppController
             $this->$type($users, $id, $loginUser, $isAdd);
         }
     }
+
+    /*
+    public function duplication($data = null)
+    {
+        //private destination の重複登録を防ぐ
+        //登録データ取得(edit系のみ)
+        //POSTデータと比較
+            //POSTないですである重複も確認
+        $data["soukatu{$type}"]
+    }
+     */
 }

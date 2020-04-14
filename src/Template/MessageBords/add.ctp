@@ -28,7 +28,8 @@
         <legend><?= __('メッセージボード作成') ?></legend>
         <?php
             echo $this->Form->control('title', ["label" => "タイトル"]);
-            echo str_replace(";", " ", $this->Form->control('users_id', ["value" => $loginUser, "label" => "作成者", "type" => "select", "options" => $users]));
+            //echo str_replace(";", " ", $this->Form->control('users_id', ["value" => $loginUser, "label" => "作成者", "type" => "select", "options" => $users]));
+            echo str_replace(";", " ", $this->Form->control('users_id', ["value" => $loginUser, "label" => "作成者", "type" => "select", "options" => $createUser]));
             echo $this->Form->control('message_statuses_id', ["label" => "ステータス", 'options' => $messageStatuses]);
             echo "<p style='color:red;'>選択肢は必ず１つは作成してください</p>";
             echo $this->Form->control('choice', ["value" => 0, "label" => "追加する選択肢の数", "max" => 5, "min" => 0]);

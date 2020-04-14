@@ -16,7 +16,8 @@
         <legend><?= __('メッセージボード作成') ?></legend>
         <?php
             echo $this->Form->control('title', ["label" => "タイトル"]);
-            echo str_replace(";", " ", $this->Form->control('users_id', ["value" => $loginUser, "label" => "作成者", "type" => "select", "options" => $users]));
+            //echo str_replace(";", " ", $this->Form->control('users_id', ["value" => $loginUser, "label" => "作成者", "type" => "select", "options" => $users]));
+            echo str_replace(";", " ", $this->Form->control('users_id', ["value" => $loginUser, "label" => "作成者", "type" => "select", "options" => $createUser]));
             echo $this->Form->control('message_statuses_id', ["label" => "ステータス", 'options' => $messageStatuses]);
             //echo $this->Form->control('choice', ["type" => "hidden", "value" => 0]);
             echo $this->Form->control('message', ["label" => "メッセージ"]);

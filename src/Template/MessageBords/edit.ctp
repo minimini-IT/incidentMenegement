@@ -20,7 +20,8 @@
         <legend><?= __('メッセージボード編集') ?></legend>
         <?php
             echo $this->Form->control('title', ["label" => "タイトル"]);
-            echo str_replace(";", " ", $this->Form->control('users_id', ["value" => $loginUser, "label" => "作成者", "type" => "select", "options" => $users]));
+            echo str_replace(";", " ", $this->Form->control('users_id', ["value" => $createUser, "label" => "作成者", "type" => "select", "disabled" => true, "options" => $users]));
+            //echo str_replace(";", " ", $this->Form->control('users_id', ["value" => $createUser, "label" => "作成者", "type" => "select", "options" => ]));
             echo $this->Form->control('message_statuses_id', ["label" => "ステータス", 'options' => $messageStatuses]);
             if(count($messageChoices) <= 6)
             {
