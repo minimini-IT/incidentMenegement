@@ -19,6 +19,10 @@ class CategoriesController extends AppController
      */
     public function index()
     {
+      $this->paginate = [
+          "limit" => 10,
+          "order" => ["category_sort_number" => "asc"]
+      ];
         $categories = $this->paginate($this->Categories);
 
         $this->set(compact('categories'));
@@ -47,6 +51,10 @@ class CategoriesController extends AppController
      */
     public function add()
     {
+      $this->paginate = [
+          "order" => ["category_sort_number" => "asc"]
+      ];
+        $categories = $this->paginate($this->Categories);
         $category = $this->Categories->newEntity();
         if ($this->request->is('post')) {
             $category = $this->Categories->patchEntity($category, $this->request->getData());

@@ -19,6 +19,9 @@ class StatusesController extends AppController
      */
     public function index()
     {
+        $this->paginate = [
+            "order" => ["status_sort_number" => "asc"]
+        ];
         $statuses = $this->paginate($this->Statuses);
 
         $this->set(compact('statuses'));

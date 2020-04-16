@@ -7,22 +7,17 @@
 <nav class="large-3 medium-4 columns" id="actions-sidebar">
     <ul class="side-nav">
         <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Form->postLink(
-                __('Delete'),
-                ['action' => 'delete', $category->categories_id],
-                ['confirm' => __('Are you sure you want to delete # {0}?', $category->categories_id)]
-            )
-        ?></li>
-        <li><?= $this->Html->link(__('List Categories'), ['action' => 'index']) ?></li>
+        <li><?= $this->Html->link(__('戻る'), ["controller" => "CrewSends", 'action' => 'index']) ?></li>
+        <li><?= $this->Html->link(__('TOPに戻る'), ["controller" => "Dairy", 'action' => 'index']) ?></li>
     </ul>
 </nav>
 <div class="categories form large-9 medium-8 columns content">
     <?= $this->Form->create($category) ?>
     <fieldset>
-        <legend><?= __('Edit Category') ?></legend>
+        <legend><?= __('カテゴリー編集') ?></legend>
         <?php
-            echo $this->Form->control('category');
-            echo $this->Form->control('category_sort_number');
+            echo $this->Form->control('category', ["label" => "カテゴリー"]);
+            echo $this->Form->control('category_sort_number', ["label" => "ソート番号"]);
         ?>
     </fieldset>
     <?= $this->Form->button(__('Submit')) ?>

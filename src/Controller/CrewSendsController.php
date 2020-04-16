@@ -27,25 +27,35 @@ class CrewSendsController extends AppController
     
     public function index()
     {
-      $this->paginate = [
-          "contain" => [
-              "Categories", 
-              "Statuses", 
-              "Users",
-              "Files", 
-              "IncidentManagements.ManagementPrefixes",
-              "CrewSendComments.Users", 
-              "CrewSendComments.CommentFiles"
-          ],
-          "limit" => 5,
-          "order" => ["crew_sends_id" => "desc"]
-      ];
-      $this->loadModels(["CrewSendComments"]);
-      $crewSendComment = $this->CrewSendComments->newEntity();
-      $crewSends = $this->paginate($this->CrewSends);
-      $users = $this->CrewSends->Users->find('list', ['limit' => 200])
-          ->where(["delete_flag" => 0]);
-      $this->set(compact('crewSends', "users", "crewSendComment"));
+        $close = $this->request->session()->read("CrewSend.close");
+        $this->paginate = [
+            "contain" => [
+                "Categories", 
+                "Statuses", 
+                "Users",
+                "Files", 
+                "IncidentManagements.ManagementPrefixes",
+                "CrewSendComments.Users", 
+                "CrewSendComments.CommentFiles"
+            ],
+            "limit" => 5,
+            "order" => ["crew_sends_id" => "desc"]
+        ];
+        $this->loadModels(["CrewSendComments"]);
+        $crewSendComment = $this->CrewSendComments->newEntity();
+        if($close == "close")
+        {
+            $crewSends = $this->CrewSends->find("all")
+                ->where(["CrewSends.statuses_id !=" => 5]);
+            $crewSends = $this->paginate($crewSends);
+        }
+        else if($close == null)
+        {
+            $crewSends = $this->paginate($this->CrewSends);
+        }
+        $users = $this->CrewSends->Users->find('list', ['limit' => 200])
+            ->where(["delete_flag" => 0]);
+        $this->set(compact('crewSends', "users", "crewSendComment", "close"));
     }
 
     /**
@@ -114,8 +124,10 @@ class CrewSendsController extends AppController
         }
         $this->Flash->error(__('The crew send could not be saved. Please, try again.'));
       }
-      $categories = $this->CrewSends->Categories->find('list', ['limit' => 200]);
-      $statuses = $this->CrewSends->Statuses->find('list', ['limit' => 200]);
+      $categories = $this->CrewSends->Categories->find('list', ['limit' => 200])
+          ->order(["category_sort_number" => "asc"]);
+      $statuses = $this->CrewSends->Statuses->find('list', ['limit' => 200])
+          ->order(["status_sort_number" => "asc"]);
       $users = $this->CrewSends->Users->find('list', ['limit' => 200])
           ->where(["delete_flag" => 0]);
       $this->set(compact('crewSend', 'categories', 'statuses', 'users', "file_upload"));
@@ -245,5 +257,19 @@ class CrewSendsController extends AppController
             $this->Flash->error(__('権限がありません'));
             return $this->redirect($this->referer());
         }
+    }
+
+    public function closeHidden()
+    {
+        $session = $this->request->session();
+        $session->write("CrewSend.close", "close");
+        return $this->redirect(["controller" => "crew_sends", 'action' => 'index']);
+    }
+
+    public function closeOpen()
+    {
+        $session = $this->request->session();
+        $session->write("CrewSend.close", null);
+        return $this->redirect(["controller" => "crew_sends", 'action' => 'index']);
     }
 }

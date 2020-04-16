@@ -7,30 +7,29 @@
 <nav class="large-3 medium-4 columns" id="actions-sidebar">
     <ul class="side-nav">
         <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Html->link(__('New Category'), ['action' => 'add']) ?></li>
+        <li><?= $this->Html->link(__('カテゴリー追加'), ['action' => 'add']) ?></li>
+        <li><?= $this->Html->link(__('TOPへ戻る'), ['controller' => 'Dairy', 'action' => 'index']) ?></li>
+        <li><?= $this->Html->link(__('戻る'), ['controller' => 'CrewSends', 'action' => 'index']) ?></li>
     </ul>
 </nav>
 <div class="categories index large-9 medium-8 columns content">
-    <h3><?= __('Categories') ?></h3>
+    <h3><?= __('カテゴリー') ?></h3>
     <table cellpadding="0" cellspacing="0">
         <thead>
             <tr>
-                <th scope="col"><?= $this->Paginator->sort('categories_id') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('category') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('category_sort_number') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('category', "カテゴリー") ?></th>
+                <th scope="col"><?= $this->Paginator->sort('category_sort_number', "ソート番号") ?></th>
                 <th scope="col" class="actions"><?= __('Actions') ?></th>
             </tr>
         </thead>
         <tbody>
             <?php foreach ($categories as $category): ?>
             <tr>
-                <td><?= $this->Number->format($category->categories_id) ?></td>
                 <td><?= h($category->category) ?></td>
                 <td><?= $this->Number->format($category->category_sort_number) ?></td>
                 <td class="actions">
-                    <?= $this->Html->link(__('View'), ['action' => 'view', $category->categories_id]) ?>
-                    <?= $this->Html->link(__('Edit'), ['action' => 'edit', $category->categories_id]) ?>
-                    <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $category->categories_id], ['confirm' => __('Are you sure you want to delete # {0}?', $category->categories_id)]) ?>
+                    <?= $this->Html->link(__('編集'), ['action' => 'edit', $category->categories_id]) ?>
+                    <?= $this->Form->postLink(__('削除'), ['action' => 'delete', $category->categories_id], ['confirm' => __('Are you sure you want to delete # {0}?', $category->categories_id)]) ?>
                 </td>
             </tr>
             <?php endforeach; ?>

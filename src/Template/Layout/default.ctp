@@ -26,8 +26,11 @@
 
     <?= $this->Html->css('base.css') ?>
     <?= $this->Html->css('style.css') ?>
+    <?= $this->Html->css('bootstrap.min.css') ?>
     <?= $this->Html->css('jquery-ui.css') ?>
     <?= $this->Html->script('jquery-3.4.1.js') ?>
+    <?= $this->Html->script('popper.js') ?>
+    <?= $this->Html->script('bootstrap.min.js') ?>
     <?= $this->Html->script('jquery-ui.js') ?>
     <?= $this->Html->script('datepicker-ja.js') ?>
     <?= $this->Html->script('pullDown') ?>
@@ -43,31 +46,23 @@
     <?= $this->fetch('script') ?>
 </head>
 <body>
-    <nav class="top-bar expanded" data-topbar role="navigation">
-        <ul class="title-area large-3 medium-4 columns">
-            <li class="name">
-                <h1><a href=""><?= $this->fetch('title') ?></a></h1>
-            </li>
-        </ul>
-        <div class="top-bar-section">
-            <ul class="right">
+<?= $this->Flash->render() ?>
+<header>
+    <?php if($this->getRequest()->getSession()->check("Auth.User.username")): ?>
+        <?= $this->Html->link(__('logout'), ["controller" => "users", 'action' => 'logout'], ["class" => "float-right btn btn-lg ml-md-3 btn-dark"]) ?>
+    <?php endif ?>
+</header>
+<div class="container-fluid">
+    <div class="row mx-auto">
+        <div class="col-md-2">
+            <?= $this->fetch('content') ?>
 <!--
-                <li><a target="_blank" href="https://book.cakephp.org/3.0/">Documentation</a></li>
-                <li><a target="_blank" href="https://api.cakephp.org/3.0/">API</a></li>
--->
-<?php //if($this->request->session()->check("Auth.User.username")): ?>
-<?php if($this->getRequest()->getSession()->check("Auth.User.username")): ?>
-                <li><?= $this->Html->link(__('logout'), ["controller" => "users", 'action' => 'logout']) ?></li>
-<?php endif ?>
-            </ul>
-        </div>
-    </nav>
-    <?= $this->Flash->render() ?>
-    <div class="container clearfix">
-        <?= $this->fetch('content') ?>
+fetch(content)内でdiv閉じてる
     </div>
-    <footer>
-        <p>ログインID: <?= $this->getRequest()->getSession()->read("Auth.User.username") ?></p>
-    </footer>
+</div>
+-->
+<footer>
+    <p>ログインID: <?= $this->getRequest()->getSession()->read("Auth.User.username") ?></p>
+</footer>
 </body>
 </html>

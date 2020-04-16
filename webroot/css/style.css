@@ -1,3 +1,4 @@
+/*
 .disabled a,
 a.disabled {
     pointer-events: none;
@@ -19,15 +20,6 @@ a {
     color: #15848F;
 }
 
-header {
-    background-color: #D33C44;
-    color: #ffffff;
-    font-size: 30px;
-    height: 84px;
-    line-height: 64px;
-    padding: 16px 0px;
-    box-shadow: 0px 1px rgba(0, 0, 0, 0.24);
-}
 
 header .header-title {
     padding-left:80px
@@ -37,9 +29,6 @@ legend {
     color:#15848F;
 }
 
-.row {
-    max-width: 80rem;
-}
 
 .actions.columns {
     margin-top:1rem;
@@ -87,33 +76,6 @@ legend {
     color: #fff;
 }
 
-ul.pagination li a {
-    color: rgba(0, 0 ,0 , 0.54);
-}
-
-ul.pagination li.active a {
-    background-color: #DCE47E;
-    color: #FFF;
-    font-weight: bold;
-    cursor: default;
-}
-ul.pagination .disabled:hover a {
-    background: none;
-}
-
-.paginator {
-    text-align: center;
-}
-
-.paginator ul.pagination li {
-    float: none;
-    display: inline-block;
-}
-
-.paginator p {
-    text-align: right;
-    color: rgba(0, 0 ,0 , 0.54);
-}
 
 .asc:after {
     content: " \2193";
@@ -212,7 +174,6 @@ input[type=radio] {
     border-bottom: 1px solid #eee;
 }
 
-/** Notices and Errors **/
 .cake-error,
 .cake-debug,
 .notice,
@@ -478,13 +439,11 @@ div.message.hidden {
     padding: 2rem;
 }
 
-/* Use 'one true layout' methods to get equal height columns */
 .container {
     overflow: hidden;
-    min-height: 92%; /* full height almost always */
+    min-height: 92%; 
 }
 
-/* Force equal height by overflowing */
 .content,
 #actions-sidebar {
     margin-bottom: -99999px;
@@ -518,14 +477,64 @@ div.message.hidden {
     border-bottom: 0px;
 }
 
+*/
 table td {
     vertical-align: top;
     word-break: break-all;
+}
+header {
+    background-color: black;
+    color: #ffffff;
+    font-size: 30px;
+    height: 84px;
+    line-height: 64px;
+    padding: 16px 10px;
+    margin-bottom: 15px;
+    box-shadow: 0px 1px rgba(0, 0, 0, 0.24);
+}
+
+ul.pagination li a {
+    color: rgba(0, 0 ,0 , 0.54);
+}
+
+ul.pagination li.active a {
+    background-color: #DCE47E;
+    color: #FFF;
+    font-weight: bold;
+    cursor: default;
+}
+ul.pagination .disabled:hover a {
+    background: none;
+}
+
+.paginator {
+    text-align: center;
+}
+
+.paginator ul.pagination li {
+    float: none;
+    display: inline-block;
+}
+
+.paginator p {
+    text-align: right;
+    color: rgba(0, 0 ,0 , 0.54);
 }
 
 .node{
   display: none;
 }
+
+.row {
+    max-width: 90rem;
+}
+
+/*
+th
+{
+    font-size: 10px;
+}
+*/
 /*
 .choiceContent{
   display: none;

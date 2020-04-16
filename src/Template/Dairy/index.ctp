@@ -11,6 +11,8 @@
     <li><?= $this->Html->link(__('ユーザ一覧'), ['controller' => 'Users', 'action' => 'index']) ?></li>
   </ul>
 <!--説明-->
+  <p style="color: red;">メッセージボードに「閲覧権限」を追加しました。</p>
+  <p style="color: red;">ファイルダウンロード時の文字化けを解消しました。</p>
   <p>日誌的なページ</p>
   <p>最終的には</p>
   <ul>
@@ -24,6 +26,7 @@
     <li>班内アナウンス</li>
   </ul>
   <p>を表示予定</p>
+  </br>
 </nav>
 
 <div class="schedules index large-9 medium-8 columns content">

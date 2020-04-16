@@ -7,30 +7,29 @@
 <nav class="large-3 medium-4 columns" id="actions-sidebar">
     <ul class="side-nav">
         <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Html->link(__('New Status'), ['action' => 'add']) ?></li>
+        <li><?= $this->Html->link(__('ステータス追加'), ["controller" => "Statuses", 'action' => 'add']) ?></li>
+        <li><?= $this->Html->link(__('戻る'), ["controller" => "CrewSends", 'action' => 'index']) ?></li>
+        <li><?= $this->Html->link(__('TOPに戻る'), ["controller" => "Dairy", 'action' => 'index']) ?></li>
     </ul>
 </nav>
 <div class="statuses index large-9 medium-8 columns content">
-    <h3><?= __('Statuses') ?></h3>
+    <h3><?= __('ステータス') ?></h3>
     <table cellpadding="0" cellspacing="0">
         <thead>
             <tr>
-                <th scope="col"><?= $this->Paginator->sort('statuses_id') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('status') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('status_sort_number') ?></th>
+                <th scope="col"><?= $this->Paginator->sort('status', "ステータス") ?></th>
+                <th scope="col"><?= $this->Paginator->sort('status_sort_number', "ソート番号") ?></th>
                 <th scope="col" class="actions"><?= __('Actions') ?></th>
             </tr>
         </thead>
         <tbody>
             <?php foreach ($statuses as $status): ?>
             <tr>
-                <td><?= $this->Number->format($status->statuses_id) ?></td>
                 <td><?= h($status->status) ?></td>
                 <td><?= $this->Number->format($status->status_sort_number) ?></td>
                 <td class="actions">
-                    <?= $this->Html->link(__('View'), ['action' => 'view', $status->statuses_id]) ?>
-                    <?= $this->Html->link(__('Edit'), ['action' => 'edit', $status->statuses_id]) ?>
-                    <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $status->statuses_id], ['confirm' => __('Are you sure you want to delete # {0}?', $status->statuses_id)]) ?>
+                    <?= $this->Html->link(__('編集'), ['action' => 'edit', $status->statuses_id]) ?>
+                    <?= $this->Form->postLink(__('削除'), ['action' => 'delete', $status->statuses_id], ['confirm' => __('Are you sure you want to delete # {0}?', $status->statuses_id)]) ?>
                 </td>
             </tr>
             <?php endforeach; ?>
