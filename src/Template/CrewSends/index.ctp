@@ -33,7 +33,8 @@ default.ctp
             <?php elseif($close == "close"): ?>
                 <p><?= $this->Form->postLink(__('ステータス「クローズ」表示'), ['action' => 'closeOpen']) ?></p>
             <?php endif ?>
-            <div class="bg-info row">
+            <!--
+            <div class="row">
                 <p class="col-md-3 text-center px-0">インシデントID</p>
                 <p class="col-md-1 text-center px-0">カテゴリー<p/>
                 <p class="col-md-3 text-center px-0">タイトル</p>
@@ -42,21 +43,20 @@ default.ctp
                 <p class="col-md-2 text-center px-0">期限</p>
                 <p class="col-md-1 text-center px-0">編集・削除</p>
             </div>
-<!--
-            <table class="table bg-info row">
+-->
+            <table class="table">
                 <thead>
                     <tr>
-                        <th class="col-md-3 text-center"><?= $this->Paginator->sort('incident_managements_id', "インシデントID") ?></th>
+                        <th class="col-md-2 text-center"><?= $this->Paginator->sort('incident_managements_id', "インシデントID") ?></th>
                         <th class="col-md-1 text-center"><?= $this->Paginator->sort('categories_id', "カテゴリー") ?></th>
                         <th class="col-md-3 text-center"><?= $this->Paginator->sort('title', "タイトル") ?></th>
                         <th class="col-md-1 text-center"><?= $this->Paginator->sort('statuses_id', "ステータス") ?></th>
-                        <th class="col-md-1 text-center"><?= $this->Paginator->sort('users_id', "作成者") ?></th>
+                        <th class="col-md-2 text-center"><?= $this->Paginator->sort('users_id', "作成者") ?></th>
                         <th class="col-md-2 text-center"><?= $this->Paginator->sort('period', "期限") ?></th>
                         <th class="col-md-1 text-center"><?= __('編集・削除') ?></th>
                     </tr>
                 </thead>
             </table>
--->
             <?php foreach ($crewSends as $crewSend): ?>
                 <table class="branch border-bottom table">
                     <tbody>
