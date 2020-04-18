@@ -1,15 +1,21 @@
 <?php 
     $this->assign("title", "日誌"); 
 ?>
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-  <ul class="side-nav">
-    <li class="heading"><?= __('Actions') ?></li>
-    <li><?= $this->Html->link(__('サイバー攻撃等'), ['controller' => 'RiskDetections', 'action' => 'index']) ?></li>
-    <li><?= $this->Html->link(__('クルー申し送り'), ["controller" => "CrewSends", 'action' => 'index']) ?></li>
-    <li><?= $this->Html->link(__('メッセージボード'), ['controller' => 'MessageBords', 'action' => 'index']) ?></li>
-    <li><?= $this->Html->link(__('勤務者入力'), ['controller' => 'Workers', 'action' => 'add']) ?></li>
-    <li><?= $this->Html->link(__('ユーザ一覧'), ['controller' => 'Users', 'action' => 'index']) ?></li>
-  </ul>
+<!--
+default.ctp
+<div class="container-fluid">
+    <div class="row mx-auto">
+        <div class="col-md-2">
+-->
+            <nav>
+                <div class="list-group">
+                    <?= $this->Html->link(__('新規作成'), ['action' => 'add'], ["class" => "list-group-item list-group-item-action list-group-item-info"]) ?>
+                    <?= $this->Html->link(__('カテゴリー'), ['controller' => 'Categories', 'action' => 'index'], ["class" => "list-group-item list-group-item-action list-group-item-info"]) ?>
+                    <?= $this->Html->link(__('ステータス'), ['controller' => 'Statuses', 'action' => 'index'], ["class" => "list-group-item list-group-item-action list-group-item-info"]) ?>
+                    <?= $this->Html->link(__('TOP'), ["controller" => "Dairy", 'action' => 'index'], ["class" => "list-group-item list-group-item-action list-group-item-info"]) ?>
+                    <?= $this->Html->link(__('サイバー攻撃等'), ["controller" => "RiskDetections", 'action' => 'index'], ["class" => "list-group-item list-group-item-action list-group-item-info"]) ?>
+                    <?= $this->Html->link(__('メッセージボード'), ["controller" => "MessageBords", 'action' => 'index'], ["class" => "list-group-item list-group-item-action list-group-item-info"]) ?>
+                </div>
 <!--説明-->
   <p style="color: red;">メッセージボードに「閲覧権限」を追加しました。</p>
   <p style="color: red;">ファイルダウンロード時の文字化けを解消しました。</p>

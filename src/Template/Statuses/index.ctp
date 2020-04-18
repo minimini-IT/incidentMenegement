@@ -1,40 +1,49 @@
-<?php
-/**
- * @var \App\View\AppView $this
- * @var \App\Model\Entity\Status[]|\Cake\Collection\CollectionInterface $statuses
- */
-?>
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Html->link(__('ステータス追加'), ["controller" => "Statuses", 'action' => 'add']) ?></li>
-        <li><?= $this->Html->link(__('戻る'), ["controller" => "CrewSends", 'action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('TOPに戻る'), ["controller" => "Dairy", 'action' => 'index']) ?></li>
-    </ul>
-</nav>
-<div class="statuses index large-9 medium-8 columns content">
-    <h3><?= __('ステータス') ?></h3>
-    <table cellpadding="0" cellspacing="0">
-        <thead>
-            <tr>
-                <th scope="col"><?= $this->Paginator->sort('status', "ステータス") ?></th>
-                <th scope="col"><?= $this->Paginator->sort('status_sort_number', "ソート番号") ?></th>
-                <th scope="col" class="actions"><?= __('Actions') ?></th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($statuses as $status): ?>
-            <tr>
-                <td><?= h($status->status) ?></td>
-                <td><?= $this->Number->format($status->status_sort_number) ?></td>
-                <td class="actions">
-                    <?= $this->Html->link(__('編集'), ['action' => 'edit', $status->statuses_id]) ?>
-                    <?= $this->Form->postLink(__('削除'), ['action' => 'delete', $status->statuses_id], ['confirm' => __('Are you sure you want to delete # {0}?', $status->statuses_id)]) ?>
-                </td>
-            </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
+<!--
+default.ctp
+<div class="container-fluid">
+    <div class="row mx-auto">
+        <div class="col-md-2">
+-->
+            <nav>
+                <div class="list-group">
+                    <?= $this->Html->link(__('新規作成'), ['controller' => 'Statuses', 'action' => 'add'], ["class" => "list-group-item list-group-item-action list-group-item-info"]) ?>
+                    <?= $this->Html->link(__('カテゴリー'), ['controller' => 'Categories', 'action' => 'index'], ["class" => "list-group-item list-group-item-action list-group-item-info"]) ?>
+                    <?= $this->Html->link(__('TOP'), ["controller" => "Dairy", 'action' => 'index'], ["class" => "list-group-item list-group-item-action list-group-item-info"]) ?>
+                    <?= $this->Html->link(__('サイバー攻撃等'), ["controller" => "RiskDetections", 'action' => 'index'], ["class" => "list-group-item list-group-item-action list-group-item-info"]) ?>
+                    <?= $this->Html->link(__('クルー申し送り'), ["controller" => "CrewSends", 'action' => 'index'], ["class" => "list-group-item list-group-item-action list-group-item-info"]) ?>
+                    <?= $this->Html->link(__('メッセージボード'), ["controller" => "MessageBords", 'action' => 'index'], ["class" => "list-group-item list-group-item-action list-group-item-info"]) ?>
+                </div>
+            </nav>
+        </div>
+        <div class="col-md-10">
+            <h3 class="my-4"><?= __('ステータス') ?></h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <td class="col-md-1 border-top-0"></td>
+                        <th class="col-md-3 text-left border-top-0">ステータス</th>
+                        <th class="col-md-3 text-left border-top-0">ソート番号</th>
+                        <th class="col-md-3 text-center border-top-0">Actions</th>
+                        <td class="col-md-2 border-top-0"></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($statuses as $status): ?>
+                    <tr>
+                        <td class="col-md-1 border-top-0"></td>
+                        <td class="col-md-3 text-left border-top-0"><?= h($status->status) ?></td>
+                        <td class="col-md-3 text-left border-top-0"><?= $this->Number->format($status->status_sort_number) ?></td>
+                        <td class="col-md-3 text-center border-top-0">
+                            <?= $this->Html->link(__('編集'), ['action' => 'edit', $status->statuses_id]) ?>
+                            <?= $this->Form->postLink(__('削除'), ['action' => 'delete', $status->statuses_id], ['confirm' => __('Are you sure you want to delete # {0}?', $status->statuses_id)]) ?>
+                        </td>
+                        <td class="col-md-2 border-top-0"></td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
     <div class="paginator">
         <ul class="pagination">
             <?= $this->Paginator->first('<< ' . __('first')) ?>

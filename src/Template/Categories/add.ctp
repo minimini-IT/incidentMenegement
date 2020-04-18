@@ -1,25 +1,34 @@
-<?php
-/**
- * @var \App\View\AppView $this
- * @var \App\Model\Entity\Category $category
- */
-?>
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Html->link(__('戻る'), ["controller" => "CrewSends", 'action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('TOPへ'), ['controller' => 'Dairy', 'action' => 'index']) ?></li>
-    </ul>
-</nav>
-<div class="categories form large-9 medium-8 columns content">
-    <?= $this->Form->create($category) ?>
-    <fieldset>
-        <legend><?= __('カテゴリー追加') ?></legend>
-        <?php
-            echo $this->Form->control('category', ["label" => "カテゴリー"]);
-            echo $this->Form->control('category_sort_number', ["label" => "ソート番号"]);
-        ?>
-    </fieldset>
-    <?= $this->Form->button(__('Submit')) ?>
-    <?= $this->Form->end() ?>
+<!--
+default.ctp
+<div class="container-fluid">
+    <div class="row mx-auto">
+        <div class="col-md-2">
+-->
+            <nav>
+                <div class="list-group">
+                    <?= $this->Html->link(__('カテゴリー'), ['controller' => 'Categories', 'action' => 'index'], ["class" => "list-group-item list-group-item-action list-group-item-info"]) ?>
+                    <?= $this->Html->link(__('ステータス'), ['controller' => 'Statuses', 'action' => 'index'], ["class" => "list-group-item list-group-item-action list-group-item-info"]) ?>
+                    <?= $this->Html->link(__('TOP'), ["controller" => "Dairy", 'action' => 'index'], ["class" => "list-group-item list-group-item-action list-group-item-info"]) ?>
+                    <?= $this->Html->link(__('サイバー攻撃等'), ["controller" => "RiskDetections", 'action' => 'index'], ["class" => "list-group-item list-group-item-action list-group-item-info"]) ?>
+                    <?= $this->Html->link(__('クルー申し送り'), ["controller" => "CrewSends", 'action' => 'index'], ["class" => "list-group-item list-group-item-action list-group-item-info"]) ?>
+                    <?= $this->Html->link(__('メッセージボード'), ["controller" => "MessageBords", 'action' => 'index'], ["class" => "list-group-item list-group-item-action list-group-item-info"]) ?>
+                </div>
+            </nav>
+        </div>
+        <div class="col-md-10">
+            <h3 class="my-4"><?= __('カテゴリー追加') ?></h3>
+            <?= $this->Form->create($category) ?>
+                <?php
+                    echo "<div class='row'><div class='col-md-1'></div><div class='col-md-8'>";
+                    echo "<div class='mt-4'>";
+                    echo $this->Form->control('category', ["label" => "カテゴリー", "class" => "form-control"]);
+                    echo "</div><div class='mt-4'>";
+                    echo $this->Form->control('category_sort_number', ["label" => "ソート番号", "min" => 0, "class" => "form-control"]);
+                    echo "</div><div class='mt-4'>";
+                    echo $this->Form->button('送信', ["class" => "btn btn-info float-right"]);
+                    echo "</div><div class='col-md-3'></div></div></div>";
+                ?>
+            <?= $this->Form->end() ?>
+        </div>
+    </div>
 </div>

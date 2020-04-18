@@ -49,7 +49,7 @@
 <?= $this->Flash->render() ?>
 <header>
     <?php if($this->getRequest()->getSession()->check("Auth.User.username")): ?>
-        <?= $this->Html->link(__('logout'), ["controller" => "users", 'action' => 'logout'], ["class" => "float-right btn btn-lg ml-md-3 btn-dark"]) ?>
+        <?= $this->Html->link(__('logout'), ["controller" => "users", 'action' => 'logout'], ["class" => "float-right btn ml-md-3 btn-dark"]) ?>
     <?php endif ?>
 </header>
 <div class="container-fluid">

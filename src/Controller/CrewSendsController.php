@@ -35,8 +35,13 @@ class CrewSendsController extends AppController
                 "Users",
                 "Files", 
                 "IncidentManagements.ManagementPrefixes",
+                "CrewSendComments" => [
+                    "sort" => [
+                        "crew_send_comments_id" => "desc"
+                    ]
+                ],
                 "CrewSendComments.Users", 
-                "CrewSendComments.CommentFiles"
+                "CrewSendComments.CommentFiles",
             ],
             "limit" => 5,
             "order" => ["crew_sends_id" => "desc"]
@@ -53,8 +58,10 @@ class CrewSendsController extends AppController
         {
             $crewSends = $this->paginate($this->CrewSends);
         }
+
         $users = $this->CrewSends->Users->find('list', ['limit' => 200])
             ->where(["delete_flag" => 0]);
+
         $this->set(compact('crewSends', "users", "crewSendComment", "close"));
     }
 
@@ -81,6 +88,7 @@ class CrewSendsController extends AppController
      */
     public function add()
     {
+        $loginUser = $this->getRequest()->getSession()->read("Auth.User.users_id");
       $crewSend = $this->CrewSends->newEntity();
       if ($this->request->is('post', "patch", "put")) {
         $this->Fileupload = $this->loadComponent("Fileupload");
@@ -129,8 +137,10 @@ class CrewSendsController extends AppController
       $statuses = $this->CrewSends->Statuses->find('list', ['limit' => 200])
           ->order(["status_sort_number" => "asc"]);
       $users = $this->CrewSends->Users->find('list', ['limit' => 200])
+          ->where(["users_id !=" => 7])
+          //->where(["users_id !=" => 45])
           ->where(["delete_flag" => 0]);
-      $this->set(compact('crewSend', 'categories', 'statuses', 'users', "file_upload"));
+      $this->set(compact('crewSend', 'categories', 'statuses', 'users', "file_upload", "loginUser"));
     }
     
     /**

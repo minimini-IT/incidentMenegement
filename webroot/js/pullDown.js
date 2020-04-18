@@ -25,6 +25,14 @@ $(function(){
     //詳細の表示非表示
     $('.branch tr:nth-child(1)').click(function(){
         $(this).parents("table").next(".node").slideToggle();
+        if($(this).children("td").hasClass("text-success"))
+        {
+            $(this).children("td").removeClass("text-success");
+        }
+        else
+        {
+            $(this).children("td").addClass("text-success");
+        }
     });
     
     //選択肢必要分表示

@@ -486,7 +486,7 @@ header {
     background-color: black;
     color: #ffffff;
     font-size: 30px;
-    height: 84px;
+    height: 60px;
     line-height: 64px;
     padding: 16px 10px;
     margin-bottom: 15px;
@@ -529,12 +529,12 @@ ul.pagination .disabled:hover a {
     max-width: 90rem;
 }
 
-/*
-th
+
+th, td
 {
-    font-size: 10px;
+    font-size: 0.9rem;
 }
-*/
+
 /*
 .choiceContent{
   display: none;
