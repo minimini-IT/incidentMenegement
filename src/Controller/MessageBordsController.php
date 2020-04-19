@@ -42,7 +42,7 @@ class MessageBordsController extends AppController
         //$loginUser = $this->request->session()->read("Auth.User.users_id");
         $loginUser = $this->getRequest()->getSession()->read("Auth.User.users_id");
         $privateMessages = $this->PrivateMessages->find("all")
-            ->where(["OR" => [["PrivateMessages.users_id" => $loginUser], ["PrivateMessages.users_id" => 7]]]);
+            ->where(["OR" => [["PrivateMessages.users_id" => $loginUser], ["PrivateMessages.users_id" => 14]]]);
         $messageBords = $this->paginate($privateMessages);
         $normalUsers = $this->Users->find('list', ['limit' => 200])
             ->where(["delete_flag" => 0])
@@ -222,39 +222,39 @@ class MessageBordsController extends AppController
         //各班ごとでユーザ取得
         $soukatu = $this->Users->find("list", ["limit" => 200])
             ->where(["belongs_id" => 1])
-            ->where(["users_id !=" => 7])
+            ->where(["users_id !=" => 14])
             ->where(["users_id !=" => $loginUser])
             ->where(["delete_flag" => 0]);
         $kenkyo = $this->Users->find("list", ["limit" => 200])
             ->where(["belongs_id" => 2])
-            ->where(["users_id !=" => 7])
+            ->where(["users_id !=" => 14])
             ->where(["users_id !=" => $loginUser])
             ->where(["delete_flag" => 0]);
         $system = $this->Users->find("list", ["limit" => 200])
             ->where(["belongs_id" => 3])
-            ->where(["users_id !=" => 7])
+            ->where(["users_id !=" => 14])
             ->where(["users_id !=" => $loginUser])
             ->where(["delete_flag" => 0]);
         $kintai = $this->Users->find("list", ["limit" => 200])
             ->where(["belongs_id" => 4])
-            ->where(["users_id !=" => 7])
+            ->where(["users_id !=" => 14])
             ->where(["users_id !=" => $loginUser])
             ->where(["delete_flag" => 0]);
 
         $allUser = $this->Users->find("list", ["limit" => 200])
-            ->where(["users_id" => 7]);
+            ->where(["users_id" => 14]);
 
 
         $users = $this->Users->find('list', ['limit' => 200])
             ->order(["user_sort_number" => "asc"])
-            ->where(["users_id !=" => 7])
+            ->where(["users_id !=" => 14])
             ->where(["delete_flag" => 0]);
 
         $createUser = $this->Users->find("list", ["limit" => 200])
             ->where(["users_id" => $loginUser]);
 
         //$this->set(compact('messageBord', 'messageStatuses', "users", "allUser", "soukatu", "kenkyo", "system", "kintai", "createUser"));
-        $this->set(compact('messageBord', 'messageStatuses', "allUser", "soukatu", "kenkyo", "system", "kintai", "createUser"));
+        $this->set(compact('messageBord', 'messageStatuses', "allUser", "soukatu", "kenkyo", "system", "kintai", "createUser", "loginUser"));
     }
 
     public function chronoloAdd()
@@ -341,29 +341,29 @@ class MessageBordsController extends AppController
         //各班ごとでユーザ取得
         $soukatu = $this->Users->find("list", ["limit" => 200])
             ->where(["belongs_id" => 1])
-            ->where(["users_id !=" => 7])
+            ->where(["users_id !=" => 14])
             ->where(["users_id !=" => $loginUser])
             ->where(["delete_flag" => 0]);
         $kenkyo = $this->Users->find("list", ["limit" => 200])
             ->where(["belongs_id" => 2])
-            ->where(["users_id !=" => 7])
+            ->where(["users_id !=" => 14])
             ->where(["users_id !=" => $loginUser])
             ->where(["delete_flag" => 0]);
         $system = $this->Users->find("list", ["limit" => 200])
             ->where(["belongs_id" => 3])
-            ->where(["users_id !=" => 7])
+            ->where(["users_id !=" => 14])
             ->where(["users_id !=" => $loginUser])
             ->where(["delete_flag" => 0]);
         $kintai = $this->Users->find("list", ["limit" => 200])
             ->where(["belongs_id" => 4])
-            ->where(["users_id !=" => 7])
+            ->where(["users_id !=" => 14])
             ->where(["users_id !=" => $loginUser])
             ->where(["delete_flag" => 0]);
         $allUser = $this->Users->find("list", ["limit" => 200])
-            ->where(["users_id" => 7]);
+            ->where(["users_id" => 14]);
         $users = $this->Users->find('list', ['limit' => 200])
             ->order(["user_sort_number" => "asc"])
-            ->where(["users_id !=" => 7])
+            ->where(["users_id !=" => 14])
             ->where(["delete_flag" => 0]);
         $createUser = $this->Users->find("list", ["limit" => 200])
             ->where(["users_id" => $loginUser]);
@@ -394,7 +394,7 @@ class MessageBordsController extends AppController
                     $allCheck = $this->PrivateMessages->find("list", ["list" => 200])
                         ->select(["users_id"])
                         ->where(["message_bords_id" => $id])
-                        ->where(["users_id" => 7]);
+                        ->where(["users_id" => 14]);
 
                     //privateMessage保存
                     if(!empty($data["allUser"][0]))
@@ -539,22 +539,22 @@ class MessageBordsController extends AppController
         //private用
         $privateSoukatu = $this->Users->find("list", ["limit" => 200])
             ->where(["belongs_id" => 1])
-            ->where(["users_id !=" => 7])
+            ->where(["users_id !=" => 14])
             ->where(["users_id !=" => $entity])
             ->where(["delete_flag" => 0]);
         $privateKenkyo = $this->Users->find("list", ["limit" => 200])
             ->where(["belongs_id" => 2])
-            ->where(["users_id !=" => 7])
+            ->where(["users_id !=" => 14])
             ->where(["users_id !=" => $entity])
             ->where(["delete_flag" => 0]);
         $privateSystem = $this->Users->find("list", ["limit" => 200])
             ->where(["belongs_id" => 3])
-            ->where(["users_id !=" => 7])
+            ->where(["users_id !=" => 14])
             ->where(["users_id !=" => $entity])
             ->where(["delete_flag" => 0]);
         $privateKintai = $this->Users->find("list", ["limit" => 200])
             ->where(["belongs_id" => 4])
-            ->where(["users_id !=" => 7])
+            ->where(["users_id !=" => 14])
             ->where(["users_id !=" => $entity])
             ->where(["delete_flag" => 0]);
 
@@ -589,22 +589,22 @@ class MessageBordsController extends AppController
         //destination用
         $destinationSoukatu = $this->Users->find("list", ["limit" => 200])
             ->where(["belongs_id" => 1])
-            ->where(["users_id !=" => 7])
+            ->where(["users_id !=" => 14])
             ->where(["users_id !=" => $loginUser])
             ->where(["delete_flag" => 0]);
         $destinationKenkyo = $this->Users->find("list", ["limit" => 200])
             ->where(["belongs_id" => 2])
-            ->where(["users_id !=" => 7])
+            ->where(["users_id !=" => 14])
             ->where(["users_id !=" => $loginUser])
             ->where(["delete_flag" => 0]);
         $destinationSystem = $this->Users->find("list", ["limit" => 200])
             ->where(["belongs_id" => 3])
-            ->where(["users_id !=" => 7])
+            ->where(["users_id !=" => 14])
             ->where(["users_id !=" => $loginUser])
             ->where(["delete_flag" => 0]);
         $destinationKintai = $this->Users->find("list", ["limit" => 200])
             ->where(["belongs_id" => 4])
-            ->where(["users_id !=" => 7])
+            ->where(["users_id !=" => 14])
             ->where(["users_id !=" => $loginUser])
             ->where(["delete_flag" => 0]);
 
@@ -630,11 +630,11 @@ class MessageBordsController extends AppController
 
         $users = $this->Users->find('list', ['limit' => 200])
             ->order(["user_sort_number" => "asc"])
-            ->where(["users_id !=" => 7])
+            ->where(["users_id !=" => 14])
             ->where(["delete_flag" => 0]);
 
         $allUser = $this->Users->find("list", ["limit" => 200])
-            ->where(["users_id" => 7]);
+            ->where(["users_id" => 14]);
 
         $createUser = $messageBord->users_id;
 
@@ -688,7 +688,7 @@ class MessageBordsController extends AppController
                     $allCheck = $this->PrivateMessages->find("list", ["list" => 200])
                         ->select(["users_id"])
                         ->where(["message_bords_id" => $id])
-                        ->where(["users_id" => 7]);
+                        ->where(["users_id" => 14]);
                     //$this->log("---allCheck->toArray() ---", LOG_DEBUG);
                     //$this->log($allCheck->toArray(), LOG_DEBUG);
 
@@ -790,22 +790,22 @@ class MessageBordsController extends AppController
         //private用
         $privateSoukatu = $this->Users->find("list", ["limit" => 200])
             ->where(["belongs_id" => 1])
-            ->where(["users_id !=" => 7])
+            ->where(["users_id !=" => 14])
             ->where(["users_id !=" => $entity])
             ->where(["delete_flag" => 0]);
         $privateKenkyo = $this->Users->find("list", ["limit" => 200])
             ->where(["belongs_id" => 2])
-            ->where(["users_id !=" => 7])
+            ->where(["users_id !=" => 14])
             ->where(["users_id !=" => $entity])
             ->where(["delete_flag" => 0]);
         $privateSystem = $this->Users->find("list", ["limit" => 200])
             ->where(["belongs_id" => 3])
-            ->where(["users_id !=" => 7])
+            ->where(["users_id !=" => 14])
             ->where(["users_id !=" => $entity])
             ->where(["delete_flag" => 0]);
         $privateKintai = $this->Users->find("list", ["limit" => 200])
             ->where(["belongs_id" => 4])
-            ->where(["users_id !=" => 7])
+            ->where(["users_id !=" => 14])
             ->where(["users_id !=" => $entity])
             ->where(["delete_flag" => 0]);
 
@@ -833,11 +833,11 @@ class MessageBordsController extends AppController
 
         $users = $this->Users->find('list', ['limit' => 200])
             ->order(["user_sort_number" => "asc"])
-            ->where(["users_id !=" => 7])
+            ->where(["users_id !=" => 14])
             ->where(["delete_flag" => 0]);
 
         $allUser = $this->Users->find("list", ["limit" => 200])
-            ->where(["users_id" => 7]);
+            ->where(["users_id" => 14]);
 
         $createUser = $messageBord->users_id;
 

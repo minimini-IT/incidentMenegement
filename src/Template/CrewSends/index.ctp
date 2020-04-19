@@ -1,5 +1,6 @@
 <?php
 use Cake\datasource\ConnectionManager;
+$sideberClass = "list-group-item list-group-item-action list-group-item-info";
 ?>
 <!--
 default.ctp
@@ -9,22 +10,13 @@ default.ctp
 -->
             <nav>
                 <div class="list-group">
-                    <?= $this->Html->link(__('新規作成'), ['action' => 'add'], ["class" => "list-group-item list-group-item-action list-group-item-info"]) ?>
-                    <?= $this->Html->link(__('カテゴリー'), ['controller' => 'Categories', 'action' => 'index'], ["class" => "list-group-item list-group-item-action list-group-item-info"]) ?>
-                    <?= $this->Html->link(__('ステータス'), ['controller' => 'Statuses', 'action' => 'index'], ["class" => "list-group-item list-group-item-action list-group-item-info"]) ?>
-                    <?= $this->Html->link(__('TOP'), ["controller" => "Dairy", 'action' => 'index'], ["class" => "list-group-item list-group-item-action list-group-item-info"]) ?>
-                    <?= $this->Html->link(__('サイバー攻撃等'), ["controller" => "RiskDetections", 'action' => 'index'], ["class" => "list-group-item list-group-item-action list-group-item-info"]) ?>
-                    <?= $this->Html->link(__('メッセージボード'), ["controller" => "MessageBords", 'action' => 'index'], ["class" => "list-group-item list-group-item-action list-group-item-info"]) ?>
+                    <?= $this->Html->link(__('新規作成'), ['action' => 'add'], ["class" => $sideberClass]) ?>
+                    <?= $this->Html->link(__('カテゴリー'), ['controller' => 'Categories', 'action' => 'index'], ["class" => $sideberClass]) ?>
+                    <?= $this->Html->link(__('ステータス'), ['controller' => 'Statuses', 'action' => 'index'], ["class" => $sideberClass]) ?>
+                    <?= $this->Html->link(__('TOP'), ["controller" => "Dairy", 'action' => 'index'], ["class" => $sideberClass]) ?>
+                    <?= $this->Html->link(__('サイバー攻撃等'), ["controller" => "RiskDetections", 'action' => 'index'], ["class" => $sideberClass]) ?>
+                    <?= $this->Html->link(__('メッセージボード'), ["controller" => "MessageBords", 'action' => 'index'], ["class" => $sideberClass]) ?>
                 </div>
-<!--
-            <ul>
-                <li><?= __('Actions') ?></li>
-                <li><?= $this->Html->link(__('新規作成'), ['action' => 'add']) ?></li>
-                <li><?= $this->Html->link(__('カテゴリー'), ['controller' => 'Categories', 'action' => 'index']) ?></li>
-                <li><?= $this->Html->link(__('ステータス'), ['controller' => 'Statuses', 'action' => 'index']) ?></li>
-                <li><?= $this->Html->link(__('TOPへ戻る'), ['controller' => 'Dairy', 'action' => 'index']) ?></li>
-            </ul>
--->
                 <p>申し送り事項のページ</p>
                 <p>行をクリックすると詳細が表示される</p>
                 <p>詳細からその申し送りに対してコメントを作成できる</p>
@@ -40,34 +32,23 @@ default.ctp
             <?php elseif($close == "close"): ?>
                 <p><?= $this->Form->postLink(__('ステータス「クローズ」表示'), ['action' => 'closeOpen']) ?></p>
             <?php endif ?>
-            <!--
-            <div class="row">
-                <p class="col-md-3 text-center px-0">インシデントID</p>
-                <p class="col-md-1 text-center px-0">カテゴリー<p/>
-                <p class="col-md-3 text-center px-0">タイトル</p>
-                <p class="col-md-1 text-center px-0">ステータス</p>
-                <p class="col-md-1 text-center px-0">作成者</p>
-                <p class="col-md-2 text-center px-0">期限</p>
-                <p class="col-md-1 text-center px-0">編集・削除</p>
-            </div>
--->
             <table class="table">
                 <thead>
-                    <tr>
-                        <th class="col-md-2 text-center border-top-0"><?= __("インシデントID") ?></th>
-                        <th class="col-md-2 text-center border-top-0"><?= __("作成者") ?></th>
-                        <th class="col-md-4 text-center border-top-0"><?= __("タイトル") ?></th>
-                        <th class="col-md-1 text-center border-top-0"><?= __("カテゴリー") ?></th>
-                        <th class="col-md-1 text-center border-top-0"><?= __("ステータス") ?></th>
-                        <th class="col-md-1 text-center border-top-0"><?= __("期限") ?></th>
-                        <th class="col-md-1 text-center border-top-0"><?= __('編集・削除') ?></th>
+                    <tr class="row">
+                        <th class="col-md-2 col-lg-2 text-center border-top-0"><?= __("インシデントID") ?></th>
+                        <th class="col-md-2 col-lg-2 text-center border-top-0"><?= __("作成者") ?></th>
+                        <th class="col-md-4 col-lg-4 text-center border-top-0"><?= __("タイトル") ?></th>
+                        <th class="col-md-1 col-lg-1 text-center border-top-0"><?= __("カテゴリー") ?></th>
+                        <th class="col-md-1 col-lg-1 text-center border-top-0"><?= __("ステータス") ?></th>
+                        <th class="col-md-1 col-lg-1 text-center border-top-0"><?= __("期限") ?></th>
+                        <th class="col-md-1 col-lg-1 text-center border-top-0"><?= __('編集・削除') ?></th>
                     </tr>
                 </thead>
             </table>
             <?php foreach ($crewSends as $crewSend): ?>
                 <table class="branch border-bottom table">
                     <tbody>
-                        <tr>
+                        <tr class="row">
                             <td class="col-md-2 text-left border-top-0"><?= 
                                 h($crewSend->incident_management->management_prefix->management_prefix) . "-" .  
                                 $crewSend->incident_management->created->format("Ymd") . "-" .  
@@ -78,7 +59,7 @@ default.ctp
                             <td class="col-md-1 text-center border-top-0"><?= $crewSend->category->category ?></td>
                             <td class="col-md-1 text-center border-top-0"><?= $crewSend->status->status ?></td>
                             <td class="col-md-1 text-center border-top-0"><?= h($crewSend->period) ?></td>
-                            <td class="col-md-1 text-center border-top-0 actions">
+                            <td class="col-md-1 text-center border-top-0">
                               <?= $this->Html->link(__('編集'), ['action' => 'edit', $crewSend->crew_sends_id]) ?>
                               <?= $this->Form->postLink(__('削除'), ['action' => 'delete', $crewSend->crew_sends_id], ['confirm' => __('{0} この申し送りを削除してよろしいですか？', $crewSend->title)]) ?>
                             </td>
@@ -114,8 +95,8 @@ default.ctp
           
                     <?php foreach ($crewSend->crew_send_comments as $crewSendComment): ?>
                         <!--<div class="mt-3 row">-->
-                            <table class="table mt-3 border-bottom border-info">
-                                <tr>
+                            <table class="table mt-4 border-bottom border-info">
+                                <tr class="row">
                                     <th class="col-md-4 pl-0 border-top-0 text-info"><?= h($crewSendComment->user->first_name . $crewSendComment->user->last_name) ?></th>
                                     <th class="col-md-3 border-top-0 text-info"><?= h($crewSendComment->created) ?></th>
                                     <td class="col-md-3 border-top-0"></td>
@@ -130,7 +111,7 @@ default.ctp
                             <div class="col-md-9 border-bottom pl-4">
                                 <?= $this->Text->autoparagraph($crewSendComment->comment) ?>
                             </div>
-                            <div class="col-md-3 pr-0">
+                            <div class="col-md-3 border-bottom pr-0">
                                 <?php foreach($crewSendComment->comment_files as $file): ?>
                                     <table>
                                         <tr class="border">

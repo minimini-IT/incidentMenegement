@@ -19,7 +19,7 @@ default.ctp
             <h3 class="my-4"><?= __('カテゴリー') ?></h3>
             <table class="table">
                 <thead>
-                    <tr>
+                    <tr class="row">
                         <td class="col-md-1 border-top-0"></td>
                         <th class="col-md-3 text-left border-top-0">カテゴリー</th>
                         <th class="col-md-3 text-left border-top-0">ソート番号</th>
@@ -29,7 +29,7 @@ default.ctp
                 </thead>
                 <tbody>
                     <?php foreach ($categories as $category): ?>
-                    <tr>
+                    <tr class="row">
                         <td class="col-md-1 border-top-0"></td>
                         <td class="col-md-3 text-left border-top-0"><?= h($category->category) ?></td>
                         <td class="col-md-3 text-left border-top-0"><?= $this->Number->format($category->category_sort_number) ?></td>

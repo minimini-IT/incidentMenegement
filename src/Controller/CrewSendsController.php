@@ -89,58 +89,58 @@ class CrewSendsController extends AppController
     public function add()
     {
         $loginUser = $this->getRequest()->getSession()->read("Auth.User.users_id");
-      $crewSend = $this->CrewSends->newEntity();
-      if ($this->request->is('post', "patch", "put")) {
-        $this->Fileupload = $this->loadComponent("Fileupload");
-        $this->IncidentManagement = $this->loadComponent("IncidentAdd");
-        $data = $this->request->getData();
+        $crewSend = $this->CrewSends->newEntity();
+        if ($this->request->is('post', "patch", "put")) {
+            $this->Fileupload = $this->loadComponent("Fileupload");
+            $this->IncidentManagement = $this->loadComponent("IncidentAdd");
+            $data = $this->request->getData();
 
-        //crewSend save前にincident_managements更新
-        if(is_int($incidentNumber = $this->IncidentManagement->incident_number(4)))
-        {
-            //インシデント番号生成成功したら
-            $data = array_merge($data, ["incident_managements_id" => $incidentNumber]);
-            $crewSend = $this->CrewSends->patchEntity($crewSend, $data);
+            //crewSend save前にincident_managements更新
+            if(is_int($incidentNumber = $this->IncidentManagement->incident_number(4)))
+            {
+                //インシデント番号生成成功したら
+                $data = array_merge($data, ["incident_managements_id" => $incidentNumber]);
+                $crewSend = $this->CrewSends->patchEntity($crewSend, $data);
 
 
-            if ($this->CrewSends->save($crewSend)) {
-                $this->Flash->success(__('The crew send has been saved.'));
-                $id = $crewSend->crew_sends_id;
-                //ファイル有無
-                //crew_sends_idが必要なので、saveしてから
-                if(!empty($data["file"][0]["tmp_name"])){
-                $this->loadModels(["Files"]);
+                if ($this->CrewSends->save($crewSend)) {
+                    $this->Flash->success(__('The crew send has been saved.'));
+                    $id = $crewSend->crew_sends_id;
+                    //ファイル有無
+                    //crew_sends_idが必要なので、saveしてから
+                    if(!empty($data["file"][0]["tmp_name"])){
+                        $this->loadModels(["Files"]);
 
-                    //ファイルアップロード
-                    //default_upload >> entityが返される
-                    $entity = $this->Fileupload->default_upload($data["file"], $id, "crew_sends");
-                    try{
-                        $file = $this->Files->newEntities($entity);
-                        if($this->Files->saveMany($file)) {
-                            $this->Flash->success(__('ファイルのアップロードに成功しました。'));
-                        }else{
-                            $this->Flash->error(__('ファイルのアップロードに失敗しました。'));
+                        //ファイルアップロード
+                        //default_upload >> entityが返される
+                        $entity = $this->Fileupload->default_upload($data["file"], $id, "crew_sends");
+                        try{
+                            $file = $this->Files->newEntities($entity);
+                            if($this->Files->saveMany($file)) {
+                                $this->Flash->success(__('ファイルのアップロードに成功しました。'));
+                            }else{
+                                $this->Flash->error(__('ファイルのアップロードに失敗しました。'));
+                            }
+                        }catch(RuntimeException $e){
+                            $this->Flash->error(__("ファイルのアップロードができませんでした"));
+                            $this->Flash->error(__($e->getMessage()));
                         }
-                    }catch(RuntimeException $e){
-                        $this->Flash->error(__("ファイルのアップロードができませんでした"));
-                        $this->Flash->error(__($e->getMessage()));
                     }
-              }
-              return $this->redirect(['action' => 'index']);
-            }
+                    return $this->redirect(['action' => 'index']);
+                }
 
+            }
+            $this->Flash->error(__('The crew send could not be saved. Please, try again.'));
         }
-        $this->Flash->error(__('The crew send could not be saved. Please, try again.'));
-      }
-      $categories = $this->CrewSends->Categories->find('list', ['limit' => 200])
-          ->order(["category_sort_number" => "asc"]);
-      $statuses = $this->CrewSends->Statuses->find('list', ['limit' => 200])
-          ->order(["status_sort_number" => "asc"]);
-      $users = $this->CrewSends->Users->find('list', ['limit' => 200])
-          ->where(["users_id !=" => 7])
-          //->where(["users_id !=" => 45])
-          ->where(["delete_flag" => 0]);
-      $this->set(compact('crewSend', 'categories', 'statuses', 'users', "file_upload", "loginUser"));
+        $categories = $this->CrewSends->Categories->find('list', ['limit' => 200])
+            ->order(["category_sort_number" => "asc"]);
+        $statuses = $this->CrewSends->Statuses->find('list', ['limit' => 200])
+            ->order(["status_sort_number" => "asc"]);
+        $users = $this->CrewSends->Users->find('list', ['limit' => 200])
+            ->where(["users_id !=" => 7])
+            //->where(["users_id !=" => 45])
+            ->where(["delete_flag" => 0]);
+        $this->set(compact('crewSend', 'categories', 'statuses', 'users', "loginUser"));
     }
     
     /**
