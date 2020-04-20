@@ -27,13 +27,20 @@ default.ctp
                     echo $this->Form->control('title', ["label" => "タイトル", "class" => "form-control"]);
                     echo "</div>";
                     echo "<div class='row mt-4'><div class='col'>";
-                    echo str_replace(";", " ", $this->Form->control('users_id', ["label" => ["text" => "ユーザ", "class" => "w-25"], "type" => "select", "value" => $loginUser, "options" => $users]));
+                    echo str_replace(";", " ", $this->Form->control('users_id', ["label" => ["text" => "ユーザ", "class" => "w-25"], "type" => "select", "value" => $loginUser, "options" => $users, "class" => "form-control"]));
                     echo "</div><div class='col'>";
-                    echo $this->Form->control('categories_id', ["label" => ["text" => "カテゴリー", "class" => "w-25"], 'options' => $categories]);
+                    echo $this->Form->control('categories_id', ["label" => ["text" => "カテゴリー", "class" => "w-25"], 'options' => $categories, "class" => "form-control"]);
                     echo "</div></div><div class='row mt-4'><div class='col'>";
-                    echo $this->Form->control('statuses_id', ["label" => ["text" => "ステータス", "class" => "w-25"], 'options' => $statuses]);
+                    echo $this->Form->control('statuses_id', ["label" => ["text" => "ステータス", "class" => "w-25"], 'options' => $statuses, "class" => "form-control"]);
                     echo "</div><div class='col'>";
-                    echo $this->Form->control('period', ["label" => ["text" => "期　限", "class" => "w-25"]]);
+
+
+                    //あとで要訂正（jsのカレンダー使いたい）
+                    echo $this->Form->control('period', ["label" => ["text" => "期　限", "class" => "w-25"], "select" => ["class" => "form-control"]]);
+
+
+
+
                     echo "</div></div>";
                     echo "<div class='mt-4'>";
                     echo $this->Form->control('comment', ["label" => "コメント", "class" => "form-control"]);

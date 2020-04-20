@@ -87,7 +87,6 @@ class CrewSendsTable extends Table
             ->notEmptyString('title');
 
         $validator
-            //->dateTime('period')
             ->date('period')
             ->allowEmptyDateTime('period');
 

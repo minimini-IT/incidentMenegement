@@ -28,6 +28,12 @@ class DownloadController extends AppController{
       return $response;
   }
 
+  public function bordChronologyFileDownload($id = null){
+    if ($this->request->is(["get"])) {
+      return $this->downloadFile($id, "MessageChronologyFiles", "message_chronology_files");
+    }
+  }
+
   public function bordFileDownload($id = null){
     if ($this->request->is(["get"])) {
       return $this->downloadFile($id, "MessageFiles", "message_files");
@@ -45,4 +51,5 @@ class DownloadController extends AppController{
       return $this->downloadFile($id, "CommentFiles", "comment_files");
     }
   }
+
 }

@@ -535,6 +535,11 @@ th, td
     font-size: 0.9rem;
 }
 
+.no-mb label
+{
+    margin-bottom: 0;
+}
+
 /*
 .choiceContent{
   display: none;

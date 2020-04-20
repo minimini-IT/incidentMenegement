@@ -61,8 +61,10 @@ class CrewSendsController extends AppController
 
         $users = $this->CrewSends->Users->find('list', ['limit' => 200])
             ->where(["delete_flag" => 0]);
+        
+        $loginUser = $this->request->session()->read("Auth.User.users_id");
 
-        $this->set(compact('crewSends', "users", "crewSendComment", "close"));
+        $this->set(compact('crewSends', "users", "crewSendComment", "close", "loginUser"));
     }
 
     /**

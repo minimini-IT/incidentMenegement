@@ -70,13 +70,11 @@ default.ctp
                     <div class="row">
                         <div class="col-md-9 pl-4">
                             <div class="border-bottom"><?= $this->Text->autoparagraph($crewSend->comment) ?></div>
-                            <!--<pre><p><?= h($crewSend->comment) ?></p></pre>-->
                         </div>
 
                         <!-- ファイル -->
                         <div class="col-md-3 pr-0">
                             <table>
-                                <!--実装はtableではなくbootstrapのrowとcolで行う-->
                                 <?php foreach($crewSend->files as $file): ?>
                                     <tr class="border">
                                         <td class="col-md-10">
@@ -130,9 +128,6 @@ default.ctp
                     <?php endforeach ?>
                     <!-- コメント書き込み -->
                     <?php
-                        //ログインしているユーザ
-                        $loginUser = $this->request->session()->read("Auth.User.users_id");
-        
                         echo $this->Form->create($crewSendComment, [
                             "url" => [
                               "controller" => "crew_send_comments",
@@ -141,7 +136,6 @@ default.ctp
                             "class" => "mb-5",
                             "type" => "file"
                         ]); 
-                        //echo "<fieldset>";
                         echo "<div class='row'><div class='col mt-4'>";
                         echo str_replace(";", " ", $this->Form->control('users_id', ["label" => "ユーザ", "value" => $loginUser, "type" => "select", "options" => $users, "class" => "form-control"])); 
                         echo "</div><div class='col'></div><div class='col'></div></div>";
@@ -153,7 +147,6 @@ default.ctp
                         echo "<div class='row'><div class='col mt-4'>";
                         echo $this->Form->file("file[]", ["multiple" => "true", "secure" => false, "class" => "form-control-file"]);
                         echo "</div><div class='col'></div><div class='col'>";
-                        //echo "</fieldset>";
                         echo $this->Form->button('送信', ["class" => "btn btn-info mt-4 float-right"]);
                         echo "</div></div>";
                         echo $this->Form->end();

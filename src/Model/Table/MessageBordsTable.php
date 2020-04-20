@@ -45,12 +45,6 @@ class MessageBordsTable extends Table
             'joinType' => 'INNER'
         ]);
 
-        /*
-        $this->belongsTo('MessageStatuses', [
-            'foreignKey' => 'message_statuses_id',
-            'joinType' => 'INNER'
-        ]);
-         */
         $this->hasOne('MessageStatuses', [
             'foreignKey' => 'message_statuses_id',
             'bindingKey' => 'message_statuses_id',

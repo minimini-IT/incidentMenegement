@@ -49,6 +49,9 @@ class MessageBordChronologiesTable extends Table
             'foreignKey' => 'users_id',
             'joinType' => 'INNER'
         ]);
+        $this->hasMany('MessageChronologyFiles', [
+            'foreignKey' => 'message_bord_chronologies_id',
+        ]);
     }
 
     /**

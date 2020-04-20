@@ -22,7 +22,7 @@ $(function(){
     //id="privateGroup" => 各班のチェックボックス
     //$('#privateAllUser').click(function(){
     $('input[name="allUser[]"]').click(function(){
-        allClick($(this).prop("checked"), true, "#privateUser", "#privateGroup");
+        allClick($(this).prop("checked"), true, ".privateUser", ".privateGroup");
         privateInitialize();
     });
  
@@ -79,15 +79,15 @@ $(function(){
     });
 
     //全班が選択されたなら、全ユーザをチェック
-    $("#privateGroup :input").click(function(){
-        GUClick("#privateGroup", 0, true, 'input[name="allUser[]"]', "#privateUser", "#privateGroup");
+    $(".privateGroup :input").click(function(){
+        GUClick(".privateGroup", 0, true, 'input[name="allUser[]"]', ".privateUser", ".privateGroup");
     });
 
     //全ユーザが選択されたなら、全ユーザをチェック
     //id="privateUsers" => 全ユーザ以外のユーザを囲むdiv
-    $("#privateUser :input").click(function(){
+    $(".privateUser :input").click(function(){
         //controlでcheckbox作成時、label部分にhidden input作成されるので-4
-        GUClick("#privateUser", -4, true, 'input[name="allUser[]"]', "#privateUser", "#privateGroup");
+        GUClick(".privateUser", -4, true, 'input[name="allUser[]"]', ".privateUser", ".privateGroup");
     });
 
 //----------------------- destination ------------------------
@@ -97,7 +97,7 @@ $(function(){
     //id="destinationUser" => あて先ユーザを囲うdiv
     //id="group" => 各班のcheckboxを囲うdiv
     $("#allUser").click(function(){
-        allClick($(this).prop("checked"), false, "#destinationUser", "#group");
+        allClick($(this).prop("checked"), false, ".destinationUser", ".group");
         destinationInitialize();
     });
 
@@ -159,7 +159,7 @@ $(function(){
 
     //各班チェックボックス全選択で全ユーザチェック
     $("input[name='group']").click(function(){
-        GUClick("#group", 0, false, "#allUser", "#destinationUser", "#group");
+        GUClick(".group", 0, false, "#allUser", ".destinationUser", ".group");
     });
 
 
@@ -168,14 +168,14 @@ $(function(){
     //class="destUser" => すべてのユーザinput checkboxに付与しているclass
     $(".destUser").click(function(){
         //controlでcheckbox作成時、label部分にhidden input作成されるので-4
-        if($("#destinationUser :checked").length == $("#destinationUser :input").length -4){
+        if($(".destinationUser :checked").length == $(".destinationUser :input").length -4){
             $("#allUser").prop("checked", true);
-            $("#group :input").prop("checked", false).prop("disabled", true);
+            $(".group :input").prop("checked", false).prop("disabled", true);
             destinationInitialize();
         }else{
             $("#allUser").prop("checked", false);
-            if($("#group :input").prop("disabled")){
-                $("#group :input").prop("disabled", false);
+            if($(".group :input").prop("disabled")){
+                $(".group :input").prop("disabled", false);
                 if($("#soukatuUser :checked").length == $("#soukatuUser :input").length -1){
                     $("#soukatu").prop("checked", true);
                 }
