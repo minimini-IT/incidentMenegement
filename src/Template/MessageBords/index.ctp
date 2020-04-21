@@ -84,13 +84,13 @@ $sideberClass = "list-group-item list-group-item-action list-group-item-info";
 
                         <!--ファイル-->
                         <div class="col-md-3 pr-0">
-                            <table>
+                            <table class="table">
                                 <?php foreach($messageBord->message_bord->message_files as $file): ?>
-                                    <tr class="border-bottom border-info">
-                                        <td class="col-md-10">
+                                    <tr class="border-bottom border-info row">
+                                        <td class="border-top-0 col-md-10">
                                             <?= $this->Html->link($file->file_name, ["controller" => "Download", 'action' => 'bordFileDownload', $file->message_files_id]) ?>
                                         </td>
-                                        <td class="col-md-2 pl-0">
+                                        <td class="border-top-0 col-md-2 pl-0">
                                             <?= $this->Form->postLink(__('削除'), ["controller" => "MessageFiles", 'action' => 'delete', $file->message_files_id], ['confirm' => __('ファイルを削除しますか？ # {0}?', $file->file_name)]) ?>
                                         </td>
                                     </tr>
@@ -119,7 +119,13 @@ $sideberClass = "list-group-item list-group-item-action list-group-item-info";
                                             <td class="col-md-2 border-top-0 border-bottom"><?= $destination->user->first_name . $destination->user->last_name ?></td>
                                             <?php if(null !== $destination->message_answer): ?>
                                                 <td class="col-md-3 border-top-0 text-center border-bottom"><?= $destination->message_answer->message_choice->content ?></td>
-                                                <td class="col-md-4 border-top-0 text-center border-bottom"><pre><?= h($destination->message_answer->message) ?></pre></td>
+
+
+
+                                                <td class="col-md-4 border-top-0 text-center border-bottom"><?= $this->Text->autoparagraph($destination->message_answer->message) ?></td>
+
+
+
                                                 <td class="col-md-2 border-top-0 text-center border-bottom"><?= $destination->message_answer->modified->format("Y/m/d") ?></td>
                                                 <td class="col-md-1 border-top-0 text-right border-bottom"><?= $this->Html->link(__('編集'), ["controller" => "message_answers", 'action' => 'edit', $destination->message_answer->message_answers_id]) ?></td>
                                             <?php else: ?>
@@ -199,7 +205,7 @@ $sideberClass = "list-group-item list-group-item-action list-group-item-info";
                             } 
                         ?>
                         <?php if($flag): ?>
-                            <div>
+                            <div class="mb-4">
                             <?php
                                 echo $this->Form->create($messageAnswers, [
                                     "url" => [
@@ -208,14 +214,26 @@ $sideberClass = "list-group-item list-group-item-action list-group-item-info";
                                     ],
                                     "class" => "my-4",
                                 ]); 
-                                echo "<div class='row'><div class='col-md-4'>";
+                                echo "<fieldset>";
+                                echo "<div class='row mb-4'><div class='col-md-1'></div><div class='col-md-4'>";
                                 echo $this->Form->control('message_destinations_id', ["type" => "select", "options" => $user, "label" => "ユーザ", "class" => "form-control"]); 
-                                echo "</div><div class='col-md-8 form-check'>";
+                                echo "</div><div class='col-md-6 form-check'>";
                                 //echo $this->Form->control('message_choices_id', ["type" => "radio", "options" => $choices, "label" => ["text" => "選択肢", "class" => "form-check-label"], "class" => "form-check-input"]);
-                                echo $this->Form->radio('message_choices_id', ["options" => $choices, "label" => "選択肢", "class" => "form-check-input"]);
-                                echo "</div></div>";
+                                //echo $this->Form->radio('message_choices_id', ["options" => $choices, "label" => "選択肢", "class" => "form-check-input"]);
+                                echo "<label>選択肢</label>";
+                                echo $this->Form->input('message_choices_id', [
+                                    "type" => "radio", 
+                                    "options" => $choices, 
+                                    "label" => false, 
+                                    "class" => "form-check-input",
+                                    "templates" => [
+                                        "nestingLabel" => "<div class='form-check'>{{input}}<label class='form-check-lebel'>{{text}}</label></div>"
+                                    ]
+                                ]);
+                                echo "</div><div class='col-md-1'></div></div>";
                                 echo $this->Form->control('message', ["label" => "メッセージ", "type" => "textarea", "class" => "form-control"]);
                                 echo $this->Form->button('送信', ["class" => "btn btn-info mt-4 float-right"]);
+                                echo "</fieldset>";
                                 echo $this->Form->end();
                             ?>
                             </div>

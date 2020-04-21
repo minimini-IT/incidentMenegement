@@ -81,7 +81,7 @@ default.ctp
                                             <?= $this->Html->link($file->file_name, ["controller" => "Download", 'action' => 'sendFileDownload', $file->files_id]) ?>
                                         </td>
                                         <!--<td><?= $file->file_size ?></td>-->
-                                        <td class="col-md-2 pl-0">
+                                        <td class="col-md-2 px-0">
                                             <?= $this->Form->postLink(__('削除'), ["controller" => "Files", 'action' => 'delete', $file->files_id], ['confirm' => __('ファイルを削除しますか？ # {0}?', $file->file_name)]) ?>
                                         </td>
                                     </tr>
@@ -110,19 +110,19 @@ default.ctp
                                 <?= $this->Text->autoparagraph($crewSendComment->comment) ?>
                             </div>
                             <div class="col-md-3 border-bottom pr-0">
-                                <?php foreach($crewSendComment->comment_files as $file): ?>
-                                    <table>
-                                        <tr class="border">
-                                            <td class="col-md-10">
+                                <table class="table">
+                                    <?php foreach($crewSendComment->comment_files as $file): ?>
+                                        <tr class="border-bottom border-info row">
+                                            <td class="border-top-0 col-md-10">
                                                 <?= $this->Html->link($file->file_name, ["controller" => "Download", 'action' => 'commentFileDownload', $file->comment_files_id]) ?>
                                             </td>
                                             <!--<td><?= $file->file_size ?></td>-->
-                                            <td class="col-md-2 pl-0">
+                                            <td class="border-top-0 col-md-2 px-2">
                                                 <?= $this->Form->postLink(__('削除'), ["controller" => "CommentFiles", 'action' => 'delete', $file->comment_files_id], ['confirm' => __('ファイルを削除しますか？ # {0}?', $file->file_name)]) ?>
                                             </td>
                                         </tr>
-                                    </table> 
-                                <?php endforeach ?>
+                                    <?php endforeach ?>
+                                </table> 
                             </div>
                         </div>
                     <?php endforeach ?>
