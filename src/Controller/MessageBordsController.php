@@ -108,6 +108,8 @@ class MessageBordsController extends AppController
         if ($this->request->is('post')) {
             $this->IncidentManagement = $this->loadComponent("IncidentAdd");
             $data = $this->request->getdata();
+            $this->log("--- data ---", LOG_DEBUG);
+            $this->log($data, LOG_DEBUG);
             $messageBord = $this->MessageBords->patchEntity($messageBord, $data);
 
             //MessageBord save前にincident_managements更新
@@ -382,7 +384,7 @@ class MessageBordsController extends AppController
             ->where(["users_id" => $loginUser]);
 
         //$this->set(compact('messageBord', 'messageStatuses', "users", "allUser", "soukatu", "kenkyo", "system", "kintai", "createUser"));
-        $this->set(compact('messageBord', 'messageStatuses', "allUser", "soukatu", "kenkyo", "system", "kintai", "createUser"));
+        $this->set(compact('messageBord', 'messageStatuses', "allUser", "soukatu", "kenkyo", "system", "kintai", "createUser", "loginUser"));
     }
 
     public function edit($id = null)
@@ -398,8 +400,8 @@ class MessageBordsController extends AppController
             $this->loadModels(["Users", "MessageFiles", "MessageDestinations", "PrivateMessages"]);
             if ($this->request->is(['patch', 'post', 'put'])) {
                 $data = $this->request->getdata();
-                //$this->log("---data---", LOG_DEBUG);
-                //$this->log($data, LOG_DEBUG);
+                $this->log("---data---", LOG_DEBUG);
+                $this->log($data, LOG_DEBUG);
                 $messageBordSave = $this->MessageBords->patchEntity($messageBord, $data);
                 if ($this->MessageBords->save($messageBordSave)) {
                     $this->Flash->success(__('The message bord has been saved.'));
@@ -484,7 +486,7 @@ class MessageBordsController extends AppController
                     //choiceを保存
                     if(!empty($data["content"][0]))
                     {
-                        $this->choiceSave($data["content"], $bordId);
+                        $this->choiceSave($data["content"], $id);
                     }
 
                     //destination保存
@@ -670,6 +672,7 @@ class MessageBordsController extends AppController
             "users", 
             "createUser", 
             "allUser", 
+            "loginUser",
             "messageDestinations", 
             "messageChoices", 
             "privateSoukatu", 
@@ -878,6 +881,7 @@ class MessageBordsController extends AppController
             "users", 
             "createUser", 
             "allUser", 
+            "loginUser",
             "messageChoices", 
             "privateSoukatu", 
             "privateKenkyo", 

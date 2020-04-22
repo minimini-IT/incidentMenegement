@@ -1,4 +1,5 @@
 <?php
+$this->assign("title", "メッセージボード作成"); 
 $sideberClass = "list-group-item list-group-item-action list-group-item-info";
 ?>
 <!--
@@ -37,32 +38,32 @@ default.ctp
                     echo str_replace(";", " ", $this->Form->control('users_id', ["value" => $loginUser, "label" => "作成者", "type" => "select", "options" => $createUser, "class" => "form-control"]));
                     echo "</div><div class='col'>";
                     echo $this->Form->control('message_statuses_id', ["label" => "ステータス", 'options' => $messageStatuses, "class" => "form-control"]);
+                    echo "</div><div class='col'>";
+                    echo $this->Form->control('period', ["label" => "期限", "type" => "text", "class" => "form-control datepicker", "value" => date("Y/m/d")]);
                     echo "</div></div>";
                     echo "<div class='mt-4'>";
                     echo $this->Form->control('message', ["label" => "メッセージ", "class" => "form-control"]);
                     echo "</div>";
+
+                    echo "<div class='row'><div class='col-md-4'>";
                     echo "<div class='mt-4'>";
-                    echo "<p style='color:red;'>選択肢は必ず１つは作成してください</p>";
                     echo $this->Form->control('choice', ["value" => 0, "label" => "追加する選択肢の数", "max" => 5, "min" => 0, "class" => "form-control"]);
                     echo "</div>";
                     echo "<div class='mt-2 pl-4'>";
                     echo "<button id='reload' type='button' class='btn btn-danger'>選択肢作成</button>";
                     echo "<button id='reset' type='button' class='btn btn-danger ml-2'>やり直し</button>";
-                    echo "</div>";
+                    echo "</div></div>";
+                    echo "<div class='col-md-8'>";
                     echo "<div class='choiceContent mt-4'>";
                     echo "<label id='contentLabel' for='content'>選択肢</label>";
                     echo "<input class='contentInput form-control' name='content[0]' type='text' required />";
                     echo "</div>";
+                    echo "</div></div>";
+
+                    /*
                     echo "<div class='mt-4'>";
-
-
-                    //あとで要訂正（jsのカレンダー使いたい）
-                    echo "<div class='mt-4'>";
-                    echo $this->Form->control('period', ["label" => "期限", "class" => "form-control"]);
                     echo "</div>";
-
-
-                    echo "</div>";
+                     */
                     /// private ///
                     echo "<div class='mt-4'>";
                     echo "<div class='border-bottom border-info no-mb'>";

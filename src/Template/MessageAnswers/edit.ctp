@@ -1,35 +1,57 @@
 <?php
-/**
- * @var \App\View\AppView $this
- * @var \App\Model\Entity\MessageAnswer $messageAnswer
- */
+$sideberClass = "list-group-item list-group-item-action list-group-item-info";
 ?>
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Html->link(__('戻る'), ['controller' => 'MessageBords', 'action' => 'index']) ?></li>
-    </ul>
-</nav>
-<div class="messageAnswers form large-9 medium-8 columns content">
-<?php
-  foreach($messageAnswer->message_destination->message_bord->message_destinations as $destination){
-    if(null !== $destination->message_answer){
-      $user[$destination->message_destinations_id] = $destination->user->first_name . $destination->user->last_name;
-    }
-  }
-  foreach($messageAnswer->message_destination->message_bord->message_choices as $choice){
-    $choices[$choice->message_choices_id] = $choice->content;
-  }
-?>
-  <?= $this->Form->create($messageAnswer); ?>
-    <fieldset>
-        <legend><?= __('回答編集') ?></legend>
-        <?php
-            echo $this->Form->control('message_destinations_id', ["type" => "select", "options" => $user, "label" => "ユーザ"]); 
-            echo $this->Form->control('message_choices_id', ["type" => "radio", "options" => $choices, "label" => "選択肢"]);
-            echo $this->Form->control('message', ["type" => "textarea", "label" => "メッセージ"]);
-        ?>
-    </fieldset>
-    <?= $this->Form->button(__('Submit')) ?>
-    <?= $this->Form->end() ?>
+<!--
+default.ctp
+<div class="container-fluid">
+    <div class="row mx-auto">
+        <div class="col-md-2">
+-->
+            <nav>
+                <div class="list-group">
+                    <?= $this->Html->link(__('TOP'), ["controller" => "Dairy", 'action' => 'index'], ["class" => $sideberClass]) ?>
+                    <?= $this->Html->link(__('サイバー攻撃等'), ["controller" => "RiskDetections", 'action' => 'index'], ["class" => $sideberClass]) ?>
+                    <?= $this->Html->link(__('クルー申し送り'), ["controller" => "CrewSends", 'action' => 'index'], ["class" => $sideberClass]) ?>
+                    <?= $this->Html->link(__('メッセージボード'), ["controller" => "MessageBords", 'action' => 'index'], ["class" => $sideberClass]) ?>
+                </div>
+            </nav>
+        </div>
+        <div class="col-md-10">
+            <h3 class="mt-4"><?= __("{$messageAnswer->message_destination->message_bord->title}　回答編集") ?></h3>
+            <div class="row">
+                <div class="col-md-1"></div>
+                <div class="col-md-8">
+                    <h5 class="mt-4"><?= $messageAnswer->message_destination->user->first_name . $messageAnswer->message_destination->user->last_name ?></h5>
+                </div>
+                <div class="col-md-3"></div>
+            </div>
+            <?= $this->Form->create($messageAnswer); ?>
+                <fieldset>
+                    <?php
+                        echo "<div class='row'><div class='col-md-1'></div><div class='col-md-8'>";
+                        echo "<div class='mt-4'>";
+                        echo $this->Form->control('message_destinations_id', ["type" => "hidden"]); 
+                        echo "<label>選択肢</label>";
+                        echo $this->Form->input('message_choices_id', [
+                            "type" => "radio", 
+                            "options" => $choices, 
+                            "label" => false, 
+                            "class" => "form-check-input",
+                            "templates" => [
+                                "nestingLabel" => "<div class='form-check'>{{input}}<label class='form-check-lebel'>{{text}}</label></div>"
+                            ]
+                        ]);
+                        echo "</div>";
+                        echo "<div class='mt-4'>";
+                        echo $this->Form->control('message', ["type" => "textarea", "label" => "メッセージ", "class" => "form-control"]);
+                        echo "</div>";
+                        echo "<div class='mt-4'>";
+                        echo $this->Form->button('送信', ["class" => "btn btn-info float-right"]);
+                        echo "</div>";
+                        echo "</div><div class='col-md-3'></div></div>";
+                    ?>
+                </fieldset>
+            <?= $this->Form->end() ?>
+        </div>
+    </div>
 </div>

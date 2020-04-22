@@ -521,7 +521,7 @@ ul.pagination .disabled:hover a {
     color: rgba(0, 0 ,0 , 0.54);
 }
 
-.node{
+.node, .dayOfWeek{
   display: none;
 }
 

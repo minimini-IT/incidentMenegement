@@ -80,11 +80,19 @@ class MessageAnswersController extends AppController
     {
         $messageAnswer = $this->MessageAnswers->get($id, [
           'contain' => [
+            "MessageDestinations.MessageBords.MessageChoices",
+            "MessageDestinations.Users"
+          ]
+        ]);
+        /*
+        $messageAnswer = $this->MessageAnswers->get($id, [
+          'contain' => [
             "MessageDestinations.MessageBords.MessageDestinations.Users",
             "MessageDestinations.MessageBords.MessageDestinations.MessageAnswers",
             "MessageDestinations.MessageBords.MessageChoices"
           ]
         ]);
+         */
         if ($this->request->is(['patch', 'post', 'put'])) {
             $messageAnswer = $this->MessageAnswers->patchEntity($messageAnswer, $this->request->getData());
             if ($this->MessageAnswers->save($messageAnswer)) {
@@ -94,8 +102,10 @@ class MessageAnswersController extends AppController
             }
             $this->Flash->error(__('The message answer could not be saved. Please, try again.'));
         }
-        $messageChoices = $this->MessageAnswers->MessageChoices->find('list', ['limit' => 200]);
-        $this->set(compact('messageAnswer', 'messageChoices'));
+        foreach($messageAnswer->message_destination->message_bord->message_choices as $choice){
+            $choices[$choice->message_choices_id] = $choice->content;
+        }
+        $this->set(compact('messageAnswer', "choices"));
     }
 
     /**

@@ -74,7 +74,7 @@ class MessageChoicesController extends AppController
     public function edit($id = null)
     {
         $messageChoice = $this->MessageChoices->get($id, [
-            'contain' => []
+            'contain' => ["MessageBords"]
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $messageChoice = $this->MessageChoices->patchEntity($messageChoice, $this->request->getData());
@@ -85,8 +85,7 @@ class MessageChoicesController extends AppController
             }
             $this->Flash->error(__('The message choice could not be saved. Please, try again.'));
         }
-        $messageBords = $this->MessageChoices->MessageBords->find('list', ['limit' => 200]);
-        $this->set(compact('messageChoice', 'messageBords'));
+        $this->set(compact('messageChoice'));
     }
 
     /**

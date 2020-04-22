@@ -1,5 +1,6 @@
 <?php 
     $this->assign("title", "日誌"); 
+    $sideberClass = "list-group-item list-group-item-action list-group-item-info";
 ?>
 <!--
 default.ctp
@@ -9,68 +10,79 @@ default.ctp
 -->
             <nav>
                 <div class="list-group">
-                    <?= $this->Html->link(__('新規作成'), ['action' => 'add'], ["class" => "list-group-item list-group-item-action list-group-item-info"]) ?>
-                    <?= $this->Html->link(__('カテゴリー'), ['controller' => 'Categories', 'action' => 'index'], ["class" => "list-group-item list-group-item-action list-group-item-info"]) ?>
-                    <?= $this->Html->link(__('ステータス'), ['controller' => 'Statuses', 'action' => 'index'], ["class" => "list-group-item list-group-item-action list-group-item-info"]) ?>
-                    <?= $this->Html->link(__('TOP'), ["controller" => "Dairy", 'action' => 'index'], ["class" => "list-group-item list-group-item-action list-group-item-info"]) ?>
-                    <?= $this->Html->link(__('サイバー攻撃等'), ["controller" => "RiskDetections", 'action' => 'index'], ["class" => "list-group-item list-group-item-action list-group-item-info"]) ?>
-                    <?= $this->Html->link(__('クルー申し送り'), ["controller" => "CrewSends", 'action' => 'index'], ["class" => "list-group-item list-group-item-action list-group-item-info"]) ?>
-                    <?= $this->Html->link(__('メッセージボード'), ["controller" => "MessageBords", 'action' => 'index'], ["class" => "list-group-item list-group-item-action list-group-item-info"]) ?>
+                    <?= $this->Html->link(__('TOP'), ["controller" => "Dairy", 'action' => 'index'], ["class" => $sideberClass]) ?>
+                    <?= $this->Html->link(__('サイバー攻撃等'), ["controller" => "RiskDetections", 'action' => 'index'], ["class" => $sideberClass]) ?>
+                    <?= $this->Html->link(__('クルー申し送り'), ["controller" => "CrewSends", 'action' => 'index'], ["class" => $sideberClass]) ?>
+                    <?= $this->Html->link(__('ユーザ一覧'), ["controller" => "users", 'action' => 'index'], ["class" => $sideberClass]) ?>
+                    <?= $this->Html->link(__('勤務者入力'), ["controller" => "workers", 'action' => 'add'], ["class" => $sideberClass]) ?>
                 </div>
-<!--説明-->
-  <p style="color: red;">メッセージボードに「閲覧権限」を追加しました。</p>
-  <p style="color: red;">ファイルダウンロード時の文字化けを解消しました。</p>
-  <p>日誌的なページ</p>
-  <p>最終的には</p>
-  <ul>
-    <li>今日の予定</li>
-    <li>今週の予定</li>
-    <li>命令</li>
-    <li>日付</li>
-    <li>今日の勤務者</li>
-    <li>対処中のインシデント</li>
-    <li>対処状況</li>
-    <li>班内アナウンス</li>
-  </ul>
-  <p>を表示予定</p>
-  </br>
-</nav>
+                <p style="color: red;">メッセージボードに「閲覧権限」を追加しました。</p>
+                <p style="color: red;">ファイルダウンロード時の文字化けを解消しました。</p>
+                <p>日誌的なページ</p>
+                <p>最終的には</p>
+                <ul>
+                    <li>今日の予定</li>
+                    <li>今週の予定</li>
+                    <li>命令</li>
+                    <li>日付</li>
+                    <li>今日の勤務者</li>
+                    <li>対処中のインシデント</li>
+                    <li>対処状況</li>
+                    <li>班内アナウンス</li>
+                </ul>
+                <p>を表示予定</p>
+            </nav>
+        </div>
+        <div class="col-md-10">
+            <div class="row">
+                <div class="col-md-4">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <th>今日の予定</th>
+                            </tr>
+                            <?php foreach ($today_schedules as $schedule): ?>
+                            <tr>
+<!--                
+                                <td><?= $this->Number->format($schedule["schedules_id"]) ?></td>
+                                <td><?= h($schedule["schedule_start_date"]) ?></td>
+                                <td><?= h($schedule["schedule_end_date"]) ?></td>
+                                <td><?= $this->Number->format($schedule["repe_flag"]) ?></td>
+                                <td><?= h($schedule["schedule"]) ?></td>
+                                <td><?= h($schedule["created"]) ?></td>
+                                <td><?= h($schedule["modified"]) ?></td>
+-->
+                                <td><?= h($schedule["schedule"]) ?></td>
+                                <?php if($schedule["schedule_start_date"] != $schedule["schedule_end_date"]){ ?>
+                                    <td><?= h($schedule["schedule_start_date"]) . "〜" . h($schedule["schedule_end_date"]) ?></td>
+                                <?php }else{ ?>
+                                    <td></td>
+                                <?php } ?>
+                                <!--
+                                <td>
+                                    <?= $this->Html->link(__('View'), ['action' => 'view', $schedule["schedules_id"]]) ?>
+                                    <?= $this->Html->link(__('Edit'), ['action' => 'edit', $schedule["schedules_id"]]) ?>
+                                    <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $schedule["schedules_id"]], ['confirm' => __('Are you sure you want to delete # {0}?', $schedule["schedules_id"])]) ?>
+                                </td>
+-->
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-5">
+                </div>
+                <div class="col-md-3">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
 <div class="schedules index large-9 medium-8 columns content">
                 <h4><?= $today ?></h4>
-    <table cellpadding="0" cellspacing="0">
-        <tbody>
-            <tr>
-                <th>今日の予定</th>
-            </tr>
-            <?php foreach ($today_schedules as $schedule): ?>
-            <tr>
-<!--
-                <td><?= $this->Number->format($schedule["schedules_id"]) ?></td>
-                <td><?= h($schedule["schedule_start_date"]) ?></td>
-                <td><?= h($schedule["schedule_end_date"]) ?></td>
-                <td><?= $this->Number->format($schedule["repe_flag"]) ?></td>
-                <td><?= h($schedule["schedule"]) ?></td>
-                <td><?= h($schedule["created"]) ?></td>
-                <td><?= h($schedule["modified"]) ?></td>
--->
-                <td><?= h($schedule["schedule"]) ?></td>
-                <?php if($schedule["schedule_start_date"] != $schedule["schedule_end_date"]){ ?>
-                    <td><?= h($schedule["schedule_start_date"]) . "〜" . h($schedule["schedule_end_date"]) ?></td>
-                <?php }else{ ?>
-                    <td></td>
-                <?php } ?>
-                <!--
-                <td>
-                    <?= $this->Html->link(__('View'), ['action' => 'view', $schedule["schedules_id"]]) ?>
-                    <?= $this->Html->link(__('Edit'), ['action' => 'edit', $schedule["schedules_id"]]) ?>
-                    <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $schedule["schedules_id"]], ['confirm' => __('Are you sure you want to delete # {0}?', $schedule["schedules_id"])]) ?>
-                </td>
--->
-            </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
     <table>
         <tbody>
             <tr>

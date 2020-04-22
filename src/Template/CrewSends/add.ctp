@@ -36,7 +36,7 @@ default.ctp
 
 
                     //あとで要訂正（jsのカレンダー使いたい）
-                    echo $this->Form->control('period', ["label" => ["text" => "期　限", "class" => "w-25"], "select" => ["class" => "form-control"]]);
+                    echo $this->Form->control('period', ["label" => "期限", "type" => "text", "class" => "form-control datepicker", "value" => date("Y/m/d")]);
 
 
 

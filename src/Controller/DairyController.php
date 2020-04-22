@@ -115,6 +115,31 @@ class DairyController extends AppController{
         }
          */
 
+        /*
+        $dayOfWeek = [
+            [
+                "mon" => 1
+            ],
+            [
+                "tue" => 1
+            ],
+            [
+                "web" => 1
+            ],
+            [
+                "thu" => 1
+            ],
+            [
+                "fry" => 1
+            ],
+            [
+                "sat" => 1
+            ],
+            [
+                "sun" => 1
+            ]
+        ];
+         */
 
 
         $this->set(compact('today_schedules', "weekry_schedules", "orderNews", "today", "workers", "statuses", "nowStatus"));

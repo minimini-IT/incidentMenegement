@@ -1,5 +1,18 @@
 $(function(){
 
+    //chedulesの曜日
+    $('input[name="repe_flag"]').click(function(){
+        $(".dayOfWeek").slideToggle();
+        /*
+        if($(this).prop("checked"))
+        {
+            $(".dayOfWeek").slideToggle();
+            console.log("OK");
+        }
+        */
+    });
+
+
     //初期状態
     privateInitialize();
     destinationInitialize();
@@ -276,4 +289,6 @@ $(function(){
             $("#kintai").prop("checked", true).prop("disabled", true);
         }
     }
+
+    
 });

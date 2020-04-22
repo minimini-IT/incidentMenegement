@@ -205,7 +205,7 @@ $sideberClass = "list-group-item list-group-item-action list-group-item-info";
                             } 
                         ?>
                         <?php if($flag): ?>
-                            <div class="mb-4">
+                            <div class="mb-4 border-bottom">
                             <?php
                                 echo $this->Form->create($messageAnswers, [
                                     "url" => [

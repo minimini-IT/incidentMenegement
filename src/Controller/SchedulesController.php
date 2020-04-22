@@ -55,8 +55,21 @@ class SchedulesController extends AppController
               $count += $repe_flag;
             }
            */
-            $schedule = $this->Schedules->patchEntity($schedule, $this->request->getData());
-            var_dump($schedule);
+            $dayWeek = ["mon", "tue", "wed", "thu", "fry", "sat", "sun"];
+            $data = $this->request->getData();
+            foreach($data["dayOfWeeks"] as $dayOfWeek)
+            {
+                for($i = 0; $i < 7; $i++)
+                {
+                    if($dayOfWeek == $i)
+                    {
+                        $data[$dayWeek[$i]] = 1;
+                    }
+                }
+            }
+            $this->log("---data---", LOG_DEBUG);
+            $this->log($data, LOG_DEBUG);
+            $schedule = $this->Schedules->patchEntity($schedule, $data);
             if ($this->Schedules->save($schedule)) {
                 $this->Flash->success(__('The schedule has been saved.'));
 
@@ -64,7 +77,30 @@ class SchedulesController extends AppController
             }
             $this->Flash->error(__('The schedule could not be saved. Please, try again.'));
         }
-        $this->set(compact('schedule'));
+        $dayOfWeek = [
+            [
+                1 => "月曜日"
+            ],
+            [
+                1 => "火曜日"
+            ],
+            [
+                1 => "水曜日"
+            ],
+            [
+                1 => "木曜日"
+            ],
+            [
+                1 => "金曜日"
+            ],
+            [
+                1 => "土曜日"
+            ],
+            [
+                1 => "日曜日"
+            ]
+        ];
+        $this->set(compact('schedule', "dayOfWeek"));
     }
 
     /**
