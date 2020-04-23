@@ -48,59 +48,54 @@ class SchedulesController extends AppController
     public function add()
     {
         $schedule = $this->Schedules->newEntity();
+        $this->loadModels(["Repeats", "ScheduleRepeats"]);
         if ($this->request->is('post')) {
-          /*
-            $repe_flags = $this->request->getData("field[]");
-            foreach($repe_flags as $repe_flag){
-              $count += $repe_flag;
-            }
-           */
-            $dayWeek = ["mon", "tue", "wed", "thu", "fry", "sat", "sun"];
             $data = $this->request->getData();
-            foreach($data["dayOfWeeks"] as $dayOfWeek)
+            $this->IncidentManagement = $this->loadComponent("IncidentAdd");
+            //MessageBord save前にincident_managements更新
+            if(is_int($incidentNumber = $this->IncidentManagement->incident_number(1)))
             {
-                for($i = 0; $i < 7; $i++)
-                {
-                    if($dayOfWeek == $i)
-                    {
-                        $data[$dayWeek[$i]] = 1;
-                    }
-                }
-            }
-            $this->log("---data---", LOG_DEBUG);
-            $this->log($data, LOG_DEBUG);
-            $schedule = $this->Schedules->patchEntity($schedule, $data);
-            if ($this->Schedules->save($schedule)) {
-                $this->Flash->success(__('The schedule has been saved.'));
+                //インシデント番号生成成功したら
+                $data = array_merge($data, ["incident_managements_id" => $incidentNumber]);
+                $this->log("---data---", LOG_DEBUG);
+                $this->log($data, LOG_DEBUG);
+                $schedule = $this->Schedules->patchEntity($schedule, $data);
+                if ($this->Schedules->save($schedule)) {
 
-                return $this->redirect(['action' => 'index']);
+                    //ScheduleRepeatsあれば登録
+                    if(!empty($data["scheduleRepeats"]))
+                    {
+                        $id = $schedule->schedules_id;
+                        foreach($data["scheduleRepeats"] as $repeat)
+                        {
+                            $entity[] = [
+                                "repeats_id" => $repeat,
+                                "schedules_id" => $id
+                            ];
+                        }
+                        $scheduleRepeats = $this->ScheduleRepeats->newEntities($entity);
+                        if($this->ScheduleRepeats->saveMany($scheduleRepeats)){
+                            $this->Flash->success(__('schedule repeats 登録'));
+                            return $this->redirect(["controller" => "Dairy", 'action' => 'index']);
+                        }
+                        else
+                        {
+                            $this->Flash->error(__('schedule repeats save 失敗'));
+                            return $this->redirect(["controller" => "Dairy", 'action' => 'index']);
+                        }
+                    }
+
+                    $this->Flash->success(__('schedules save 成功'));
+                    return $this->redirect(["controller" => "Dairy", 'action' => 'index']);
+                }
+                $this->Flash->error(__('schedules save 失敗'));
+                return $this->redirect(["controller" => "Schedules", 'action' => 'add']);
             }
-            $this->Flash->error(__('The schedule could not be saved. Please, try again.'));
+            $this->Flash->error(__('incident_number 生成　失敗'));
+            return $this->redirect(["controller" => "Schedules", 'action' => 'add']);
         }
-        $dayOfWeek = [
-            [
-                1 => "月曜日"
-            ],
-            [
-                1 => "火曜日"
-            ],
-            [
-                1 => "水曜日"
-            ],
-            [
-                1 => "木曜日"
-            ],
-            [
-                1 => "金曜日"
-            ],
-            [
-                1 => "土曜日"
-            ],
-            [
-                1 => "日曜日"
-            ]
-        ];
-        $this->set(compact('schedule', "dayOfWeek"));
+        $repeats = $this->Repeats->find("list", ["limit" => 200]);
+        $this->set(compact('schedule', "repeats"));
     }
 
     /**

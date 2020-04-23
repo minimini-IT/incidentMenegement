@@ -28,21 +28,22 @@ default.ctp
                         echo $this->Form->control('schedule_start_date', ["label" => "開始日", "type" => "text", "class" => "form-control datepicker", "value" => date("Y/m/d")]);
                         echo "</div>";
                         echo "<div class='col'>";
-                        echo $this->Form->control('schedule_end_date', ["label" => "開始日", "type" => "text", "class" => "form-control datepicker", "value" => date("Y/m/d")]);
+                        echo $this->Form->control('schedule_end_date', ["label" => "終了日", "type" => "text", "class" => "form-control datepicker", "value" => date("Y/m/d")]);
                         echo "</div></div>";
-                        echo "<div class='mt-4 row'><div class='col-md-5'>";
-                        //echo $this->Form->control('repe_flag', ["type" => "checkbox", "label" => "曜日で繰り返し"]);
+                        echo "<div class='mt-4 row'><div class='col-md-4'>";
+                        echo $this->Form->control("schedule_start_time", ["label" => "開始時間", "type" => "text", "class" =>"form-control", "placeholder" => "例) 0930 -> 09:30:00"]);
+                        echo "</div><div class='col-md-4'>";
                         echo $this->Form->input('repe_flag', [
                             "type" => "checkbox", 
-                            "label" => "曜日で繰り返し",
+                            "label" => "繰り返し",
                             "class" => "form-check-input",
                             "templates" => [
                                 "nestingLabel" => "<div class='form-check'><label id='dayOfWeek' class='form-check-lebel'>{{input}}{{text}}</label></div>"
                             ]
                         ]);
-                        echo "</div><div class='col-md-5 dayOfWeek'>";
-                        echo $this->Form->control("dayOfWeeks", ["label" => false, "multiple" => "checkbox", "options" => $dayOfWeek]);
-                        echo "</div><div class='col-md-2'></div></div>";
+                        echo "</div><div class='col-md-4 dayOfWeek'>";
+                        echo $this->Form->control("scheduleRepeats", ["label" => false, "multiple" => "checkbox", "options" => $repeats]);
+                        echo "</div></div>";
                         echo "<div class='mt-4'>";
                         echo $this->Form->control('schedule', ["label" => "スケジュール", "class" => "form-control"]);
                         echo "</div>";

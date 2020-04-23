@@ -163,6 +163,17 @@ class UsersSeed extends AbstractSeed
           "user_sort_number" => 2,
           "delete_flag" => 0
         ],
+        [
+          "belongs_id" => 1,
+          "ranks_id" => 1,
+          "roles_id" => 4,
+          "username" => 989898,
+          "first_name" => "全",
+          "last_name" => "ユーザ",
+          "password" => $this->_setPassword(123456),
+          "user_sort_number" => 999,
+          "delete_flag" => 0
+        ],
       ];
 
         $table = $this->table('users');

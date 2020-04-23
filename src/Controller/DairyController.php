@@ -32,13 +32,19 @@ class DairyController extends AppController{
         //機能の日付を取得
         $yesterday = date("Y-m-d", strtotime("-1 day"));
         
-        $this->loadModels(["OrderNews", "Workers", "Statuses", "RiskDetections"]);
+        $this->loadModels(["OrderNews", "Workers", "Statuses", "RiskDetections", "Schedules"]);
 
         //scheduleを今日の日付で取得
-        $sql = "select schedules_id, schedule_start_date, schedule_end_date, schedule from schedules where '" . $today . "' between schedule_start_date and schedule_end_date";
+        //日付部分はクォーテーション必要
+        $between = ["conditions" => ["'" . $today . "'" . "between Schedules.schedule_start_date and Schedules.schedule_end_date"]];
+        $today_schedules = $this->Schedules->find("all", $between);
+        /*
+        $sql = "select schedules_id, schedule_start_date, schedule_end_date, schedule_start_time, schedule from schedules where '" . $today . "' between schedule_start_date and schedule_end_date";
         $connection = ConnectionManager::get("default");
         $today_schedules = $connection->execute($sql)->fetchAll("assoc");
+         */
 
+        $connection = ConnectionManager::get("default");
         //scheduleを今日から1週間分取得
         $sql = "select schedules_id, schedule_start_date, schedule_end_date, schedule from schedules where 
             ('" . $days[0] . "' between schedule_start_date and schedule_end_date) or

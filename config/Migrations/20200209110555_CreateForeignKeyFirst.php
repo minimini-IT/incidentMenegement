@@ -64,6 +64,10 @@ class CreateForeignKeyFirst extends AbstractMigration
                 'default' => null,
                 'null' => false,
             ])
+            ->addColumn('schedule_start_time', 'time', [
+                'default' => null,
+                'null' => false,
+            ])
             ->addColumn('repe_flag', 'boolean', [
                 'default' => false,
                 'null' => false,

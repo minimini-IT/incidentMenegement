@@ -13,8 +13,9 @@ default.ctp
                     <?= $this->Html->link(__('TOP'), ["controller" => "Dairy", 'action' => 'index'], ["class" => $sideberClass]) ?>
                     <?= $this->Html->link(__('サイバー攻撃等'), ["controller" => "RiskDetections", 'action' => 'index'], ["class" => $sideberClass]) ?>
                     <?= $this->Html->link(__('クルー申し送り'), ["controller" => "CrewSends", 'action' => 'index'], ["class" => $sideberClass]) ?>
-                    <?= $this->Html->link(__('ユーザ一覧'), ["controller" => "users", 'action' => 'index'], ["class" => $sideberClass]) ?>
-                    <?= $this->Html->link(__('勤務者入力'), ["controller" => "workers", 'action' => 'add'], ["class" => $sideberClass]) ?>
+                    <?= $this->Html->link(__('ユーザ一覧'), ["controller" => "Users", 'action' => 'index'], ["class" => $sideberClass]) ?>
+                    <?= $this->Html->link(__('勤務者入力'), ["controller" => "Workers", 'action' => 'add'], ["class" => $sideberClass]) ?>
+                    <?= $this->Html->link(__('予定入力'), ["controller" => "Schedules", 'action' => 'add'], ["class" => $sideberClass]) ?>
                 </div>
                 <p style="color: red;">メッセージボードに「閲覧権限」を追加しました。</p>
                 <p style="color: red;">ファイルダウンロード時の文字化けを解消しました。</p>
@@ -36,35 +37,18 @@ default.ctp
         <div class="col-md-10">
             <div class="row">
                 <div class="col-md-4">
-                    <table class="table">
+                    <table class="table border">
                         <tbody>
                             <tr>
-                                <th>今日の予定</th>
+                                <th class="text-center border-bottom">今日の予定</th>
                             </tr>
                             <?php foreach ($today_schedules as $schedule): ?>
                             <tr>
-<!--                
-                                <td><?= $this->Number->format($schedule["schedules_id"]) ?></td>
-                                <td><?= h($schedule["schedule_start_date"]) ?></td>
-                                <td><?= h($schedule["schedule_end_date"]) ?></td>
-                                <td><?= $this->Number->format($schedule["repe_flag"]) ?></td>
-                                <td><?= h($schedule["schedule"]) ?></td>
-                                <td><?= h($schedule["created"]) ?></td>
-                                <td><?= h($schedule["modified"]) ?></td>
--->
-                                <td><?= h($schedule["schedule"]) ?></td>
-                                <?php if($schedule["schedule_start_date"] != $schedule["schedule_end_date"]){ ?>
-                                    <td><?= h($schedule["schedule_start_date"]) . "〜" . h($schedule["schedule_end_date"]) ?></td>
-                                <?php }else{ ?>
-                                    <td></td>
-                                <?php } ?>
-                                <!--
-                                <td>
-                                    <?= $this->Html->link(__('View'), ['action' => 'view', $schedule["schedules_id"]]) ?>
-                                    <?= $this->Html->link(__('Edit'), ['action' => 'edit', $schedule["schedules_id"]]) ?>
-                                    <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $schedule["schedules_id"]], ['confirm' => __('Are you sure you want to delete # {0}?', $schedule["schedules_id"])]) ?>
+                                <td class="p-0 border-top-0">
+                                    <?= $schedule->schedule_start_time->format("H:i") ?>
+                                    〜 
+                                    <?= h($schedule->schedule) ?>
                                 </td>
--->
                             </tr>
                             <?php endforeach; ?>
                         </tbody>
@@ -78,6 +62,7 @@ default.ctp
         </div>
     </div>
 </div>
+<!--
 
 
 
@@ -90,7 +75,7 @@ default.ctp
             </tr>
 
             <?php foreach ($weekry_schedules as $schedule): ?>
-              <!--
+              <!-
             <tr>
                 <td>Weekly Schedules</td>
             </tr>
@@ -107,7 +92,7 @@ default.ctp
                     <?= $this->Html->link(__('Edit'), ['action' => 'edit', $schedule["schedules_id"]]) ?>
                     <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $schedule["schedules_id"]], ['confirm' => __('Are you sure you want to delete # {0}?', $schedule["schedules_id"])]) ?>
                 </td>
--->
+->
             <tr>
                 <td><?= h($schedule["schedule"]) ?></td>
                 <td><?= h($schedule["schedule_start_date"]) . "〜" . h($schedule["schedule_end_date"]) ?></td>
@@ -122,13 +107,13 @@ default.ctp
             </tr>
 
             <?php foreach ($orderNews as $ordernews): ?>
-            <!--
+            <!-
             <tr>
                 <td>orderNews</td>
             </tr>
--->
+->
             <tr>
-<!--
+<!-
                 <td><?= $this->Number->format($ordernews->order_news_id) ?></td>
                 <td><?= h($ordernews->order_news_date) ?></td>
                 <td><?= h($ordernews->title) ?></td>
@@ -140,7 +125,7 @@ default.ctp
                     <?= $this->Html->link(__('Edit'), ['action' => 'edit', $ordernews->order_news_id]) ?>
                     <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $ordernews->order_news_id], ['confirm' => __('Are you sure you want to delete # {0}?', $ordernews->order_news_id)]) ?>
                 </td>
--->
+->
                 <td><?= h($ordernews->title) ?></td>
                 <td><?= h($ordernews->comment) ?></td>
             </tr>
@@ -184,3 +169,4 @@ default.ctp
         </tbody>
     </table>
 </div>
+-->

@@ -51,12 +51,12 @@ class RiskDetectionsController extends AppController
             if($between === null)
             {
                 $riskOnly = $this->RiskDetections->find("all")
-                ->where(["incident_cases_id" => 2]);
+                    ->where(["incident_cases_id" => 2]);
             }
             else
             {
                 $riskOnly = $this->RiskDetections->find("all", $between)
-                ->where(["incident_cases_id" => 2]);
+                    ->where(["incident_cases_id" => 2]);
             }
             foreach($data as $key => $value)
             {

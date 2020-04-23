@@ -28,9 +28,18 @@ class Schedule extends Entity
     protected $_accessible = [
         'schedule_start_date' => true,
         'schedule_end_date' => true,
+        'incident_managements_id' => true,
         'repe_flag' => true,
+        'mon' => true,
+        'tue' => true,
+        'wed' => true,
+        'thu' => true,
+        'fri' => true,
+        'sat' => true,
+        'sun' => true,
         'schedule' => true,
         'created' => true,
-        'modified' => true
+        'modified' => true,
+        'schedule_start_time' => true
     ];
 }

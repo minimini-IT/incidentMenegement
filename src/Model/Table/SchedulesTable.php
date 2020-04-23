@@ -37,6 +37,11 @@ class SchedulesTable extends Table
         $this->setPrimaryKey('schedules_id');
 
         $this->addBehavior('Timestamp');
+
+        $this->belongsTo('IncidentManagements', [
+            'foreignKey' => 'incident_managements_id',
+            'joinType' => 'INNER'
+        ]);
     }
 
     /**
@@ -62,14 +67,12 @@ class SchedulesTable extends Table
             ->notEmptyDate('schedule_end_date');
 
         $validator
-            ->integer('repe_flag')
-            ->requirePresence('repe_flag', 'create')
-            ->notEmptyString('repe_flag');
-
-        $validator
             ->scalar('schedule')
             ->requirePresence('schedule', 'create')
             ->notEmptyString('schedule');
+
+        $validator
+            ->notEmptyString('schedule_start_time');
 
         return $validator;
     }
