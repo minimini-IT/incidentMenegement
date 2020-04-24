@@ -42,6 +42,11 @@ class SchedulesTable extends Table
             'foreignKey' => 'incident_managements_id',
             'joinType' => 'INNER'
         ]);
+
+        $this->hasMany('ScheduleRepeats', [
+            'foreignKey' => 'schedules_id',
+            'joinType' => 'INNER'
+        ]);
     }
 
     /**
@@ -67,6 +72,25 @@ class SchedulesTable extends Table
             ->notEmptyDate('schedule_end_date');
 
         $validator
+            ->notEmpty('schedule_start_time')
+            ->time('schedule_start_time', "H:i", "不正な時刻です");
+        /*
+            ->add("schedule_start_time", "custom", [
+                "rule" => [$this, "check_date"],
+                "message" => __("不正な時間です")
+            ]);
+         */
+            /*
+            ->add("schedule_start_time", "custom", [
+                "rule" => function($value){
+                    return preg_match("/(0[0-9]{1}|1{1}[0-9]{1}|2{1}[0-3]{1}):(0[0-9]{1}|[1-5]{1}[0-9]{1})$/", $value) === 1;
+                },
+                "message" => "不正な時間です",
+            ]);
+             */
+        
+
+        $validator
             ->scalar('schedule')
             ->requirePresence('schedule', 'create')
             ->notEmptyString('schedule');
@@ -75,5 +99,12 @@ class SchedulesTable extends Table
             ->notEmptyString('schedule_start_time');
 
         return $validator;
+
+    }
+
+    public function check_date($value, $context)
+    {
+        return (bool) preg_match("/(0[0-9]{1}|1{1}[0-9]{1}|2{1}[0-3]{1}):(0[0-9]{1}|[1-5]{1}[0-9]{1})$/", $value);
+        
     }
 }

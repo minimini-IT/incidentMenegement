@@ -10,15 +10,6 @@ class DairyController extends AppController{
     public function index()
     {
 
-        //今んとこworkers用
-        $this->paginate = [
-            'contain' => [
-                'Users', 
-                'Positions', 
-                'Shifts', 
-                'Duties', 
-            ]
-        ];
 
         //明日から６日分の日付取得
         $days = array();
@@ -37,7 +28,17 @@ class DairyController extends AppController{
         //scheduleを今日の日付で取得
         //日付部分はクォーテーション必要
         $between = ["conditions" => ["'" . $today . "'" . "between Schedules.schedule_start_date and Schedules.schedule_end_date"]];
+
+        $this->paginate = [
+            'contain' => [
+              "ScheduleRepeats"
+            ],
+            "order" => ["schedule_start_time" => "asc"]
+          ];
+        $todayDayOfWeek = date("w") + 1;
+        
         $today_schedules = $this->Schedules->find("all", $between);
+        $today_schedules = $this->paginate($today_schedules);
         /*
         $sql = "select schedules_id, schedule_start_date, schedule_end_date, schedule_start_time, schedule from schedules where '" . $today . "' between schedule_start_date and schedule_end_date";
         $connection = ConnectionManager::get("default");
@@ -84,6 +85,14 @@ class DairyController extends AppController{
         //$between = ["conditions" => ["Workers.date between '" . $today . "' and '" . $today . "'"]];
         //本日の勤務者
         //$workers = $this->Workers->find("all", $between)
+        $this->paginate = [
+            'contain' => [
+                'Users', 
+                'Positions', 
+                'Shifts', 
+                'Duties', 
+            ]
+        ];
         $workers = $this->Workers->find("all")
             ->where(["date" => $today]);
         $workers = $this->paginate($workers);
@@ -110,45 +119,8 @@ class DairyController extends AppController{
             }
             $i++;
         }
-        /*
-        $statusA = $statuses->all();
-        for($i = 1; $i >= $statusNumber; $i++)
-        {
-            array_push($nowStatus, $statusA[$i]->status)
-            $nowStatus[$i] = $this->RiskDetections->find("all")
-                ->where(["statuses_id" => $i]);
-            $nowStatus[$i] = $nowStatus->count();
-        }
-         */
 
-        /*
-        $dayOfWeek = [
-            [
-                "mon" => 1
-            ],
-            [
-                "tue" => 1
-            ],
-            [
-                "web" => 1
-            ],
-            [
-                "thu" => 1
-            ],
-            [
-                "fry" => 1
-            ],
-            [
-                "sat" => 1
-            ],
-            [
-                "sun" => 1
-            ]
-        ];
-         */
-
-
-        $this->set(compact('today_schedules', "weekry_schedules", "orderNews", "today", "workers", "statuses", "nowStatus"));
+        $this->set(compact('today_schedules', "weekry_schedules", "orderNews", "today", "workers", "statuses", "nowStatus", "todayDayOfWeek"));
     
     }
 }

@@ -59,7 +59,15 @@ class SchedulesController extends AppController
                 $data = array_merge($data, ["incident_managements_id" => $incidentNumber]);
                 $this->log("---data---", LOG_DEBUG);
                 $this->log($data, LOG_DEBUG);
+                //$data["schedule_start_time"] = $data["schedule_start_time"] + ":00";
                 $schedule = $this->Schedules->patchEntity($schedule, $data);
+                /*
+                if($schedule->errors())
+                {
+                    $this->Flash->error(__('バリデーションエラー'));
+                    return $this->redirect(["controller" => "Schedules", 'action' => 'add']);
+                }
+                 */
                 if ($this->Schedules->save($schedule)) {
 
                     //ScheduleRepeatsあれば登録

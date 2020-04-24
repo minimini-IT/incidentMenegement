@@ -3,14 +3,23 @@ $(function(){
     //chedulesの曜日
     $('input[name="repe_flag"]').click(function(){
         $(".dayOfWeek").slideToggle();
-        /*
-        if($(this).prop("checked"))
-        {
-            $(".dayOfWeek").slideToggle();
-            console.log("OK");
+        if($(this).prop("checked")){
+            $(".dayOfWeek :input").prop("required", true);
+        }else{
+            $(".dayOfWeek :input").prop("checked", false);
         }
-        */
+
     });
+
+    $(".dayOfWeek :input").click(function(){
+        if($(".dayOfWeek :checked").length >= 1){
+            $(".dayOfWeek :input").prop("required", false);
+        }else{
+            $(".dayOfWeek :input").prop("required", true);
+        }
+
+    })
+
 
 
     //初期状態

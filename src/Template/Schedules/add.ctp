@@ -31,18 +31,19 @@ default.ctp
                         echo $this->Form->control('schedule_end_date', ["label" => "終了日", "type" => "text", "class" => "form-control datepicker", "value" => date("Y/m/d")]);
                         echo "</div></div>";
                         echo "<div class='mt-4 row'><div class='col-md-4'>";
-                        echo $this->Form->control("schedule_start_time", ["label" => "開始時間", "type" => "text", "class" =>"form-control", "placeholder" => "例) 0930 -> 09:30:00"]);
+                        echo $this->Form->error("schedule_start_time"); 
+                        echo $this->Form->control("schedule_start_time", ["label" => "開始時間", "type" => "text", "class" =>"form-control", "placeholder" => "例) 0930 -> 09:30"]);
                         echo "</div><div class='col-md-4'>";
                         echo $this->Form->input('repe_flag', [
                             "type" => "checkbox", 
-                            "label" => "繰り返し",
+                            "label" => "繰り返し条件",
                             "class" => "form-check-input",
                             "templates" => [
                                 "nestingLabel" => "<div class='form-check'><label id='dayOfWeek' class='form-check-lebel'>{{input}}{{text}}</label></div>"
                             ]
                         ]);
                         echo "</div><div class='col-md-4 dayOfWeek'>";
-                        echo $this->Form->control("scheduleRepeats", ["label" => false, "multiple" => "checkbox", "options" => $repeats]);
+                        echo $this->Form->control("scheduleRepeats", ["class" => "repeats", "label" => false, "multiple" => "checkbox", "options" => $repeats]);
                         echo "</div></div>";
                         echo "<div class='mt-4'>";
                         echo $this->Form->control('schedule', ["label" => "スケジュール", "class" => "form-control"]);

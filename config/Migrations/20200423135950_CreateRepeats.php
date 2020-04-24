@@ -75,12 +75,12 @@ class CreateRepeats extends AbstractMigration
 
     public function down()
     {
-        $this->table('repeats')->drop()->save();
-
         $this->table('schedule_repeats')
             ->dropForeignKey('repeats_id')
             ->dropForeignKey('schedules_id')
             ->save();
         $this->table('schedule_repeats')->drop()->save();
+
+        $this->table('repeats')->drop()->save();
     }
 }

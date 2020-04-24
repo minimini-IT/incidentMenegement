@@ -43,14 +43,28 @@ default.ctp
                                 <th class="text-center border-bottom">今日の予定</th>
                             </tr>
                             <?php foreach ($today_schedules as $schedule): ?>
-                            <tr>
-                                <td class="p-0 border-top-0">
-                                    <?= $schedule->schedule_start_time->format("H:i") ?>
-                                    〜 
-                                    <?= h($schedule->schedule) ?>
-                                </td>
-                            </tr>
-                            <?php endforeach; ?>
+                                <?php if(!empty($schedule->schedule_repeats)): ?>
+                                    <?php foreach($schedule->schedule_repeats as $repeat): ?>
+                                        <?php if($repeat->repeats_id == $todayDayOfWeek): ?>
+                                            <tr>
+                                                <td class="p-0 border-top-0">
+                                                    <?= $schedule->schedule_start_time->format("H:i") ?>
+                                                    〜 
+                                                    <?= h($schedule->schedule) ?>
+                                                </td>
+                                            </tr>
+                                        <?php endif ?>
+                                    <?php endforeach ?>
+                                <?php else: ?>
+                                    <tr>
+                                        <td class="p-0 border-top-0">
+                                            <?= $schedule->schedule_start_time->format("H:i") ?>
+                                            〜 
+                                            <?= h($schedule->schedule) ?>
+                                        </td>
+                                    </tr>
+                                <?php endif ?>
+                            <?php endforeach ?>
                         </tbody>
                     </table>
                 </div>
