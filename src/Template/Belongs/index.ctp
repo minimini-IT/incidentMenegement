@@ -1,43 +1,54 @@
-<?php
-/**
- * @var \App\View\AppView $this
- * @var \App\Model\Entity\Belong[]|\Cake\Collection\CollectionInterface $belongs
- */
+<?php 
+    $this->assign("title", "班"); 
+    $sideberClass = "list-group-item list-group-item-action list-group-item-info";
 ?>
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Html->link(__('New Belong'), ['action' => 'add']) ?></li>
-        <li><?= $this->Html->link(__('List Users'), ['controller' => 'Users', 'action' => 'index']) ?></li>
-        <li><?= $this->Html->link(__('New User'), ['controller' => 'Users', 'action' => 'add']) ?></li>
-    </ul>
-</nav>
-<div class="belongs index large-9 medium-8 columns content">
-    <h3><?= __('Belongs') ?></h3>
-    <table cellpadding="0" cellspacing="0">
-        <thead>
-            <tr>
-                <th scope="col"><?= $this->Paginator->sort('belongs_id') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('belong') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('belong_sort_number') ?></th>
-                <th scope="col" class="actions"><?= __('Actions') ?></th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($belongs as $belong): ?>
-            <tr>
-                <td><?= $this->Number->format($belong->belongs_id) ?></td>
-                <td><?= h($belong->belong) ?></td>
-                <td><?= $this->Number->format($belong->belong_sort_number) ?></td>
-                <td class="actions">
-                    <?= $this->Html->link(__('View'), ['action' => 'view', $belong->belongs_id]) ?>
-                    <?= $this->Html->link(__('Edit'), ['action' => 'edit', $belong->belongs_id]) ?>
-                    <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $belong->belongs_id], ['confirm' => __('Are you sure you want to delete # {0}?', $belong->belongs_id)]) ?>
-                </td>
-            </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
+<!--
+default.ctp
+<div class="container-fluid">
+    <div class="row mx-auto">
+        <div class="col-md-2">
+-->
+            <nav>
+                <div class="list-group">
+                    <?= $this->Html->link(__('新規作成'), ['controller' => 'Belongs', 'action' => 'add'], ["class" => $sideberClass]) ?>
+                    <?= $this->Html->link(__('ユーザ'), ['controller' => 'Users', 'action' => 'index'], ["class" => $sideberClass]) ?>
+                    <?= $this->Html->link(__('階級'), ['controller' => 'Ranks', 'action' => 'index'], ["class" => $sideberClass]) ?>
+                    <?= $this->Html->link(__('TOP'), ["controller" => "Dairy", 'action' => 'index'], ["class" => $sideberClass]) ?>
+                    <?= $this->Html->link(__('サイバー攻撃等'), ["controller" => "RiskDetections", 'action' => 'index'], ["class" => $sideberClass]) ?>
+                    <?= $this->Html->link(__('クルー申し送り'), ["controller" => "CrewSends", 'action' => 'index'], ["class" => $sideberClass]) ?>
+                    <?= $this->Html->link(__('メッセージボード'), ["controller" => "MessageBords", 'action' => 'index'], ["class" => $sideberClass]) ?>
+                </div>
+            </nav>
+        </div>
+        <div class="col-md-10">
+            <h3 class="my-4"><?= __('班') ?></h3>
+            <table class="table">
+                <thead>
+                    <tr class="row">
+                        <td class="col-md-1 border-top-0"></td>
+                        <th class="col-md-3 text-left border-top-0"><?= __('班') ?></th>
+                        <th class="col-md-3 text-left border-top-0"><?= __('ソート番号') ?></th>
+                        <th class="col-md-3 text-center border-top-0"><?= __('編集・削除') ?></th>
+                        <td class="col-md-2 border-top-0"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($belongs as $belong): ?>
+                        <tr class="row">
+                            <td class="col-md-1 border-top-0"></td>
+                            <td class="col-md-3 text-left border-top-0"><?= h($belong->belong) ?></td>
+                            <td class="col-md-3 text-left border-top-0"><?= $this->Number->format($belong->belong_sort_number) ?></td>
+                            <td class="col-md-3 text-center border-top-0">
+                                <?= $this->Html->link(__('編集'), ['action' => 'edit', $belong->belongs_id]) ?>
+                                <?= $this->Form->postLink(__('削除'), ['action' => 'delete', $belong->belongs_id], ['confirm' => __('この班を削除してよろしいですか？ {0}?', $belong->belong)]) ?>
+                            </td>
+                            <td class="col-md-2 text-left border-top-0"></th>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
     <div class="paginator">
         <ul class="pagination">
             <?= $this->Paginator->first('<< ' . __('first')) ?>

@@ -1,43 +1,54 @@
-<?php
-/**
- * @var \App\View\AppView $this
- * @var \App\Model\Entity\Rank[]|\Cake\Collection\CollectionInterface $ranks
- */
+<?php 
+    $this->assign("title", "階級"); 
+    $sideberClass = "list-group-item list-group-item-action list-group-item-info";
 ?>
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Html->link(__('New Rank'), ['action' => 'add']) ?></li>
-    </ul>
-</nav>
-<div class="ranks index large-9 medium-8 columns content">
-    <h3><?= __('Ranks') ?></h3>
-    <table cellpadding="0" cellspacing="0">
-        <thead>
-            <tr>
-                <th scope="col"><?= $this->Paginator->sort('ranks_id') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('rank') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('abb_rank') ?></th>
-                <th scope="col"><?= $this->Paginator->sort('rank_sort_number') ?></th>
-                <th scope="col" class="actions"><?= __('Actions') ?></th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($ranks as $rank): ?>
-            <tr>
-                <td><?= $this->Number->format($rank->ranks_id) ?></td>
-                <td><?= h($rank->rank) ?></td>
-                <td><?= h($rank->abb_rank) ?></td>
-                <td><?= $this->Number->format($rank->rank_sort_number) ?></td>
-                <td class="actions">
-                    <?= $this->Html->link(__('View'), ['action' => 'view', $rank->ranks_id]) ?>
-                    <?= $this->Html->link(__('Edit'), ['action' => 'edit', $rank->ranks_id]) ?>
-                    <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $rank->ranks_id], ['confirm' => __('Are you sure you want to delete # {0}?', $rank->ranks_id)]) ?>
-                </td>
-            </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
+<!--
+default.ctp
+<div class="container-fluid">
+    <div class="row mx-auto">
+        <div class="col-md-2">
+-->
+            <nav>
+                <div class="list-group">
+                    <?= $this->Html->link(__('新規作成'), ['controller' => 'Ranks', 'action' => 'add'], ["class" => $sideberClass]) ?>
+                    <?= $this->Html->link(__('ユーザ'), ['controller' => 'Users', 'action' => 'index'], ["class" => $sideberClass]) ?>
+                    <?= $this->Html->link(__('班'), ['controller' => 'Belongs', 'action' => 'index'], ["class" => $sideberClass]) ?>
+                    <?= $this->Html->link(__('TOP'), ["controller" => "Dairy", 'action' => 'index'], ["class" => $sideberClass]) ?>
+                    <?= $this->Html->link(__('サイバー攻撃等'), ["controller" => "RiskDetections", 'action' => 'index'], ["class" => $sideberClass]) ?>
+                    <?= $this->Html->link(__('クルー申し送り'), ["controller" => "CrewSends", 'action' => 'index'], ["class" => $sideberClass]) ?>
+                    <?= $this->Html->link(__('メッセージボード'), ["controller" => "MessageBords", 'action' => 'index'], ["class" => $sideberClass]) ?>
+                </div>
+            </nav>
+        </div>
+        <div class="col-md-10">
+            <h3 class="my-4"><?= __('階級') ?></h3>
+            <table class="table">
+                <thead>
+                    <tr class="row">
+                        <td class="col-md-1 border-top-0"></td>
+                        <th class="col-md-2 text-left border-top-0"><?= __('階級') ?></th>
+                        <th class="col-md-2 text-left border-top-0"><?= __('略称') ?></th>
+                        <th class="col-md-2 text-left border-top-0"><?= __('ソート番号') ?></th>
+                        <th class="col-md-2 text-center border-top-0"><?= __('編集・削除') ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($ranks as $rank): ?>
+                        <tr class="row">
+                            <td class="col-md-1 border-top-0"></td>
+                            <td class="col-md-2 text-left border-top-0"><?= h($rank->rank) ?></td>
+                            <td class="col-md-2 text-left border-top-0"><?= h($rank->abb_rank) ?></td>
+                            <td class="col-md-2 text-left border-top-0"><?= $this->Number->format($rank->rank_sort_number) ?></td>
+                            <td class="col-md-2 text-center border-top-0">
+                                <?= $this->Html->link(__('編集'), ['action' => 'edit', $rank->ranks_id]) ?>
+                                <?= $this->Form->postLink(__('削除'), ['action' => 'delete', $rank->ranks_id], ['confirm' => __('この階級を削除してよろしいですか？ {0}?', $rank->rank)]) ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
     <div class="paginator">
         <ul class="pagination">
             <?= $this->Paginator->first('<< ' . __('first')) ?>

@@ -49,7 +49,7 @@ class DairyController extends AppController{
         //$today加算して明日から取得するようにする
         $weekBetween = ["conditions" => ["'" . $today . "'" . "+ interval 7 day between Schedules.schedule_start_date and Schedules.schedule_end_date"]];
         $weekry_schedules = $this->Schedules->find("all", $between);
-        $weekry_schedules = $this->paginate($today_schedules);
+        $weekry_schedules = $this->paginate($weekry_schedules);
 
 
 

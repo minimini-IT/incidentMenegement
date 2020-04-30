@@ -1,12 +1,13 @@
+<?php
+    $this->assign("title", "カテゴリー作成"); 
+    $sideberClass = "list-group-item list-group-item-action list-group-item-info";
+?>
 <!--
 default.ctp
 <div class="container-fluid">
     <div class="row mx-auto">
         <div class="col-md-2">
 -->
-<?php
-$sideberClass = "list-group-item list-group-item-action list-group-item-info";
-?>
             <nav>
                 <div class="list-group">
                     <?= $this->Html->link(__('カテゴリー'), ['controller' => 'Categories', 'action' => 'index'], ["class" => $sideberClass]) ?>
@@ -21,16 +22,18 @@ $sideberClass = "list-group-item list-group-item-action list-group-item-info";
         <div class="col-md-10">
             <h3 class="my-4"><?= __('カテゴリー追加') ?></h3>
             <?= $this->Form->create($category) ?>
-                <?php
-                    echo "<div class='row'><div class='col-md-1'></div><div class='col-md-8'>";
-                    echo "<div class='mt-4'>";
-                    echo $this->Form->control('category', ["label" => "カテゴリー", "class" => "form-control"]);
-                    echo "</div><div class='mt-4'>";
-                    echo $this->Form->control('category_sort_number', ["label" => "ソート番号", "min" => 0, "class" => "form-control"]);
-                    echo "</div><div class='mt-4'>";
-                    echo $this->Form->button('送信', ["class" => "btn btn-info float-right"]);
-                    echo "</div><div class='col-md-3'></div></div></div>";
-                ?>
+                <fieldset>
+                    <?php
+                        echo "<div class='row'><div class='col-md-1'></div><div class='col-md-8'>";
+                        echo "<div class='row mt-4'><div class='col-md-6'>";
+                        echo $this->Form->control('category', ["label" => "カテゴリー", "class" => "form-control"]);
+                        echo "</div><div class='col-md-6'></div><div class='col-md-6 mt-4'>";
+                        echo $this->Form->control('category_sort_number', ["label" => "ソート番号", "min" => 0, "class" => "form-control"]);
+                        echo "</div><div class='col-md-6'></div><div class='col-md-6 mt-4'>";
+                        echo $this->Form->button('送信', ["class" => "btn btn-info float-right"]);
+                        echo "</div><div class='col-md-6'></div></div></div><div class='col-md-3'></div></div>";
+                    ?>
+                </fieldset>
             <?= $this->Form->end() ?>
         </div>
     </div>

@@ -159,7 +159,7 @@ default.ctp
                 </div>
 
                 <div class="col-md-5">
-                    <div class="text-center p-2 border bg-secondary">今週の予定></div>
+                    <div class="text-center p-2 border bg-secondary">今週の予定</div>
                     <table class="table mb-0">
                         <tbody class="border border-top-0">
                             <?php foreach ($today_schedules as $schedule): ?>
