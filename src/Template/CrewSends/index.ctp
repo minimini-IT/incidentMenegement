@@ -41,7 +41,7 @@ default.ctp
                         <th class="col-md-1 col-lg-1 text-center border-top-0"><?= __("カテゴリー") ?></th>
                         <th class="col-md-1 col-lg-1 text-center border-top-0"><?= __("ステータス") ?></th>
                         <th class="col-md-1 col-lg-1 text-center border-top-0"><?= __("期限") ?></th>
-                        <th class="col-md-1 col-lg-1 text-center border-top-0"><?= __('編集・削除') ?></th>
+                        <th class="col-md-1 col-lg-1 text-center border-top-0 px-0"><?= __('編集・削除') ?></th>
                     </tr>
                 </thead>
             </table>
@@ -56,7 +56,7 @@ default.ctp
                             ?></td>
                             <td class="col-md-2 text-center border-top-0"><?= h($crewSend->user->first_name . $crewSend->user->last_name) ?></td>
                             <td class="col-md-4 text-center border-top-0"><?= h($crewSend->title) ?></td>
-                            <td class="col-md-1 text-center border-top-0"><?= $crewSend->category->category ?></td>
+                            <td class="col-md-1 text-center border-top-0 px-0"><?= $crewSend->category->category ?></td>
                             <td class="col-md-1 text-center border-top-0"><?= $crewSend->status->status ?></td>
                             <td class="col-md-1 text-center border-top-0"><?= h($crewSend->period) ?></td>
                             <td class="col-md-1 text-center border-top-0">

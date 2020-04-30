@@ -1,24 +1,40 @@
 $(function(){
 
     //chedulesの曜日
+    //class=dayOfWeek -> 曜日
     $('input[name="repe_flag"]').click(function(){
         $(".dayOfWeek").slideToggle();
         if($(this).prop("checked")){
-            $(".dayOfWeek :input").prop("required", true);
+            console.log("繰り返し条件　true");
+            //$(".dayOfWeek :input").prop("required", true);
+            $("input[name='scheduleRepeats[]']").prop("required", true);
         }else{
-            $(".dayOfWeek :input").prop("checked", false);
+            console.log("繰り返し条件　false");
+            //$(".dayOfWeek :input").prop("checked", false);
+            $("input[name='scheduleRepeats[]']").prop("required", false);
         }
-
     });
 
-    $(".dayOfWeek :input").click(function(){
-        if($(".dayOfWeek :checked").length >= 1){
+    /*
+    $("input[name='repe_flag']").click(function(){
+        if($(this :checked)){
             $(".dayOfWeek :input").prop("required", false);
         }else{
             $(".dayOfWeek :input").prop("required", true);
         }
+    });
+    */
 
-    })
+    $(".dayOfWeek :input").click(function(){
+        console.log("曜日　クリック");
+        if($(".dayOfWeek :checked").length >= 1){
+            console.log("曜日 required false");
+            $(".dayOfWeek :input").prop("required", false);
+        }else{
+            console.log("曜日 required true");
+            $(".dayOfWeek :input").prop("required", true);
+        }
+    });
 
 
 

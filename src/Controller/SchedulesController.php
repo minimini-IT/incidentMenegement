@@ -21,7 +21,22 @@ class SchedulesController extends AppController
     {
         $schedules = $this->paginate($this->Schedules);
 
-        $this->set(compact('schedules'));
+        $this->paginate = [
+            'contain' => [
+                "ScheduleRepeats.Repeats",
+                "IncidentManagements.ManagementPrefixes"
+            ],
+            "order" => ["schedule_start_time" => "asc"]
+          ];
+        $today = date("Y/m/d");
+        $todayDayOfWeek = date("w") + 1;
+        $between = ["conditions" => ["'" . $today . "'" . "between Schedules.schedule_start_date and Schedules.schedule_end_date"]];
+        $today_schedules = $this->Schedules->find("all", $between);
+        $today_schedules = $this->paginate($today_schedules);
+
+
+
+        $this->set(compact('schedules', "today_schedules", "todayDayOfWeek", "today"));
     }
 
     /**

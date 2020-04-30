@@ -31,8 +31,7 @@ default.ctp
                         echo $this->Form->control('schedule_end_date', ["label" => "終了日", "type" => "text", "class" => "form-control datepicker", "value" => date("Y/m/d")]);
                         echo "</div></div>";
                         echo "<div class='mt-4 row'><div class='col-md-4'>";
-                        echo $this->Form->error("schedule_start_time"); 
-                        echo $this->Form->control("schedule_start_time", ["label" => "開始時間", "type" => "text", "class" =>"form-control", "placeholder" => "例) 0930 -> 09:30"]);
+                        echo $this->Form->control("schedule_start_time", ["label" => "開始時間(24時間表記)", "type" => "text", "class" =>"form-control", "placeholder" => "例) 0930 -> 09:30"]);
                         echo "</div><div class='col-md-4'>";
                         echo $this->Form->input('repe_flag', [
                             "type" => "checkbox", 

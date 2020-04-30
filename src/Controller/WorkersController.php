@@ -67,17 +67,25 @@ class WorkersController extends AppController
                 'Positions', 
                 'Shifts', 
                 'Duties', 
-            ]
+            ],
+            "order" => ["positions_id" => "asc"],
         ];
-        $users = $this->Workers->Users->find('list', ['limit' => 200]);
-        $positions = $this->Workers->Positions->find('list', ['limit' => 200]);
-        $shifts = $this->Workers->Shifts->find('list', ['limit' => 200]);
-        $duties = $this->Workers->Duties->find('list', ['limit' => 200]);
         $today = date("Y-m-d");
         $todayWorkers = $this->Workers->find("all")
             ->where(["date" => $today]);
         $todayWorkers = $this->paginate($todayWorkers);
-        $this->set(compact('worker', 'users', 'positions', 'shifts', 'duties', "todayWorkers"));
+        $users = $this->Workers->Users->find('list', ['limit' => 200])
+            ->where(["users_id !=" => 7])
+            ->where(["delete_flag" => 0]);
+        foreach($todayWorkers as $today)
+        {
+            $users->where(["users_id !=" => $today->users_id]);
+        }
+        $positions = $this->Workers->Positions->find('list', ['limit' => 200]);
+        $shifts = $this->Workers->Shifts->find('list', ['limit' => 200]);
+        $duties = $this->Workers->Duties->find('list', ['limit' => 200]);
+        $today = date("Y年m月d日");
+        $this->set(compact('worker', 'users', 'positions', 'shifts', 'duties', "todayWorkers", "today"));
     }
 
     /**
@@ -127,6 +135,6 @@ class WorkersController extends AppController
             $this->Flash->error(__('The worker could not be deleted. Please, try again.'));
         }
 
-        return $this->redirect(['action' => 'index']);
+        return $this->redirect(["controller" => "Workers", 'action' => 'add']);
     }
 }

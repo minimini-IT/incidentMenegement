@@ -1,5 +1,6 @@
 <?php
-$sideberClass = "list-group-item list-group-item-action list-group-item-info";
+    $this->assign("title", "メッセージボード作成"); 
+    $sideberClass = "list-group-item list-group-item-action list-group-item-info";
 ?>
 <!--
 default.ctp
@@ -33,14 +34,7 @@ default.ctp
                     echo "</div></div><div class='row mt-4'><div class='col'>";
                     echo $this->Form->control('statuses_id', ["label" => ["text" => "ステータス", "class" => "w-25"], 'options' => $statuses, "class" => "form-control"]);
                     echo "</div><div class='col'>";
-
-
-                    //あとで要訂正（jsのカレンダー使いたい）
                     echo $this->Form->control('period', ["label" => "期限", "type" => "text", "class" => "form-control datepicker", "value" => date("Y/m/d")]);
-
-
-
-
                     echo "</div></div>";
                     echo "<div class='mt-4'>";
                     echo $this->Form->control('comment', ["label" => "コメント", "class" => "form-control"]);

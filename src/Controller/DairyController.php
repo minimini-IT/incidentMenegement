@@ -9,8 +9,6 @@ class DairyController extends AppController{
 
     public function index()
     {
-
-
         //明日から６日分の日付取得
         $days = array();
         for($i = 1; $i < 7; $i++){
@@ -45,6 +43,20 @@ class DairyController extends AppController{
         $today_schedules = $connection->execute($sql)->fetchAll("assoc");
          */
 
+
+
+
+        //$today加算して明日から取得するようにする
+        $weekBetween = ["conditions" => ["'" . $today . "'" . "+ interval 7 day between Schedules.schedule_start_date and Schedules.schedule_end_date"]];
+        $weekry_schedules = $this->Schedules->find("all", $between);
+        $weekry_schedules = $this->paginate($today_schedules);
+
+
+
+
+
+
+        /*
         $connection = ConnectionManager::get("default");
         //scheduleを今日から1週間分取得
         $sql = "select schedules_id, schedule_start_date, schedule_end_date, schedule from schedules where 
@@ -55,6 +67,7 @@ class DairyController extends AppController{
             ('" . $days[4] . "' between schedule_start_date and schedule_end_date) or
             ('" . $days[5] . "' between schedule_start_date and schedule_end_date)";
         $weekry_schedules = $connection->execute($sql)->fetchAll("assoc");
+         */
  
         //weekry_schedulesからtoday_schedulesを引く
         foreach($today_schedules as $today_schedule){
@@ -78,24 +91,79 @@ class DairyController extends AppController{
         //$orderNews = $this->OrderNews->find("all");
         
         //昨日のorder_newsを取得
-        $orderNews = $this->OrderNews->find()
-            ->select(["title", "comment"])
-            ->where(["order_news_date" => $yesterday]);
+        
+        //$orderNews = $this->OrderNews->find()
+        //    ->select(["title", "comment"])
+        //    ->where(["order_news_date" => $yesterday]);
 
         //$between = ["conditions" => ["Workers.date between '" . $today . "' and '" . $today . "'"]];
         //本日の勤務者
         //$workers = $this->Workers->find("all", $between)
+        /*
         $this->paginate = [
             'contain' => [
+                'Users'
+            ]
+        ];
+        $allDayWorkers = $this->Workers->find("all")
+            ->where(["date" => $today])
+            ->where(["positions_id" => 1]);
+        $allDayWorkers = $this->paginate($allDayWorkers);
+        $allDayCount = count($allDayWorkers);
+
+        $dayCrews = $this->Workers->find("all")
+            ->where(["date" => $today])
+            ->where(["positions_id" => 2]);
+        $allDayWorkers = $this->paginate($allDayWorkers);
+        $allDayCount = count($allDayWorkers);
+         */
+
+        $workers = $this->Workers->find("all")
+            ->where(["date" => $today])
+            ->contain([
                 'Users', 
                 'Positions', 
                 'Shifts', 
                 'Duties', 
-            ]
+            ])
+            ->order(["ranks_id" => "asc"]);
+        
+            /*
+        $this->paginate = [
+            'contain' => [
+                'Users' => ["sort" => ["ranks_id" => "asc"]], 
+                'Positions', 
+                'Shifts', 
+                'Duties', 
+            ],
         ];
-        $workers = $this->Workers->find("all")
-            ->where(["date" => $today]);
-        $workers = $this->paginate($workers);
+             */
+        //$workers = $this->paginate($workers);
+        $allDayCount = 0;
+        $dayCrewCount = 0;
+        $nightCrewCount = 0;
+        $dutyCount = 0;
+        foreach($workers as $w)
+        {
+            if($w->positions_id == 1)
+            {
+                $allDayCount++;
+            }
+            else if($w->positions_id == 2)
+            {
+                $dayCrewCount++;
+            }
+            else if($w->positions_id == 3)
+            {
+                $nightCrewCount++;
+            }
+
+            if(null != $w->duty)
+            {
+                $dutyCount++;
+            }
+        }
+
         $statuses = $this->Statuses->find("all")
         //$statuses = $this->Statuses->find("list")
             ->select(["status"]);
@@ -120,7 +188,9 @@ class DairyController extends AppController{
             $i++;
         }
 
-        $this->set(compact('today_schedules', "weekry_schedules", "orderNews", "today", "workers", "statuses", "nowStatus", "todayDayOfWeek"));
+        //$this->set(compact('today_schedules', "weekry_schedules", "orderNews", "today", "workers", "statuses", "nowStatus", "todayDayOfWeek", "allDayWorkers", "allDayCount"));
+        //$this->set(compact('today_schedules', "weekry_schedules", "orderNews", "today", "workers", "statuses", "nowStatus", "todayDayOfWeek", "allDayCount", "dayCrewCount", "nightCrewCount", "dutyCount"));
+        $this->set(compact('today_schedules', "weekry_schedules", "today", "workers", "statuses", "nowStatus", "todayDayOfWeek", "allDayCount", "dayCrewCount", "nightCrewCount", "dutyCount"));
     
     }
 }

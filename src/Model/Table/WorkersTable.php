@@ -37,12 +37,12 @@ class WorkersTable extends Table
         parent::initialize($config);
 
         $this->setTable('workers');
-        $this->setDisplayField('date');
-        $this->setPrimaryKey(['date', 'users_id']);
+        $this->setDisplayField('workers_id');
+        $this->setPrimaryKey(['workers_id']);
 
         $this->belongsTo('Users', [
-            'foreignKey' => 'users_id'
-            //'joinType' => 'INNER'
+            'foreignKey' => 'users_id',
+            'setJoinType' => 'INNER'
         ]);
         $this->belongsTo('Positions', [
             'foreignKey' => 'positions_id'

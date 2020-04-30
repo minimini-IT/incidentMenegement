@@ -36,40 +36,153 @@ default.ctp
         </div>
         <div class="col-md-10">
             <div class="row">
-                <div class="col-md-4">
-                    <table class="table border">
-                        <tbody>
-                            <tr>
-                                <th class="text-center border-bottom">今日の予定</th>
-                            </tr>
+                <div class="col-md-4 px-0">
+                    <div class="text-center p-2 border bg-secondary"><?= $this->Html->link(__('今日の予定'), ["controller" => "Schedules", 'action' => 'index']) ?></div>
+                    <table class="table mb-0">
+                        <tbody class="border border-top-0">
                             <?php foreach ($today_schedules as $schedule): ?>
                                 <?php if(!empty($schedule->schedule_repeats)): ?>
                                     <?php foreach($schedule->schedule_repeats as $repeat): ?>
                                         <?php if($repeat->repeats_id == $todayDayOfWeek): ?>
-                                            <tr>
-                                                <td class="p-0 border-top-0">
-                                                    <?= $schedule->schedule_start_time->format("H:i") ?>
-                                                    〜 
-                                                    <?= h($schedule->schedule) ?>
-                                                </td>
-                                            </tr>
+                                                <tr>
+                                                    <td class="border-top-0 p-0 text-center"><?= $schedule->schedule_start_time->format("H:i") ?> 〜</td>
+                                                    <td class="border-top-0 p-0 text-left"><?= h($schedule->schedule) ?></td>
+                                                </tr>
                                         <?php endif ?>
                                     <?php endforeach ?>
                                 <?php else: ?>
-                                    <tr>
-                                        <td class="p-0 border-top-0">
-                                            <?= $schedule->schedule_start_time->format("H:i") ?>
-                                            〜 
-                                            <?= h($schedule->schedule) ?>
-                                        </td>
-                                    </tr>
+                                        <tr>
+                                            <td class="border-top-0 p-0 text-center"><?= $schedule->schedule_start_time->format("H:i") ?> 〜</td>
+                                            <td class="border-top-0 p-0 text-left"><?= h($schedule->schedule) ?></td>
+                                        </tr>
+                                <?php endif ?>
+                            <?php endforeach ?>
+                        </tbody>
+                    </table>
+<!-- 必要？
+                    <div class="text-center p-2 border border-top-0 bg-secondary"><?= __('今週の命令') ?></div>
+                    <table class="table mb-0">
+                        <tbody class="border border-top-0">
+                            <tr>
+                                <td class="border-top-0 p-0 text-center text-danger">作成中</td>
+                            </tr>
+                        </tbody>
+                    </table>
+-->
+                    <div class="text-center p-2 border border-top-0 bg-secondary"><?= __('勤務者') ?></div>
+                    <table class="table">
+                        <tbody class="border-left border-right">
+
+                            <tr>
+                                <th rowspan="<?= $allDayCount ?>" class="border-top-0 text-center border-bottom"><?= __("常日勤") ?></th>
+                                <?php $i = 0; ?>
+                                <?php foreach ($workers as $worker): ?>
+                                    <?php if($worker->positions_id == 1 && $i == 0): ?>
+                                        <?php $i++; ?>
+                                        <td class="border-top-0 py-0 border-left border-bottom"></td>
+                                        <td class="border-top-0 py-0 border-left border-bottom"><?= h($worker->user->first_name . $worker->user->last_name) ?></td>
+                                        <?php if(null != $worker->duty): ?>
+                                            <td class="border-top-0 py-0 border-left border-bottom"><?= h($worker->duty->duty) ?></td>
+                                        <?php else: ?>
+                                            <td class="border-top-0 py-0 border-left border-bottom"></td>
+                                        <?php endif ?>
+                                        </tr>
+                                    <?php elseif($worker->positions_id == 1 && $i == 1): ?>
+                                        <tr>
+                                            <td class="border-top-0 py-0 border-left border-bottom"></td>
+                                            <td class="border-top-0 py-0 border-left border-bottom"><?= h($worker->user->first_name . $worker->user->last_name) ?></td>
+                                            <?php if(null != $worker->duty): ?>
+                                                <td class="border-top-0 py-0 border-left border-bottom"><?= h($worker->duty->duty) ?></td>
+                                            <?php else: ?>
+                                                <td class="border-top-0 py-0 border-left border-bottom"></td>
+                                            <?php endif ?>
+                                        </tr>
+                                    <?php endif ?>
+                                <?php endforeach ?>
+
+                            <tr>
+                                <th rowspan="<?= $dayCrewCount ?>" class="border-top-0 text-center border-bottom"><?= __("対処係") ?></th>
+                                <?php $i = 0; ?>
+                                <?php foreach ($workers as $worker): ?>
+                                    <?php if($worker->positions_id == 2 && $i == 0): ?>
+                                        <?php $i++; ?>
+                                        <td class="border-top-0 py-0 border-left border-bottom"><?= h($worker->shift->shift) ?></td>
+                                        <td class="border-top-0 py-0 border-left border-bottom"><?= h($worker->user->first_name . $worker->user->last_name) ?></td>
+                                        <?php if(null != $worker->duty): ?>
+                                            <td class="border-top-0 py-0 border-left border-bottom"><?= h($worker->duty->duty) ?></td>
+                                        <?php else: ?>
+                                            <td class="border-top-0 py-0 border-left border-bottom"></td>
+                                        <?php endif ?>
+                                        </tr>
+                                    <?php elseif($worker->positions_id == 2 && $i == 1): ?>
+                                        <tr>
+                                            <td class="border-top-0 py-0 border-left border-bottom"><?= h($worker->shift->shift) ?></td>
+                                            <td class="border-top-0 py-0 border-left border-bottom"><?= h($worker->user->first_name . $worker->user->last_name) ?></td>
+                                            <?php if(null != $worker->duty): ?>
+                                                <td class="border-top-0 py-0 border-left border-bottom"><?= h($worker->duty->duty) ?></td>
+                                            <?php else: ?>
+                                                <td class="border-top-0 py-0 border-left border-bottom"></td>
+                                            <?php endif ?>
+                                        </tr>
+                                    <?php endif ?>
+                                <?php endforeach ?>
+
+                            <tr>
+                                <th rowspan="<?= $nightCrewCount ?>" class="border-top-0 text-center border-bottom"><?= __("監視係") ?></th>
+                                <?php $i = 0; ?>
+                                <?php foreach ($workers as $worker): ?>
+                                    <?php if($worker->positions_id == 3 && $i == 0): ?>
+                                        <?php $i++; ?>
+                                        <td class="border-top-0 py-0 border-left border-bottom"><?= h($worker->shift->shift) ?></td>
+                                        <td class="border-top-0 py-0 border-left border-bottom"><?= h($worker->user->first_name . $worker->user->last_name) ?></td>
+                                        <?php if(null != $worker->duty): ?>
+                                            <td class="border-top-0 py-0 border-left border-bottom"><?= h($worker->duty->duty) ?></td>
+                                        <?php else: ?>
+                                            <td class="border-top-0 py-0 border-left border-bottom"></td>
+                                        <?php endif ?>
+                                        </tr>
+                                    <?php elseif($worker->positions_id == 3 && $i == 1): ?>
+                                        <tr>
+                                            <td class="border-top-0 py-0 border-left border-bottom"><?= h($worker->shift->shift) ?></td>
+                                            <td class="border-top-0 py-0 border-left border-bottom"><?= h($worker->user->first_name . $worker->user->last_name) ?></td>
+                                            <?php if(null != $worker->duty): ?>
+                                                <td class="border-top-0 py-0 border-left border-bottom"><?= h($worker->duty->duty) ?></td>
+                                            <?php else: ?>
+                                                <td class="border-top-0 py-0 border-left border-bottom"></td>
+                                            <?php endif ?>
+                                        </tr>
+                                    <?php endif ?>
+                                <?php endforeach ?>
+                            <!-- </tr>はif(~~~ && $i = 0)内で閉じてる -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="col-md-5">
+                    <div class="text-center p-2 border bg-secondary">今週の予定></div>
+                    <table class="table mb-0">
+                        <tbody class="border border-top-0">
+                            <?php foreach ($today_schedules as $schedule): ?>
+                                <?php if(!empty($schedule->schedule_repeats)): ?>
+                                    <?php foreach($schedule->schedule_repeats as $repeat): ?>
+                                        <?php if($repeat->repeats_id == $todayDayOfWeek): ?>
+                                                <tr>
+                                                    <td class="border-top-0 p-0 text-center"><?= $schedule->schedule_start_time->format("H:i") ?> 〜</td>
+                                                    <td class="border-top-0 p-0 text-left"><?= h($schedule->schedule) ?></td>
+                                                </tr>
+                                        <?php endif ?>
+                                    <?php endforeach ?>
+                                <?php else: ?>
+                                        <tr>
+                                            <td class="border-top-0 p-0 text-center"><?= $schedule->schedule_start_time->format("H:i") ?> 〜</td>
+                                            <td class="border-top-0 p-0 text-left"><?= h($schedule->schedule) ?></td>
+                                        </tr>
                                 <?php endif ?>
                             <?php endforeach ?>
                         </tbody>
                     </table>
                 </div>
-                <div class="col-md-5">
-                </div>
+
                 <div class="col-md-3">
                 </div>
             </div>

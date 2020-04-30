@@ -1,12 +1,13 @@
+<?php
+    $this->assign("title", "メッセージボード"); 
+    $sideberClass = "list-group-item list-group-item-action list-group-item-info";
+?>
 <!--
 default.ctp
 <div class="container-fluid">
     <div class="row mx-auto">
         <div class="col-md-2">
 -->
-<?php
-$sideberClass = "list-group-item list-group-item-action list-group-item-info";
-?>
             <nav>
                 <div class="list-group">
                     <?= $this->Html->link(__('新規作成'), ['action' => 'add'], ["class" => $sideberClass]) ?>
@@ -32,13 +33,13 @@ $sideberClass = "list-group-item list-group-item-action list-group-item-info";
             <table class="table mb-0">
                 <thead>
                     <tr class="row">
-                        <th class="col-md-2 col-lg-2 text-center border-top-0"><?= __("インシデントID") ?></th>
-                        <th class="col-md-4 col-lg-2 text-center border-top-0"><?= __("作成者") ?></th>
-                        <th class="col-md-1 col-lg-4 text-center border-top-0"><?= __("タイトル") ?></th>
-                        <th class="col-md-1 col-lg-1 text-center border-top-0"><?= __("ステータス")  ?></th>
-                        <th class="col-md-1 col-lg-1 text-center border-top-0"><?= __("期限") ?></th>
-                        <th class="col-md-1 col-lg-1 text-center border-top-0"><?= __("作成日時") ?></th>
-                        <th class="col-md-1 col-lg-1 text-center border-top-0"><?= __('編集・削除') ?></th>
+                        <th class="col-md-2 text-center border-top-0"><?= __("インシデントID") ?></th>
+                        <th class="col-md-1 text-center border-top-0"><?= __("作成者") ?></th>
+                        <th class="col-md-5 text-center border-top-0"><?= __("タイトル") ?></th>
+                        <th class="col-md-1 text-center border-top-0 px-0"><?= __("ステータス")  ?></th>
+                        <th class="col-md-1 text-center border-top-0"><?= __("期限") ?></th>
+                        <th class="col-md-1 text-center border-top-0"><?= __("作成日時") ?></th>
+                        <th class="col-md-1 text-center border-top-0 px-0"><?= __('編集・削除') ?></th>
                     </tr>
                 </thead>
             </table>
@@ -52,8 +53,8 @@ $sideberClass = "list-group-item list-group-item-action list-group-item-info";
                                 $messageBord->message_bord->incident_management->created->format("Ymd") . "-" .  
                                 h($messageBord->message_bord->incident_management->number)
                             ?></td>
-                            <td class="col-md-2 text-center border-top-0 align-self-center"><?= h($messageBord->message_bord->user->first_name . $messageBord->message_bord->user->last_name) ?></td>
-                            <td class="col-md-4 text-center border-top-0 align-self-center"><?= h($messageBord->message_bord->title) ?></td>
+                            <td class="col-md-1 text-center border-top-0 align-self-center"><?= h($messageBord->message_bord->user->first_name . $messageBord->message_bord->user->last_name) ?></td>
+                            <td class="col-md-5 text-center border-top-0 align-self-center"><?= h($messageBord->message_bord->title) ?></td>
                             <td class="col-md-1 text-center border-top-0 align-self-center"><?= $messageBord->message_bord->message_status->status ?></td>
                             <td class="col-md-1 text-center border-top-0 align-self-center"><?= h($messageBord->message_bord->period) ?></td>
                             <td class="col-md-1 text-center border-top-0 align-self-center"><?= h($messageBord->message_bord->modified->format("Y/m/d")) ?></td>

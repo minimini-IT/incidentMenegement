@@ -1,6 +1,6 @@
 <?php
-$this->assign("title", "メッセージボード作成"); 
-$sideberClass = "list-group-item list-group-item-action list-group-item-info";
+    $this->assign("title", "メッセージボード作成"); 
+    $sideberClass = "list-group-item list-group-item-action list-group-item-info";
 ?>
 <!--
 default.ctp

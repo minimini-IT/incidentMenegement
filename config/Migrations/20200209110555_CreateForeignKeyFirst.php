@@ -76,34 +76,6 @@ class CreateForeignKeyFirst extends AbstractMigration
                 'default' => null,
                 'null' => false,
             ])
-            ->addColumn('mon', 'boolean', [
-                'default' => false,
-                'null' => false,
-            ])
-            ->addColumn('tue', 'boolean', [
-                'default' => false,
-                'null' => false,
-            ])
-            ->addColumn('wed', 'boolean', [
-                'default' => false,
-                'null' => false,
-            ])
-            ->addColumn('thu', 'boolean', [
-                'default' => false,
-                'null' => false,
-            ])
-            ->addColumn('fri', 'boolean', [
-                'default' => false,
-                'null' => false,
-            ])
-            ->addColumn('sat', 'boolean', [
-                'default' => false,
-                'null' => false,
-            ])
-            ->addColumn('sun', 'boolean', [
-                'default' => false,
-                'null' => false,
-            ])
             ->addColumn('created', 'datetime', [
                 'default' => null,
                 'null' => false,
@@ -254,7 +226,14 @@ class CreateForeignKeyFirst extends AbstractMigration
             )->update();
 
         //workers作成
-        $this->table('workers', ['id' => false, 'primary_key' => ['date', 'users_id']])
+        //$this->table('workers', ['id' => false, 'primary_key' => ['date', 'users_id']])
+        $this->table('workers', ['id' => false, 'primary_key' => ['workers_id']])
+            ->addColumn('workers_id', 'integer', [
+                'autoIncrement' => true,
+                'default' => null,
+                'limit' => 11,
+                'null' => false,
+            ])
             ->addColumn('date', 'date', [
                 'default' => null,
                 'null' => false,
