@@ -22,31 +22,27 @@ default.ctp
         </div>
         <div class="col-md-10">
             <h3 class="my-4"><?= __('階級') ?></h3>
-            <table class="table">
-                <thead>
-                    <tr class="row">
-                        <td class="col-md-1 border-top-0"></td>
-                        <th class="col-md-2 text-left border-top-0"><?= __('階級') ?></th>
-                        <th class="col-md-2 text-left border-top-0"><?= __('略称') ?></th>
-                        <th class="col-md-2 text-left border-top-0"><?= __('ソート番号') ?></th>
-                        <th class="col-md-2 text-center border-top-0"><?= __('編集・削除') ?></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($ranks as $rank): ?>
-                        <tr class="row">
-                            <td class="col-md-1 border-top-0"></td>
-                            <td class="col-md-2 text-left border-top-0"><?= h($rank->rank) ?></td>
-                            <td class="col-md-2 text-left border-top-0"><?= h($rank->abb_rank) ?></td>
-                            <td class="col-md-2 text-left border-top-0"><?= $this->Number->format($rank->rank_sort_number) ?></td>
-                            <td class="col-md-2 text-center border-top-0">
-                                <?= $this->Html->link(__('編集'), ['action' => 'edit', $rank->ranks_id]) ?>
-                                <?= $this->Form->postLink(__('削除'), ['action' => 'delete', $rank->ranks_id], ['confirm' => __('この階級を削除してよろしいですか？ {0}?', $rank->rank)]) ?>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+            <div class="row">
+                <div class="col-md-1 border-top-0"></div>
+                <div class="col-md-2 text-left border-top-0"><p class="tableHeader"><?= __('階級') ?></p></div>
+                <div class="col-md-2 text-left border-top-0"><p class="tableHeader"><?= __('略称') ?></p></div>
+                <div class="col-md-2 text-left border-top-0"><p class="tableHeader"><?= __('ソート番号') ?></p></div>
+                <div class="col-md-2 text-center border-top-0"><p class="tableHeader"><?= __('編集・削除') ?></p></div>
+            </div>
+            <?php foreach ($ranks as $rank): ?>
+                <div class="row">
+                    <div class="col-md-1 border-top-0"></div>
+                    <div class="col-md-2 text-left border-top-0"><p class="tableBody"><?= h($rank->rank) ?></p></div>
+                    <div class="col-md-2 text-left border-top-0"><p class="tableBody"><?= h($rank->abb_rank) ?></p></div>
+                    <div class="col-md-2 text-left border-top-0"><p class="tableBody"><?= $this->Number->format($rank->rank_sort_number) ?></p></div>
+                    <div class="col-md-2 text-center border-top-0">
+                        <div class="my-3">
+                            <span><?= $this->Html->link(__('編集'), ['action' => 'edit', $rank->ranks_id]) ?></span>
+                            <span><?= $this->Form->postLink(__('削除'), ['action' => 'delete', $rank->ranks_id], ['confirm' => __('この階級を削除してよろしいですか？ {0}?', $rank->rank)]) ?></span>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
         </div>
     </div>
     <div class="paginator">

@@ -148,9 +148,9 @@ echo "</div><div class='col'>";
                     echo "</div>";
 
                     //filesへの入力
-                    echo "<div class='row mt-4'><div class='col'>";
+                    echo "<div class='row mt-4'><div class='col-md-8'>";
                     echo $this->Form->file("file[]", ["multiple" => "true", "secure" => false, "class" => "form-control-file"]);
-                    echo "</div><div class='col'>";
+                    echo "</div><div class='col-md-4'>";
                     echo $this->Form->button('送信', ["class" => "btn btn-info float-right"]);
                     echo "</div></div>";
                     echo "</div><div class='col-md-3'></div></div>";

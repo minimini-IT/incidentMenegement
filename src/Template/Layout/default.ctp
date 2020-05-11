@@ -24,9 +24,9 @@
     </title>
     <?= $this->Html->meta('icon') ?>
 
+    <?= $this->Html->css('bootstrap.min.css') ?>
     <?= $this->Html->css('base.css') ?>
     <?= $this->Html->css('style.css') ?>
-    <?= $this->Html->css('bootstrap.min.css') ?>
     <?= $this->Html->css('jquery-ui.css') ?>
     <?= $this->Html->script('jquery-3.4.1.js') ?>
     <?= $this->Html->script('popper.js') ?>
@@ -35,6 +35,7 @@
     <?= $this->Html->script('datepicker-ja.js') ?>
     <?= $this->Html->script('pullDown') ?>
     <?= $this->Html->script('checkBox') ?>
+    <?= $this->Html->script('transition') ?>
     <?= $this->Html->scriptStart() ?>
         $(function() {
             $(".datepicker").datepicker();

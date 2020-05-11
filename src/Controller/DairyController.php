@@ -9,22 +9,14 @@ class DairyController extends AppController{
 
     public function index()
     {
-        //明日から６日分の日付取得
-        $days = array();
-        for($i = 1; $i < 7; $i++){
-            $today = date("Y-m-d", strtotime("{$i} day"));
-            $days[] = $today;
-        } 
+        //ログインユーザ
+        $loginUser = $this->getRequest()->getSession()->read("Auth.User.users_id");
+
+        //-----今日の予定------
+        $this->loadModels(["OrderNews", "Workers", "Statuses", "RiskDetections", "Schedules", "IncidentManagements", "CrewSends", "PrivateMessages"]);
+        //日付部分はクォーテーション必要
         //今日の日付を取得
         $today = date("Y-m-d");
-
-        //機能の日付を取得
-        $yesterday = date("Y-m-d", strtotime("-1 day"));
-        
-        $this->loadModels(["OrderNews", "Workers", "Statuses", "RiskDetections", "Schedules"]);
-
-        //scheduleを今日の日付で取得
-        //日付部分はクォーテーション必要
         $between = ["conditions" => ["'" . $today . "'" . "between Schedules.schedule_start_date and Schedules.schedule_end_date"]];
 
         $this->paginate = [
@@ -33,10 +25,131 @@ class DairyController extends AppController{
             ],
             "order" => ["schedule_start_time" => "asc"]
           ];
+
+        //曜日取得
         $todayDayOfWeek = date("w") + 1;
-        
+
         $today_schedules = $this->Schedules->find("all", $between);
         $today_schedules = $this->paginate($today_schedules);
+
+        //-----勤務者------
+        $workers = $this->Workers->find("all")
+            ->where(["date" => $today])
+            ->contain([
+                'Users', 
+                'Positions', 
+                'Shifts', 
+                'Duties', 
+            ])
+            ->order(["ranks_id" => "asc"]);
+
+        $allDayCount = 0;
+        $dayCrewCount = 0;
+        $nightCrewCount = 0;
+
+        foreach($workers as $w)
+        {
+            if($w->positions_id == 1)
+            {
+                $allDayCount++;
+            }
+            else if($w->positions_id == 2)
+            {
+                $dayCrewCount++;
+            }
+            else if($w->positions_id == 3)
+            {
+                $nightCrewCount++;
+            }
+        }
+
+        //------サイバー攻撃対処状況------
+        $statuses = $this->Statuses->find("all")
+            ->select(["status"]);
+
+        //各ステータスそれぞれの件数を取得
+        //ステータスの数
+        $statusNumber = $statuses->count();
+        //ステータス数を保存
+        $nowStatus = [];
+        $i = 1;
+        foreach($statuses as $status)
+        {
+            $count = $this->RiskDetections->find("all")
+                ->where(["statuses_id" => $i]);
+            $count = $count->count();
+            //$nowStatus = array_merge($nowStatus, [$status => $count]);
+            //収束は表示しなくてよし
+            if($status->status != "収束")
+            {
+                $nowStatus[$status->status] = $count;
+            }
+            $i++;
+        }
+
+        //-----継続中のスレッド------
+            //クルー申し送り
+        $crewSendContinueThread = $this->CrewSends->find("all", [
+            "contain" => [
+                "IncidentManagements.ManagementPrefixes"
+            ],
+            "limit" => 5
+        ])
+            ->order(["crew_sends_id" => "desc"])
+            ->where(["statuses_id !=" => 3]);
+
+            //メッセージボード
+        $messageBordContinueThread = $this->PrivateMessages->find("all", [
+            "contain" => [
+                "MessageBords.IncidentManagements.ManagementPrefixes"
+            ],
+            "limit" => 5,
+            "order" => ["MessageBords.message_bords_id" => "desc"]
+        ])
+            ->where(["OR" => [["PrivateMessages.users_id" => $loginUser], ["PrivateMessages.users_id" => 7]]])
+            ->where(["message_statuses_id !=" => 2]);
+        /*
+        $messageBordContinueThread = $this->MessageBords->find("all", [
+            "contain" => [
+                "IncidentManagements.ManagementPrefixes"
+            ],
+        ])
+            ->order(["message_bords_id" => "desc"])
+            ->where(["message_statuses_id !=" => 2]);
+         */
+
+        //-----最新のスレッド------
+            //クルー申し送り
+        $crewSendLatestThread = $this->CrewSends->find("all", [
+            "contain" => [
+                "IncidentManagements.ManagementPrefixes"
+            ],
+            "limit" => 5
+        ])
+            ->order(["crew_sends_id" => "desc"]);
+
+            //メッセージボード
+        $messageBordLatestThread = $this->PrivateMessages->find("all", [
+            "contain" => [
+                "MessageBords.IncidentManagements.ManagementPrefixes"
+            ],
+            "limit" => 5,
+            "order" => ["MessageBords.message_bords_id" => "desc"]
+        ])
+            ->where(["OR" => [["PrivateMessages.users_id" => $loginUser], ["PrivateMessages.users_id" => 7]]]);
+
+
+        //明日から６日分の日付取得
+        $days = array();
+        for($i = 1; $i < 7; $i++){
+            $today = date("Y-m-d", strtotime("{$i} day"));
+            $days[] = $today;
+        } 
+
+        //機能の日付を取得
+        $yesterday = date("Y-m-d", strtotime("-1 day"));
+        
+
         /*
         $sql = "select schedules_id, schedule_start_date, schedule_end_date, schedule_start_time, schedule from schedules where '" . $today . "' between schedule_start_date and schedule_end_date";
         $connection = ConnectionManager::get("default");
@@ -46,10 +159,12 @@ class DairyController extends AppController{
 
 
 
+        /*
         //$today加算して明日から取得するようにする
         $weekBetween = ["conditions" => ["'" . $today . "'" . "+ interval 7 day between Schedules.schedule_start_date and Schedules.schedule_end_date"]];
         $weekry_schedules = $this->Schedules->find("all", $between);
         $weekry_schedules = $this->paginate($weekry_schedules);
+         */
 
 
 
@@ -70,6 +185,7 @@ class DairyController extends AppController{
          */
  
         //weekry_schedulesからtoday_schedulesを引く
+        /*
         foreach($today_schedules as $today_schedule){
             $i = 0;
             foreach($weekry_schedules as $weekry_schedule){
@@ -81,6 +197,7 @@ class DairyController extends AppController{
                 $i++;
             }
         }
+         */
 
         //order_newsを今日の分取得
         /*        
@@ -118,15 +235,6 @@ class DairyController extends AppController{
         $allDayCount = count($allDayWorkers);
          */
 
-        $workers = $this->Workers->find("all")
-            ->where(["date" => $today])
-            ->contain([
-                'Users', 
-                'Positions', 
-                'Shifts', 
-                'Duties', 
-            ])
-            ->order(["ranks_id" => "asc"]);
         
             /*
         $this->paginate = [
@@ -139,58 +247,12 @@ class DairyController extends AppController{
         ];
              */
         //$workers = $this->paginate($workers);
-        $allDayCount = 0;
-        $dayCrewCount = 0;
-        $nightCrewCount = 0;
-        $dutyCount = 0;
-        foreach($workers as $w)
-        {
-            if($w->positions_id == 1)
-            {
-                $allDayCount++;
-            }
-            else if($w->positions_id == 2)
-            {
-                $dayCrewCount++;
-            }
-            else if($w->positions_id == 3)
-            {
-                $nightCrewCount++;
-            }
 
-            if(null != $w->duty)
-            {
-                $dutyCount++;
-            }
-        }
-
-        $statuses = $this->Statuses->find("all")
-        //$statuses = $this->Statuses->find("list")
-            ->select(["status"]);
-
-        //各ステータスそれぞれの件数を取得
-        //ステータスの数
-        $statusNumber = $statuses->count();
-        //ステータス数を保存
-        $nowStatus = [];
-        $i = 1;
-        foreach($statuses as $status)
-        {
-            $count = $this->RiskDetections->find("all")
-                ->where(["statuses_id" => $i]);
-            $count = $count->count();
-            //$nowStatus = array_merge($nowStatus, [$status => $count]);
-            //収束は表示しなくてよし
-            if($status->status != "収束")
-            {
-                $nowStatus[$status->status] = $count;
-            }
-            $i++;
-        }
 
         //$this->set(compact('today_schedules', "weekry_schedules", "orderNews", "today", "workers", "statuses", "nowStatus", "todayDayOfWeek", "allDayWorkers", "allDayCount"));
         //$this->set(compact('today_schedules', "weekry_schedules", "orderNews", "today", "workers", "statuses", "nowStatus", "todayDayOfWeek", "allDayCount", "dayCrewCount", "nightCrewCount", "dutyCount"));
-        $this->set(compact('today_schedules', "weekry_schedules", "today", "workers", "statuses", "nowStatus", "todayDayOfWeek", "allDayCount", "dayCrewCount", "nightCrewCount", "dutyCount"));
+        //$this->set(compact('today_schedules', "weekry_schedules", "today", "workers", "statuses", "nowStatus", "todayDayOfWeek", "allDayCount", "dayCrewCount", "nightCrewCount", "dutyCount"));
+        $this->set(compact("loginUser", 'today_schedules', "today", "workers", "statuses", "nowStatus", "todayDayOfWeek", "allDayCount", "dayCrewCount", "nightCrewCount", "crewSendContinueThread", "messageBordContinueThread", "crewSendLatestThread", "messageBordLatestThread"));
     
     }
 }

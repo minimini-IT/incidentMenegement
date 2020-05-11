@@ -26,37 +26,33 @@ default.ctp
         </div>
         <div class="col-md-10">
             <h3 class="my-4"><?= __('ユーザ') ?></h3>
-            <table class="table">
-                <thead>
-                    <tr class="row">
-                        <th class="col-md-1 text-left border-top-0"></th>
-                        <th class="col-md-1 text-left border-top-0">姓</th>
-                        <th class="col-md-1 text-left border-top-0">名</th>
-                        <th class="col-md-2 text-left border-top-0">所属班</th>
-                        <th class="col-md-2 text-left border-top-0">階級</th>
-                        <th class="col-md-2 text-left border-top-0">権限</th>
-                        <th class="col-md-1 text-left border-top-0">転出</th>
-                        <th class="col-md-2 text-center border-top-0">編集・削除</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($users as $user): ?>
-                        <tr class="row">
-                            <td class="col-md-1 border-top-0"></td>
-                            <td class="col-md-1 text-left border-top-0"><?= h($user->first_name) ?></td>
-                            <td class="col-md-1 text-left border-top-0"><?= h($user->last_name) ?></td>
-                            <td class="col-md-2 text-left border-top-0"><?= h($user->belong->belong) ?></td>
-                            <td class="col-md-2 text-left border-top-0"><?= h($user->rank->rank) ?></td>
-                            <td class="col-md-2 text-left border-top-0"><?= h($user->role->role_jp) ?></td>
-                            <td class="col-md-1 text-left border-top-0"><?= h($user->delete_flag) ?></td>
-                            <td class="col-md-2 text-center border-top-0">
-                                <?= $this->Html->link(__('編集'), ['action' => 'edit', $user->users_id]) ?>
-                                <?= $this->Form->postLink(__('削除'), ['action' => 'delete', $user->users_id], ['confirm' => __('Are you sure you want to delete # {0}?', $user->first_name . $user->last_name)]) ?>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+            <div class="row">
+                <div class="col-md-1 text-left border-top-0"></div>
+                <div class="col-md-1 text-left border-top-0"><p class="tableHeader">姓</p></div>
+                <div class="col-md-1 text-left border-top-0"><p class="tableHeader">名</p></div>
+                <div class="col-md-2 text-left border-top-0"><p class="tableHeader">所属班</p></div>
+                <div class="col-md-2 text-left border-top-0"><p class="tableHeader">階級</p></div>
+                <div class="col-md-2 text-left border-top-0"><p class="tableHeader">権限</p></div>
+                <div class="col-md-1 text-left border-top-0"><p class="tableHeader">転出</p></div>
+                <div class="col-md-2 text-center border-top-0"><p class="tableHeader">編集・削除</p></div>
+            </div>
+            <?php foreach ($users as $user): ?>
+                <div class="row">
+                    <div class="col-md-1 border-top-0"></div>
+                    <div class="col-md-1 text-left border-top-0"><p class="tableBody"><?= h($user->first_name) ?></p></div>
+                    <div class="col-md-1 text-left border-top-0"><p class="tableBody"><?= h($user->last_name) ?></p></div>
+                    <div class="col-md-2 text-left border-top-0"><p class="tableBody"><?= h($user->belong->belong) ?></p></div>
+                    <div class="col-md-2 text-left border-top-0"><p class="tableBody"><?= h($user->rank->rank) ?></p></div>
+                    <div class="col-md-2 text-left border-top-0"><p class="tableBody"><?= h($user->role->role_jp) ?></p></div>
+                    <div class="col-md-1 text-left border-top-0"><p class="tableBody"><?= h($user->delete_flag) ?></p></div>
+                    <div class="col-md-2 text-center border-top-0">
+                        <div class="my-3">
+                            <span><?= $this->Html->link(__('編集'), ['action' => 'edit', $user->users_id]) ?></span>
+                            <span><?= $this->Form->postLink(__('削除'), ['action' => 'delete', $user->users_id], ['confirm' => __('Are you sure you want to delete # {0}?', $user->first_name . $user->last_name)]) ?></span>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
         </div>
     </div>
     <div class="paginator">

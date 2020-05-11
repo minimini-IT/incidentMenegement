@@ -93,7 +93,9 @@ class MessageBordChronologiesController extends AppController
     public function edit($id = null)
     {
         $messageBordChronology = $this->MessageBordChronologies->get($id, [
-            'contain' => []
+            'contain' => [
+                "MessageBords"
+            ]
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $messageBordChronology = $this->MessageBordChronologies->patchEntity($messageBordChronology, $this->request->getData());

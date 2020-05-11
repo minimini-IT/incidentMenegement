@@ -1,5 +1,6 @@
 <?php
-$sideberClass = "list-group-item list-group-item-action list-group-item-info";
+    $this->assign("title", "メッセージボード編集(クロノロ)"); 
+    $sideberClass = "list-group-item list-group-item-action list-group-item-info";
 ?>
 <!--
 default.ctp
@@ -129,9 +130,9 @@ echo "</div><div class='col'>";
                      */
                     
                     //filesへの入力
-                    echo "<div class='row mt-4'><div class='col'>";
+                    echo "<div class='row mt-4'><div class='col-md-8'>";
                     echo $this->Form->file("file[]", ["multiple" => "true", "secure" => false, "class" => "form-control-file"]);
-                    echo "</div><div class='col'>";
+                    echo "</div><div class='col-md-4'>";
                     echo $this->Form->button('送信', ["class" => "btn btn-info float-right"]);
                     echo "</div></div>";
                     echo "</div><div class='col-md-3'></div></div>";

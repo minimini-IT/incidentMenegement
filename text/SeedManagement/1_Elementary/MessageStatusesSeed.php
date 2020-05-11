@@ -20,10 +20,12 @@ class MessageStatusesSeed extends AbstractSeed
     {
         $data = [
             [
-                "status" => "調整中"
+                "status" => "調整中",
+                "status_sort_number" => 1
             ],
             [
-                "status" => "完了"
+                "status" => "完了",
+                "status_sort_number" => 2
             ]
         ];
 

@@ -1,44 +1,122 @@
 <?php
-/**
- * @var \App\View\AppView $this
- * @var \App\Model\Entity\RiskDetection $riskDetection
- */
+    $this->assign("title", "リスク編集"); 
+    $sideberClass = "list-group-item list-group-item-action list-group-item-info";
 ?>
-<nav class="large-3 medium-4 columns" id="actions-sidebar">
-    <ul class="side-nav">
-        <li class="heading"><?= __('Actions') ?></li>
-        <li><?= $this->Html->link(__('戻る'), ['controller' => 'RiskDetections', 'action' => 'risk']) ?></li>
-        <li><?= $this->Html->link(__('システム追加'), ['controller' => 'Systems', 'action' => 'add']) ?></li>
-        <li><?= $this->Html->link(__('基地追加'), ['controller' => 'Bases', 'action' => 'add']) ?></li>
-        <li><?= $this->Html->link(__('部隊追加'), ['controller' => 'Units', 'action' => 'add']) ?></li>
-        <li><?= $this->Html->link(__('ステータス追加'), ['controller' => 'Statuses', 'action' => 'add']) ?></li>
-        <li><?= $this->Html->link(__('報告の有無追加'), ['controller' => 'Reports', 'action' => 'add']) ?></li>
-        <li><?= $this->Html->link(__('正・誤検知追加'), ['controller' => 'Positives', 'action' => 'add']) ?></li>
-        <li><?= $this->Html->link(__('SecLevel追加'), ['controller' => 'SecLevels', 'action' => 'add']) ?></li>
-        <li><?= $this->Html->link(__('侵入経路追加'), ['controller' => 'InfectionRoutes', 'action' => 'add']) ?></li>
-    </ul>
-</nav>
-<div class="riskDetections form large-9 medium-8 columns content">
-    <?= $this->Form->create($riskDetection) ?>
-    <fieldset>
-        <legend><?= __('編集') ?></legend>
-        <?php
-            echo $this->Form->control('systems_id', ["label" => "システム", 'options' => $systems, 'empty' => true]);
-            echo $this->Form->control('bases_id', ["label" => "基地", 'options' => $bases, 'empty' => true]);
-            echo $this->Form->control('units_id', ["label" => "部隊", 'options' => $units, 'empty' => true]);
-            echo $this->Form->control('occurrence_datetime', ["label" => "発生時刻", 'empty' => true]);
-            echo $this->Form->control('response_start_time', ["label" => "対処開始時刻"]);
-            echo $this->Form->control('response_end_time', ["label" => "対処完了時刻", 'empty' => true]);
-            echo $this->Form->control('statuses_id', ["label" => "ステータス", 'options' => $statuses]);
-            echo $this->Form->control('reports_id', ["label" => "報告の有無", 'options' => $reports]);
-            echo $this->Form->control('positives_id', ["label" => "正・誤検知", 'options' => $positives]);
-            echo $this->Form->control('sec_levels_id', ["label" => "Sec Level", 'options' => $secLevels]);
-            echo $this->Form->control('infection_routes_id', ["label" => "侵入経路", 'options' => $infectionRoutes]);
-            echo $this->Form->control('sim_live_flag', ["label" => "シムフラグ"]);
-            echo $this->Form->control('samari_flag', ["label" => "サマリ強制表示"]);
-            echo $this->Form->control('comment', ["label" => "基本情報"]);
-        ?>
-    </fieldset>
-    <?= $this->Form->button(__('Submit')) ?>
-    <?= $this->Form->end() ?>
+<!--
+default.ctp
+<div class="container-fluid">
+    <div class="row mx-auto">
+        <div class="col-md-2">
+-->
+            <nav>
+                <div class="list-group">
+                    <?= $this->Html->link(__('TOP'), ["controller" => "Dairy", 'action' => 'index'], ["class" => $sideberClass]) ?>
+                    <?= $this->Html->link(__('サイバー攻撃等'), ['action' => 'index'], ["class" => $sideberClass]) ?>
+                    <?= $this->Html->link(__('クルー申し送り'), ["controller" => "CrewSends", 'action' => 'index'], ["class" => $sideberClass]) ?>
+                    <?= $this->Html->link(__('メッセージボード'), ["controller" => "MessageBords", 'action' => 'index'], ["class" => $sideberClass]) ?>
+                    <?= $this->Html->link(__('システム追加'), ['controller' => 'Systems', 'action' => 'add'], ["class" => $sideberClass]) ?>
+                    <?= $this->Html->link(__('基地追加'), ['controller' => 'Bases', 'action' => 'add'], ["class" => $sideberClass]) ?>
+                    <?= $this->Html->link(__('部隊追加'), ['controller' => 'Units', 'action' => 'add'], ["class" => $sideberClass]) ?>
+                    <?= $this->Html->link(__('ステータス追加'), ['controller' => 'Statuses', 'action' => 'add'], ["class" => $sideberClass]) ?>
+                    <?= $this->Html->link(__('報告有無追加'), ['controller' => 'Reports', 'action' => 'add'], ["class" => $sideberClass]) ?>
+                    <?= $this->Html->link(__('検知状況追加'), ['controller' => 'Positives', 'action' => 'add'], ["class" => $sideberClass]) ?>
+                    <?= $this->Html->link(__('SecLevel追加'), ['controller' => 'SecLevels', 'action' => 'add'], ["class" => $sideberClass]) ?>
+                    <?= $this->Html->link(__('感染経路追加'), ['controller' => 'InfectionRoutes', 'action' => 'add'], ["class" => $sideberClass]) ?>
+                </div>
+            </nav>
+        </div>
+        <div class="col-md-10">
+            <h3 class="my-4">
+                <?= __(
+                    $riskDetection->incident_management->management_prefix->management_prefix . '-' .  
+                    $riskDetection->incident_management->created->format('Ymd') . '-' .  
+                    $riskDetection->incident_management->number .
+                    " 編集"
+                ) ?>
+            </h3>
+            <?= $this->Form->create($riskDetection) ?>
+                <fieldset>
+                    <div class="row">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-2">
+                    <?= $this->Form->control('response_start_time', ["label" => "対処開始時刻", "name" => "response_start_time[]", "type" => "text", "class" => "form-control datepicker"]) ?>
+                        </div>
+                        <div class="col-md-1 d-flex align-items-end">
+                    <?= $this->Form->control('response_start_time', ["label" => false, "name" => "response_start_time[]", "type" => "text", "class" =>"form-control", "placeholder" => "09:30"]) ?>
+                        </div>
+                        <div class="col-md-2">
+                            <?= $this->Form->control('occurrence_datetime', ["label" => "発生時刻", "name" => "occurrence_datetime[]", "type" => "text", "class" => "form-control datepicker"]) ?>
+                        </div>
+                        <div class="col-md-1 d-flex align-items-end">
+                            <?= $this->Form->control('occurrence_datetime', ["label" => false, "name" => "occurrence_datetime[]", "type" => "text", "class" =>"form-control", "placeholder" => "09:30"]) ?>
+                        </div>
+                        <div class="col-md-2">
+                            <?= $this->Form->control('response_end_time', ["label" => "対処終了時刻", "name" => "response_end_time[]", "type" => "text", "class" => "form-control datepicker"]) ?>
+                        </div>
+                        <div class="col-md-1 d-flex align-items-end">
+                            <?= $this->Form->control('response_end_time', ["label" => false, "name" => "response_end_time[]", "type" => "text", "class" =>"form-control", "placeholder" => "09:30"]) ?>
+                        </div>
+                        <div class="col-md-2"></div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-3">
+                            <?= $this->Form->control('systems_id', ["label" => "システム", 'options' => $systems, "class" => "form-control"]) ?>
+                        </div>
+                        <div class="col-md-2">
+                            <?= $this->Form->control('bases_id', ["label" => "基地", 'options' => $bases, 'empty' => true, "class" => "form-control"]) ?>
+                        </div>
+                        <div class="col-md-3">
+                            <?= $this->Form->control('units_id', ["label" => "部隊", 'options' => $units, 'empty' => true, "class" => "form-control"]) ?>
+                        </div>
+                        <div class="col-md-2">
+                            <?= $this->Form->control('statuses_id', ["label" => "ステータス", 'options' => $statuses, "class" => "form-control"]) ?>
+                        </div>
+                        <div class="col-md-1"></div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-2">
+                            <?= $this->Form->control('reports_id', ["label" => "報告の有無", 'options' => $reports, "class" => "form-control"]) ?>
+                        </div>
+                        <div class="col-md-2">
+                            <?= $this->Form->control('positives_id', ["label" => "正/誤検知", 'options' => $positives, "class" => "form-control"]) ?>
+                        </div>
+                        <div class="col-md-2">
+                            <?= $this->Form->control('sec_levels_id', ["label" => "SecLevel", 'options' => $secLevels, "class" => "form-control"]) ?>
+                        </div>
+                        <div class="col-md-3">
+                            <?= $this->Form->control('infection_routes_id', ["label" => "侵入経路", 'options' => $infectionRoutes, "class" => "form-control"]) ?>
+                        </div>
+                        <div class="col-md-2"></div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-2">
+                            <?= $this->Form->control('sim_live_flag', ["label" => "シム/ライブ"]) ?>
+                        </div>
+                        <div class="col-md-2">
+                            <?= $this->Form->control('samari_flag', ["label" => "サマリ強制表示"]) ?>
+                        </div>
+                        <div class="col-md-7"></div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-10">
+                            <?= $this->Form->control('comment', ["label" => "基本情報", "type" => "textarea", "class" => "form-control"]) ?>
+                        </div>
+                        <div class="col-md-1"></div>
+                    </div>
+                        <?= $this->Form->control('attachment', ["type" => "hidden"]) ?>
+                        <?= $this->Form->control('incident_cases_id', ["type" => "hidden"]) ?>
+                    <div class="row mt-4">
+                        <div class="col-md-11">
+                            <?= $this->Form->button('送信', ["class" => "btn btn-info float-right"]) ?>
+                        </div>
+                        <div class="col-md-1"></div>
+                    </div>
+                </fieldset>
+            <?= $this->Form->end() ?>
+        </div>
+    </div>
 </div>

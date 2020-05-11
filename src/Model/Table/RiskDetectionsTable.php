@@ -106,6 +106,7 @@ class RiskDetectionsTable extends Table
             ->integer('risk_detections_id')
             ->allowEmptyString('risk_detections_id', null, 'create');
 
+        /*
         $validator
             ->dateTime('occurrence_datetime')
             ->allowEmptyDateTime('occurrence_datetime');
@@ -118,6 +119,7 @@ class RiskDetectionsTable extends Table
         $validator
             ->dateTime('response_end_time')
             ->allowEmptyDateTime('response_end_time');
+         */
 
         $validator
             ->boolean('sim_live_flag')

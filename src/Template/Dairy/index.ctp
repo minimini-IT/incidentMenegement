@@ -13,6 +13,7 @@ default.ctp
                     <?= $this->Html->link(__('TOP'), ["controller" => "Dairy", 'action' => 'index'], ["class" => $sideberClass]) ?>
                     <?= $this->Html->link(__('サイバー攻撃等'), ["controller" => "RiskDetections", 'action' => 'index'], ["class" => $sideberClass]) ?>
                     <?= $this->Html->link(__('クルー申し送り'), ["controller" => "CrewSends", 'action' => 'index'], ["class" => $sideberClass]) ?>
+                    <?= $this->Html->link(__('メッセージボード'), ["controller" => "MessageBords", 'action' => 'index'], ["class" => $sideberClass]) ?>
                     <?= $this->Html->link(__('ユーザ一覧'), ["controller" => "Users", 'action' => 'index'], ["class" => $sideberClass]) ?>
                     <?= $this->Html->link(__('勤務者入力'), ["controller" => "Workers", 'action' => 'add'], ["class" => $sideberClass]) ?>
                     <?= $this->Html->link(__('予定入力'), ["controller" => "Schedules", 'action' => 'add'], ["class" => $sideberClass]) ?>
@@ -36,6 +37,30 @@ default.ctp
         </div>
         <div class="col-md-10">
             <div class="row">
+                <div class="col-md-1"></div>
+                <div class="col-md-5">
+                    <?= $this->Form->create("", [
+                        "type" => "get",
+                        "url" => [
+                            "controller" => "Dairy",
+                            "action" => "search"
+                        ]
+                    ]) ?>
+                        <div class="row">
+                            <div class="col-md-9 p-0">
+                                <?= $this->Form->control('incidentID', ["label" => false, "type" => "text", "class" => "form-control-sm"]) ?>
+                            </div>
+                            <div class="col-md-3 p-0">
+                                <?= $this->Form->button('検索', ["class" => "btn-sm btn-info"]) ?>
+                            </div>
+                        </div>
+                    <?= $this->Form->end() ?>
+                </div>
+                <div class="col-md-6"></div>
+
+
+
+
                 <div class="col-md-4 px-0">
                     <div class="text-center p-2 border bg-secondary"><?= $this->Html->link(__('今日の予定'), ["controller" => "Schedules", 'action' => 'index']) ?></div>
                     <table class="table mb-0">
@@ -59,22 +84,108 @@ default.ctp
                             <?php endforeach ?>
                         </tbody>
                     </table>
-<!-- 必要？
-                    <div class="text-center p-2 border border-top-0 bg-secondary"><?= __('今週の命令') ?></div>
-                    <table class="table mb-0">
-                        <tbody class="border border-top-0">
-                            <tr>
-                                <td class="border-top-0 p-0 text-center text-danger">作成中</td>
-                            </tr>
-                        </tbody>
-                    </table>
--->
+
+                    <div class="text-center p-2 border border-top-0 bg-secondary"><?= __('継続中のスレッド') ?></div>
+                    <div class="text-center border border-top-0"><?= __('クルー申し送り') ?></div>
+                    <div class="row">
+                        <?php foreach($crewSendContinueThread as $thread): ?>
+                            <div class="col-md-5 pr-0">
+                                <p class="continueThread border-bottom border-left pl-2 my-0 text-info crewSendTransition" id="<?= 
+                                    h($thread->incident_management->management_prefix->management_prefix) . "-" .  
+                                    $thread->incident_management->created->format("Ymd") . "-" .  
+                                    h($thread->incident_management->number) 
+                                ?>">
+                                    <?=
+                                        h($thread->incident_management->management_prefix->management_prefix) . "-" .  
+                                        $thread->incident_management->created->format("Ymd") . "-" .  
+                                        h($thread->incident_management->number) 
+                                    ?>
+                                </p>
+                            </div>
+                            <div class="col-md-7 pl-0">
+                                <p class="continueThread border-bottom border-right my-0"><?=
+                                    $thread->title
+                                ?></p>
+                            </div>
+                        <?php endforeach ?>
+                    </div>
+                    <div class="text-center border border-top-0"><?= __('メッセージボード') ?></div>
+                    <div class="row">
+                        <?php foreach($messageBordContinueThread as $thread): ?>
+                            <div class="col-md-5 pr-0">
+                                <p class="continueThread border-bottom border-left pl-2 my-0 text-info messageBordTransition" id="<?= 
+                                    h($thread->message_bord->incident_management->management_prefix->management_prefix) . "-" .  
+                                    $thread->message_bord->incident_management->created->format("Ymd") . "-" .  
+                                    h($thread->message_bord->incident_management->number) 
+                                ?>">
+                                    <?=
+                                        h($thread->message_bord->incident_management->management_prefix->management_prefix) . "-" .  
+                                        $thread->message_bord->incident_management->created->format("Ymd") . "-" .  
+                                        h($thread->message_bord->incident_management->number) 
+                                    ?>
+                                </p>
+                            </div>
+                            <div class="col-md-7 pl-0">
+                                <p class="continueThread border-bottom border-right my-0"><?=
+                                    $thread->message_bord->title
+                                ?></p>
+                            </div>
+                        <?php endforeach ?>
+                    </div>
+
+                    <div class="text-center p-2 border border-top-0 bg-secondary"><?= __('最新スレッド') ?></div>
+                    <div class="text-center border border-top-0"><?= __('クルー申し送り') ?></div>
+                    <div class="row">
+                        <?php foreach($crewSendLatestThread as $thread): ?>
+                            <div class="col-md-5 pr-0">
+                                <p class="continueThread border-bottom border-left pl-2 my-0 text-info crewSendTransition" id="<?= 
+                                    h($thread->incident_management->management_prefix->management_prefix) . "-" .  
+                                    $thread->incident_management->created->format("Ymd") . "-" .  
+                                    h($thread->incident_management->number) 
+                                ?>">
+                                    <?=
+                                        h($thread->incident_management->management_prefix->management_prefix) . "-" .  
+                                        $thread->incident_management->created->format("Ymd") . "-" .  
+                                        h($thread->incident_management->number) 
+                                    ?>
+                                </p>
+                            </div>
+                            <div class="col-md-7 pl-0">
+                                <p class="continueThread border-bottom border-right my-0"><?=
+                                    $thread->title
+                                ?></p>
+                            </div>
+                        <?php endforeach ?>
+                    </div>
+                    <div class="text-center border border-top-0"><?= __('メッセージボード') ?></div>
+                    <div class="row">
+                        <?php foreach($messageBordLatestThread as $thread): ?>
+                            <div class="col-md-5 pr-0">
+                                <p class="continueThread border-bottom border-left pl-2 my-0 text-info messageBordTransition" id="<?= 
+                                    h($thread->message_bord->incident_management->management_prefix->management_prefix) . "-" .  
+                                    $thread->message_bord->incident_management->created->format("Ymd") . "-" .  
+                                    h($thread->message_bord->incident_management->number) 
+                                ?>">
+                                    <?=
+                                        h($thread->message_bord->incident_management->management_prefix->management_prefix) . "-" .  
+                                        $thread->message_bord->incident_management->created->format("Ymd") . "-" .  
+                                        h($thread->message_bord->incident_management->number) 
+                                    ?>
+                                </p>
+                            </div>
+                            <div class="col-md-7 pl-0">
+                                <p class="continueThread border-bottom border-right my-0"><?=
+                                    $thread->message_bord->title
+                                ?></p>
+                            </div>
+                        <?php endforeach ?>
+                    </div>
+
                     <div class="text-center p-2 border border-top-0 bg-secondary"><?= __('勤務者') ?></div>
                     <table class="table">
                         <tbody class="border-left border-right">
-
                             <tr>
-                                <th rowspan="<?= $allDayCount ?>" class="border-top-0 text-center border-bottom"><?= __("常日勤") ?></th>
+                                <th rowspan="<?= $allDayCount ?>" class="border-top-0 text-center border-bottom py-0"><?= __("常日勤") ?></th>
                                 <?php $i = 0; ?>
                                 <?php foreach ($workers as $worker): ?>
                                     <?php if($worker->positions_id == 1 && $i == 0): ?>
@@ -101,12 +212,16 @@ default.ctp
                                 <?php endforeach ?>
 
                             <tr>
-                                <th rowspan="<?= $dayCrewCount ?>" class="border-top-0 text-center border-bottom"><?= __("対処係") ?></th>
+                                <th rowspan="<?= $dayCrewCount ?>" class="border-top-0 text-center border-bottom py-0"><?= __("対処係") ?></th>
                                 <?php $i = 0; ?>
                                 <?php foreach ($workers as $worker): ?>
                                     <?php if($worker->positions_id == 2 && $i == 0): ?>
                                         <?php $i++; ?>
-                                        <td class="border-top-0 py-0 border-left border-bottom"><?= h($worker->shift->shift) ?></td>
+                                        <?php if(null != $worker->shift): ?>
+                                            <td class="border-top-0 py-0 border-left border-bottom"><?= h($worker->shift->shift) ?></td>
+                                        <?php else: ?>
+                                            <td class="border-top-0 py-0 border-left border-bottom"></td>
+                                        <?php endif ?>
                                         <td class="border-top-0 py-0 border-left border-bottom"><?= h($worker->user->first_name . $worker->user->last_name) ?></td>
                                         <?php if(null != $worker->duty): ?>
                                             <td class="border-top-0 py-0 border-left border-bottom"><?= h($worker->duty->duty) ?></td>
@@ -116,7 +231,11 @@ default.ctp
                                         </tr>
                                     <?php elseif($worker->positions_id == 2 && $i == 1): ?>
                                         <tr>
+                                        <?php if(null != $worker->shift): ?>
                                             <td class="border-top-0 py-0 border-left border-bottom"><?= h($worker->shift->shift) ?></td>
+                                        <?php else: ?>
+                                            <td class="border-top-0 py-0 border-left border-bottom"></td>
+                                        <?php endif ?>
                                             <td class="border-top-0 py-0 border-left border-bottom"><?= h($worker->user->first_name . $worker->user->last_name) ?></td>
                                             <?php if(null != $worker->duty): ?>
                                                 <td class="border-top-0 py-0 border-left border-bottom"><?= h($worker->duty->duty) ?></td>
@@ -128,12 +247,16 @@ default.ctp
                                 <?php endforeach ?>
 
                             <tr>
-                                <th rowspan="<?= $nightCrewCount ?>" class="border-top-0 text-center border-bottom"><?= __("監視係") ?></th>
+                                <th rowspan="<?= $nightCrewCount ?>" class="border-top-0 text-center border-bottom py-0"><?= __("監視係") ?></th>
                                 <?php $i = 0; ?>
                                 <?php foreach ($workers as $worker): ?>
                                     <?php if($worker->positions_id == 3 && $i == 0): ?>
                                         <?php $i++; ?>
-                                        <td class="border-top-0 py-0 border-left border-bottom"><?= h($worker->shift->shift) ?></td>
+                                        <?php if(null != $worker->shift): ?>
+                                            <td class="border-top-0 py-0 border-left border-bottom"><?= h($worker->shift->shift) ?></td>
+                                        <?php else: ?>
+                                            <td class="border-top-0 py-0 border-left border-bottom"></td>
+                                        <?php endif ?>
                                         <td class="border-top-0 py-0 border-left border-bottom"><?= h($worker->user->first_name . $worker->user->last_name) ?></td>
                                         <?php if(null != $worker->duty): ?>
                                             <td class="border-top-0 py-0 border-left border-bottom"><?= h($worker->duty->duty) ?></td>
@@ -143,7 +266,11 @@ default.ctp
                                         </tr>
                                     <?php elseif($worker->positions_id == 3 && $i == 1): ?>
                                         <tr>
+                                        <?php if(null != $worker->shift): ?>
                                             <td class="border-top-0 py-0 border-left border-bottom"><?= h($worker->shift->shift) ?></td>
+                                        <?php else: ?>
+                                            <td class="border-top-0 py-0 border-left border-bottom"></td>
+                                        <?php endif ?>
                                             <td class="border-top-0 py-0 border-left border-bottom"><?= h($worker->user->first_name . $worker->user->last_name) ?></td>
                                             <?php if(null != $worker->duty): ?>
                                                 <td class="border-top-0 py-0 border-left border-bottom"><?= h($worker->duty->duty) ?></td>
@@ -157,8 +284,19 @@ default.ctp
                         </tbody>
                     </table>
                 </div>
+                <div class="col-md-5 px-0">
+                    <div class="text-center p-2 border bg-secondary">週間予定</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-                <div class="col-md-5">
+
+
+
+<!--
+                <div class="col-md-5 px-0">
                     <div class="text-center p-2 border bg-secondary">今週の予定</div>
                     <table class="table mb-0">
                         <tbody class="border border-top-0">
@@ -182,17 +320,12 @@ default.ctp
                         </tbody>
                     </table>
                 </div>
-
                 <div class="col-md-3">
                 </div>
             </div>
         </div>
     </div>
 </div>
-<!--
-
-
-
 <div class="schedules index large-9 medium-8 columns content">
                 <h4><?= $today ?></h4>
     <table>

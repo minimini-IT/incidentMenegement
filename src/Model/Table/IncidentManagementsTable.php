@@ -44,6 +44,18 @@ class IncidentManagementsTable extends Table
             'foreignKey' => 'management_prefixes_id',
             'joinType' => 'INNER'
         ]);
+
+        $this->hasMany("CrewSends", [
+            "foreignKey" => "incident_managements_id"
+        ]);
+
+        $this->hasMany("MessageBords", [
+            "foreignKey" => "incident_managements_id"
+        ]);
+
+        $this->hasMany("RiskDetections", [
+            "foreignKey" => "incident_managements_id"
+        ]);
     }
 
     /**

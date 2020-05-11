@@ -1,6 +1,6 @@
 <?php
-use Cake\datasource\ConnectionManager;
-$sideberClass = "list-group-item list-group-item-action list-group-item-info";
+    $this->assign("title", "クルー申し送り"); 
+    $sideberClass = "list-group-item list-group-item-action list-group-item-info";
 ?>
 <!--
 default.ctp
@@ -32,41 +32,39 @@ default.ctp
             <?php elseif($close == "close"): ?>
                 <p><?= $this->Form->postLink(__('ステータス「クローズ」表示'), ['action' => 'closeOpen']) ?></p>
             <?php endif ?>
-            <table class="table">
-                <thead>
-                    <tr class="row">
-                        <th class="col-md-2 col-lg-2 text-center border-top-0"><?= __("インシデントID") ?></th>
-                        <th class="col-md-2 col-lg-2 text-center border-top-0"><?= __("作成者") ?></th>
-                        <th class="col-md-4 col-lg-4 text-center border-top-0"><?= __("タイトル") ?></th>
-                        <th class="col-md-1 col-lg-1 text-center border-top-0"><?= __("カテゴリー") ?></th>
-                        <th class="col-md-1 col-lg-1 text-center border-top-0"><?= __("ステータス") ?></th>
-                        <th class="col-md-1 col-lg-1 text-center border-top-0"><?= __("期限") ?></th>
-                        <th class="col-md-1 col-lg-1 text-center border-top-0 px-0"><?= __('編集・削除') ?></th>
-                    </tr>
-                </thead>
-            </table>
+
+            <div class="row border-bottom">
+                <div class="col-md-2 text-center border-top-0 font-weight-bold"><p class="tableHeader mb-0 align-self-center"><?= __("インシデントID") ?></p></div>
+                <div class="col-md-2 text-center border-top-0 font-weight-bold"><p class="tableHeader"><?= __("作成者") ?></p></div>
+                <div class="col-md-4 border-top-0 font-weight-bold"><p class="tableHeader"><?= __("タイトル") ?></p></div>
+                <div class="col-md-1 text-center border-top-0 font-weight-bold px-0"><p class="tableHeader"><?= __("カテゴリー") ?></p></div>
+                <div class="col-md-1 text-center border-top-0 font-weight-bold px-0"><p class="tableHeader"><?= __("ステータス") ?></p></div>
+                <div class="col-md-1 text-center border-top-0 font-weight-bold"><p class="tableHeader"><?= __("期限") ?></p></div>
+                <div class="col-md-1 text-center border-top-0 px-0 font-weight-bold"><p class="tableHeader"><?= __('編集・削除') ?></p></div>
+            </div>
+
+
+            <?php $i = 0 ?>
             <?php foreach ($crewSends as $crewSend): ?>
-                <table class="branch border-bottom table">
-                    <tbody>
-                        <tr class="row">
-                            <td class="col-md-2 text-left border-top-0"><?= 
-                                h($crewSend->incident_management->management_prefix->management_prefix) . "-" .  
-                                $crewSend->incident_management->created->format("Ymd") . "-" .  
-                                h($crewSend->incident_management->number)
-                            ?></td>
-                            <td class="col-md-2 text-center border-top-0"><?= h($crewSend->user->first_name . $crewSend->user->last_name) ?></td>
-                            <td class="col-md-4 text-center border-top-0"><?= h($crewSend->title) ?></td>
-                            <td class="col-md-1 text-center border-top-0 px-0"><?= $crewSend->category->category ?></td>
-                            <td class="col-md-1 text-center border-top-0"><?= $crewSend->status->status ?></td>
-                            <td class="col-md-1 text-center border-top-0"><?= h($crewSend->period) ?></td>
-                            <td class="col-md-1 text-center border-top-0">
-                              <?= $this->Html->link(__('編集'), ['action' => 'edit', $crewSend->crew_sends_id]) ?>
-                              <?= $this->Form->postLink(__('削除'), ['action' => 'delete', $crewSend->crew_sends_id], ['confirm' => __('{0} この申し送りを削除してよろしいですか？', $crewSend->title)]) ?>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="node px-4">
+                <div class="branch border-bottom row">
+                    <div class="col-md-2 text-left border-top-0"><p class="tableBody incidentManagementsId" name="incidentId[<?= $i ?>]"><?= 
+                        h($crewSend->incident_management->management_prefix->management_prefix) . "-" .  
+                        $crewSend->incident_management->created->format("Ymd") . "-" .  
+                        h($crewSend->incident_management->number)
+                    ?></p></div>
+                    <div class="col-md-2 text-center border-top-0"><p class="tableBody"><?= h($crewSend->user->first_name . $crewSend->user->last_name) ?></p></div>
+                    <div class="col-md-4 border-top-0"><p class="tableBody"><?= h($crewSend->title) ?></p></div>
+                    <div class="col-md-1 text-center border-top-0 px-0"><p class="tableBody"><?= $crewSend->category->category ?></p></div>
+                    <div class="col-md-1 text-center border-top-0"><p class="tableBody"><?= $crewSend->status->status ?></p></div>
+                    <div class="col-md-1 text-center border-top-0"><p class="tableBody"><?= $crewSend->period->format("Y/m/d") ?></p></div>
+                    <div class="col-md-1 text-center border-top-0">
+                        <div class="my-3">
+                              <span><?= $this->Html->link(__('編集'), ['action' => 'edit', $crewSend->crew_sends_id]) ?></span>
+                              <span><?= $this->Form->postLink(__('削除'), ['action' => 'delete', $crewSend->crew_sends_id], ['confirm' => __('{0} この申し送りを削除してよろしいですか？', $crewSend->title)]) ?></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node px-4 border-bottom">
                     <div class="row">
                         <div class="col-md-9 pl-4">
                             <div class="border-bottom"><?= $this->Text->autoparagraph($crewSend->comment) ?></div>
@@ -74,55 +72,50 @@ default.ctp
 
                         <!-- ファイル -->
                         <div class="col-md-3 pr-0">
-                            <table>
+                            <div>
                                 <?php foreach($crewSend->files as $file): ?>
-                                    <tr class="border">
-                                        <td class="col-md-10">
-                                            <?= $this->Html->link($file->file_name, ["controller" => "Download", 'action' => 'sendFileDownload', $file->files_id]) ?>
-                                        </td>
-                                        <!--<td><?= $file->file_size ?></td>-->
-                                        <td class="col-md-2 px-0">
-                                            <?= $this->Form->postLink(__('削除'), ["controller" => "Files", 'action' => 'delete', $file->files_id], ['confirm' => __('ファイルを削除しますか？ # {0}?', $file->file_name)]) ?>
-                                        </td>
-                                    </tr>
+                                    <div class="border row">
+                                        <div class="col-md-10">
+                                            <p class="tableBody"><?= $this->Html->link($file->file_name, ["controller" => "Download", 'action' => 'sendFileDownload', $file->files_id]) ?></p>
+                                        </div>
+                                        <div class="col-md-2 px-0">
+                                            <p class="tableBody"><?= $this->Form->postLink(__('削除'), ["controller" => "Files", 'action' => 'delete', $file->files_id], ['confirm' => __('ファイルを削除しますか？ # {0}?', $file->file_name)]) ?></p>
+                                        </div>
+                                    </div>
                                 <?php endforeach ?>
-                            </table>
+                            </div>
                         </div>
                     </div>
-
-          
                     <?php foreach ($crewSend->crew_send_comments as $crewSendComment): ?>
                         <!--<div class="mt-3 row">-->
-                            <table class="table mt-4 border-bottom border-info">
-                                <tr class="row">
-                                    <th class="col-md-4 pl-0 border-top-0 text-info"><?= h($crewSendComment->user->first_name . $crewSendComment->user->last_name) ?></th>
-                                    <th class="col-md-3 border-top-0 text-info"><?= h($crewSendComment->created) ?></th>
-                                    <td class="col-md-3 border-top-0"></td>
-                                    <td class="col-md-2 border-top-0 text-right pr-0">
-                                        <?= $this->Html->link(__('編集'), ["controller" => "CrewSendComments", 'action' => 'edit', $crewSendComment->crew_send_comments_id]) ?>
-                                        <?= $this->Form->postLink(__('削除'), ["controller" => "CrewSendComments", 'action' => 'delete', $crewSendComment->crew_send_comments_id], ['confirm' => __('コメントを削除しますか？', $crewSendComment->crew_send_comments_id)]) ?>
-                                    </td>
-                                </tr>
-                            </table>
-                        <!--</div>-->
+                            <div class="mt-4 border-bottom border-info">
+                                <div class="row">
+                                    <div class="col-md-4 pl-0 border-top-0 text-info"><p class="tableHeader"><?= h($crewSendComment->user->first_name . $crewSendComment->user->last_name) ?></p></div>
+                                    <div class="col-md-3 border-top-0 text-info"><p class="tableHeader"><?= h($crewSendComment->created) ?></p></div>
+                                    <div class="col-md-3 border-top-0"></div>
+                                    <div class="col-md-2 border-top-0 text-right pr-0">
+                                        <span><?= $this->Html->link(__('編集'), ["controller" => "CrewSendComments", 'action' => 'edit', $crewSendComment->crew_send_comments_id]) ?></span>
+                                        <?= $this->Form->postLink(__('削除'), ["controller" => "CrewSendComments", 'action' => 'delete', $crewSendComment->crew_send_comments_id], ['confirm' => __('コメントを削除しますか？', $crewSendComment->crew_send_comments_id)]) ?></p>
+                                    </div>
+                                </div>
+                            </div>
                         <div class="row">
                             <div class="col-md-9 border-bottom pl-4">
                                 <?= $this->Text->autoparagraph($crewSendComment->comment) ?>
                             </div>
-                            <div class="col-md-3 border-bottom pr-0">
-                                <table class="table">
+                            <div class="col-md-3 pr-0">
+                                <div>
                                     <?php foreach($crewSendComment->comment_files as $file): ?>
-                                        <tr class="border-bottom border-info row">
-                                            <td class="border-top-0 col-md-10">
-                                                <?= $this->Html->link($file->file_name, ["controller" => "Download", 'action' => 'commentFileDownload', $file->comment_files_id]) ?>
-                                            </td>
-                                            <!--<td><?= $file->file_size ?></td>-->
-                                            <td class="border-top-0 col-md-2 px-2">
-                                                <?= $this->Form->postLink(__('削除'), ["controller" => "CommentFiles", 'action' => 'delete', $file->comment_files_id], ['confirm' => __('ファイルを削除しますか？ # {0}?', $file->file_name)]) ?>
-                                            </td>
-                                        </tr>
+                                        <div class="border-bottom border-info row">
+                                            <div class="border-top-0 col-md-10">
+                                                <p class="tableBody"><?= $this->Html->link($file->file_name, ["controller" => "Download", 'action' => 'commentFileDownload', $file->comment_files_id]) ?></p>
+                                            </div>
+                                            <div class="border-top-0 col-md-2 px-2">
+                                                <p class="tableBody"><?= $this->Form->postLink(__('削除'), ["controller" => "CommentFiles", 'action' => 'delete', $file->comment_files_id], ['confirm' => __('ファイルを削除しますか？ # {0}?', $file->file_name)]) ?></p>
+                                            </div>
+                                        </div>
                                     <?php endforeach ?>
-                                </table> 
+                                </div> 
                             </div>
                         </div>
                     <?php endforeach ?>
@@ -144,14 +137,15 @@ default.ctp
                         echo "</div>";
                         echo $this->Form->control('crew_sends_id', ["type" => "hidden", 'value' => $crewSend->crew_sends_id]);
                         //filesへの入力
-                        echo "<div class='row'><div class='col mt-4'>";
+                        echo "<div class='row'><div class='col-md-8 mt-4'>";
                         echo $this->Form->file("file[]", ["multiple" => "true", "secure" => false, "class" => "form-control-file"]);
-                        echo "</div><div class='col'></div><div class='col'>";
+                        echo "</div><div class='col-md-4'>";
                         echo $this->Form->button('送信', ["class" => "btn btn-info mt-4 float-right"]);
                         echo "</div></div>";
                         echo $this->Form->end();
                     ?>
                 </div>
+                <?php $i++ ?>
             <?php endforeach ?>
         </div>
     </div>

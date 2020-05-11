@@ -208,6 +208,11 @@ class CreateFoundations extends AbstractMigration
                 'limit' => 255,
                 'null' => false,
             ])
+            ->addColumn('status_sort_number', 'integer', [
+                'default' => null,
+                'limit' => 255,
+                'null' => false,
+            ])
             ->create();
 
         //systems作成

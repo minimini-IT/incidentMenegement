@@ -79,7 +79,9 @@ class IncidentChronologiesController extends AppController
     public function edit($id = null)
     {
         $incidentChronology = $this->IncidentChronologies->get($id, [
-            'contain' => []
+            'contain' => [
+                "RiskDetections.IncidentManagements.ManagementPrefixes"
+            ]
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $incidentChronology = $this->IncidentChronologies->patchEntity($incidentChronology, $this->request->getData());

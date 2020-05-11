@@ -12,7 +12,7 @@ default.ctp
                 <div class="list-group">
                     <?= $this->Html->link(__('新規作成'), ['action' => 'add'], ["class" => $sideberClass]) ?>
                     <?= $this->Html->link(__('新規作成（クロノロ）'), ['action' => 'chronoloAdd'], ["class" => $sideberClass]) ?>
-                    <?= $this->Html->link(__('ステータス'), ['controller' => 'Statuses', 'action' => 'index'], ["class" => $sideberClass]) ?>
+                    <?= $this->Html->link(__('ステータス'), ['controller' => 'MessageStatuses', 'action' => 'index'], ["class" => $sideberClass]) ?>
                     <?= $this->Html->link(__('TOP'), ["controller" => "Dairy", 'action' => 'index'], ["class" => $sideberClass]) ?>
                     <?= $this->Html->link(__('サイバー攻撃等'), ["controller" => "RiskDetections", 'action' => 'index'], ["class" => $sideberClass]) ?>
                     <?= $this->Html->link(__('クルー申し送り'), ["controller" => "CrewSends", 'action' => 'index'], ["class" => $sideberClass]) ?>
@@ -30,114 +30,100 @@ default.ctp
         </div>
         <div class="col-md-10">
             <h3 class="my-4"><?= __('メッセージボード') ?></h3>
-            <table class="table mb-0">
-                <thead>
-                    <tr class="row">
-                        <th class="col-md-2 text-center border-top-0"><?= __("インシデントID") ?></th>
-                        <th class="col-md-1 text-center border-top-0"><?= __("作成者") ?></th>
-                        <th class="col-md-5 text-center border-top-0"><?= __("タイトル") ?></th>
-                        <th class="col-md-1 text-center border-top-0 px-0"><?= __("ステータス")  ?></th>
-                        <th class="col-md-1 text-center border-top-0"><?= __("期限") ?></th>
-                        <th class="col-md-1 text-center border-top-0"><?= __("作成日時") ?></th>
-                        <th class="col-md-1 text-center border-top-0 px-0"><?= __('編集・削除') ?></th>
-                    </tr>
-                </thead>
-            </table>
-            <?php $c = 0 ?>
+            <div class="row border-bottom">
+                <div class="col-md-2 text-center border-top-0 font-weight-bold"><p class="tableHeader mb-0 align-self-center"><?= __("インシデントID") ?></p></div>
+                <div class="col-md-2 text-center border-top-0 font-weight-bold"><p class="tableHeader"><?= __("作成者") ?></p></div>
+                <div class="col-md-4 text-center border-top-0 font-weight-bold"><p class="tableHeader"><?= __("タイトル") ?></p></div>
+                <div class="col-md-1 text-center border-top-0 font-weight-bold px-0"><p class="tableHeader"><?= __("ステータス") ?></p></div>
+                <div class="col-md-1 text-center border-top-0 font-weight-bold px-0"><p class="tableHeader"><?= __("期限") ?></p></div>
+                <div class="col-md-1 text-center border-top-0 font-weight-bold"><p class="tableHeader"><?= __("作成日時") ?></p></div>
+                <div class="col-md-1 text-center border-top-0 px-0 font-weight-bold"><p class="tableHeader"><?= __('編集・削除') ?></p></div>
+            </div>
+            <?php $i = 0 ?>
             <?php foreach ($messageBords as $messageBord): ?>
-                <table class="branch border-bottom table">
-                    <tbody>
-                        <tr class="row">
-                            <td class="col-md-2 text-left border-top-0 align-self-center"><?= 
-                                h($messageBord->message_bord->incident_management->management_prefix->management_prefix) . "-" .  
-                                $messageBord->message_bord->incident_management->created->format("Ymd") . "-" .  
-                                h($messageBord->message_bord->incident_management->number)
-                            ?></td>
-                            <td class="col-md-1 text-center border-top-0 align-self-center"><?= h($messageBord->message_bord->user->first_name . $messageBord->message_bord->user->last_name) ?></td>
-                            <td class="col-md-5 text-center border-top-0 align-self-center"><?= h($messageBord->message_bord->title) ?></td>
-                            <td class="col-md-1 text-center border-top-0 align-self-center"><?= $messageBord->message_bord->message_status->status ?></td>
-                            <td class="col-md-1 text-center border-top-0 align-self-center"><?= h($messageBord->message_bord->period) ?></td>
-                            <td class="col-md-1 text-center border-top-0 align-self-center"><?= h($messageBord->message_bord->modified->format("Y/m/d")) ?></td>
-                            <td class="col-md-1 text-center border-top-0 list-group">
-                                <?= $this->Html->link(__('閲覧権限'), ['action' => 'privateView', $messageBord->message_bord->message_bords_id]) ?>
-                                <?php if($messageBord->message_bord->chronology_flag === false): ?>
-                                    <?= $this->Html->link(__('宛先削除'), ['action' => 'destinationView', $messageBord->message_bord->message_bords_id]) ?>
-                                <?php endif ?>
-                                <!-- chronoloならchronoloEditへ -->
-                                <?php if($messageBord->message_bord->chronology_flag): ?>
-                                    <?= $this->Html->link(__('編集'), ['action' => 'chronoloEdit', $messageBord->message_bord->message_bords_id]) ?>
-                                <?php else: ?>
-                                    <?= $this->Html->link(__('編集'), ['action' => 'edit', $messageBord->message_bord->message_bords_id]) ?>
-                                <?php endif ?>
-
-                                <?= $this->Form->postLink(__('削除'), ['action' => 'delete', $messageBord->message_bord->message_bords_id], ['confirm' => __('{0} を削除してよろしいですか？', $messageBord->title)]) ?>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-
-
-                <div class="node px-4">
+                <div class="branch border-bottom row">
+                    <div class="col-md-2 text-left border-top-0"><p class="incidentManagementsId" name="incidentId[<?= $i ?>]"><?= 
+                        h($messageBord->message_bord->incident_management->management_prefix->management_prefix) . "-" .  
+                        $messageBord->message_bord->incident_management->created->format("Ymd") . "-" .  
+                        h($messageBord->message_bord->incident_management->number)
+                    ?></p></div>
+                    <div class="col-md-2 text-center border-top-0"><p><?= h($messageBord->message_bord->user->first_name . $messageBord->message_bord->user->last_name) ?></p></div>
+                    <div class="col-md-4 text-center border-top-0"><p><?= h($messageBord->message_bord->title) ?></p></div>
+                    <div class="col-md-1 text-center border-top-0 px-0"><p><?= $messageBord->message_bord->message_status->status ?></p></div>
+                    <div class="col-md-1 text-center border-top-0"><p><?= h($messageBord->message_bord->period) ?></p></div>
+                    <div class="col-md-1 text-center border-top-0"><p><?= h($messageBord->message_bord->modified->format("Y/m/d")) ?></p></div>
+                    <div class="col-md-1 text-center border-top-0">
+                        <div class="my-3">
+                            <!-- chronoloならchronoloEditへ -->
+                            <?php if($messageBord->message_bord->chronology_flag): ?>
+                                <span><?= $this->Html->link(__('編集'), ['action' => 'chronoloEdit', $messageBord->message_bord->message_bords_id]) ?></span>
+                            <?php else: ?>
+                                <span><?= $this->Html->link(__('編集'), ['action' => 'edit', $messageBord->message_bord->message_bords_id]) ?></span>
+                            <?php endif ?>
+                            <span><?= $this->Form->postLink(__('削除'), ['action' => 'delete', $messageBord->message_bord->message_bords_id], ['confirm' => __('{0} を削除してよろしいですか？', $messageBord->title)]) ?></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node px-4 border-bottom">
                     <div class="row">
                         <div class="col-md-9 pl-4">
                             <div class="border-bottom"><?= $this->Text->autoparagraph($messageBord->message_bord->message) ?></div>
                         </div>
-
                         <!--ファイル-->
                         <div class="col-md-3 pr-0">
-                            <table class="table">
+                            <div>
                                 <?php foreach($messageBord->message_bord->message_files as $file): ?>
-                                    <tr class="border-bottom border-info row">
-                                        <td class="border-top-0 col-md-10">
-                                            <?= $this->Html->link($file->file_name, ["controller" => "Download", 'action' => 'bordFileDownload', $file->message_files_id]) ?>
-                                        </td>
-                                        <td class="border-top-0 col-md-2 pl-0">
-                                            <?= $this->Form->postLink(__('削除'), ["controller" => "MessageFiles", 'action' => 'delete', $file->message_files_id], ['confirm' => __('ファイルを削除しますか？ # {0}?', $file->file_name)]) ?>
-                                        </td>
-                                    </tr>
+                                    <div class="border-bottom border-info row">
+                                        <div class="border-top-0 col-md-10">
+                                            <p><?= $this->Html->link($file->file_name, ["controller" => "Download", 'action' => 'bordFileDownload', $file->message_files_id]) ?></p>
+                                        </div>
+                                        <div class="border-top-0 col-md-2 pl-0">
+                                            <p><?= $this->Form->postLink(__('削除'), ["controller" => "MessageFiles", 'action' => 'delete', $file->message_files_id], ['confirm' => __('ファイルを削除しますか？ # {0}?', $file->file_name)]) ?></p>
+                                        </div>
+                                    </div>
                                 <?php endforeach ?>
-                            </table>
+                            </div>
                         </div>
                     </div>
                     <?php if($messageBord->message_bord->chronology_flag == false): ?>
                         <div class="row mt-4">
-                            <div class="col-md-1 text-center align-self-center"><h6>回答</h6></div>
+                            <div class="col-md-1 text-center align-self-center">
+                                <h6>回答</h6>
+                                <span><?= $this->Html->link(__('閲覧権限'), ['action' => 'privateView', $messageBord->message_bord->message_bords_id]) ?></span>
+                                <?php if($messageBord->message_bord->chronology_flag === false): ?>
+                                    <span><?= $this->Html->link(__('宛先削除'), ['action' => 'destinationView', $messageBord->message_bord->message_bords_id]) ?></span>
+                                <?php endif ?>
+                            </div>
                             <div class="col-md-11">
-                                <table class="table">
-                                    <tr class="row border-bottom border-info">
-                                        <th class="col-md-2 border-top-0 text-info">ユーザ名</th>
-                                        <th class="col-md-3 border-top-0 text-center text-info">選択肢</th>
-                                        <th class="col-md-4 border-top-0 text-center text-info">メッセージ</th>
-                                        <th class="col-md-2 border-top-0 text-center text-info">更新日</th>
-                                        <th class="col-md-1 border-top-0 text-right text-info">編集</th>
-                                    </tr>
-                                    <?php $user = [] ?>
-                                    <?php foreach($messageBord->message_bord->message_destinations as $destination): ?>
-                                        <?php if(null == $destination->message_answer): ?>
-                                            <?php $user[$destination->message_destinations_id] = $destination->user->first_name . $destination->user->last_name ?>
+                                <div class="row border-bottom border-info align-items-center">
+                                    <div class="col-md-2 border-top-0 text-info"><p class="tableHeader">ユーザ名</p></div>
+                                    <div class="col-md-3 border-top-0 text-center text-info"><p class="tableHeader">選択肢</p></div>
+                                    <div class="col-md-4 border-top-0 text-info"><p class="tableHeader">メッセージ</p></div>
+                                    <div class="col-md-2 border-top-0 text-center text-info"><p class="tableHeader">更新日</p></div>
+                                    <div class="col-md-1 border-top-0 text-right text-info"><p class="tableHeader">編集</p></div>
+                                </div>
+                                <?php $user = [] ?>
+                                <?php foreach($messageBord->message_bord->message_destinations as $destination): ?>
+                                    <?php if(null == $destination->message_answer): ?>
+                                        <?php $user[$destination->message_destinations_id] = $destination->user->first_name . $destination->user->last_name ?>
+                                    <?php endif ?>
+                                    <div class="row">
+                                        <div class="col-md-2 border-top-0 border-bottom">
+                                            <p><?= $destination->user->first_name . $destination->user->last_name ?></p>
+                                        </div>
+                                        <?php if(null !== $destination->message_answer): ?>
+                                            <div class="col-md-3 border-top-0 text-center border-bottom"><p><?= $destination->message_answer->message_choice->content ?></p></div>
+                                            <div class="col-md-4 border-top-0 border-bottom align-items-center"><?= $this->Text->autoparagraph($destination->message_answer->message) ?></div>
+                                            <div class="col-md-2 border-top-0 text-center border-bottom"><p><?= $destination->message_answer->modified->format("Y/m/d") ?></p></div>
+                                            <div class="col-md-1 border-top-0 text-right border-bottom"><div class="my-3"><span><?= $this->Html->link(__('編集'), ["controller" => "message_answers", 'action' => 'edit', $destination->message_answer->message_answers_id]) ?></span></div></div>
+                                        <?php else: ?>
+                                            <div class="col-md-3 border-top-0 border-bottom"></div>
+                                            <div class="col-md-4 border-top-0 border-bottom"></div>
+                                            <div class="col-md-2 border-top-0 border-bottom"></div>
+                                            <div class="col-md-1 border-top-0 border-bottom"></div>
                                         <?php endif ?>
-                                        <tr class="row">
-                                            <td class="col-md-2 border-top-0 border-bottom"><?= $destination->user->first_name . $destination->user->last_name ?></td>
-                                            <?php if(null !== $destination->message_answer): ?>
-                                                <td class="col-md-3 border-top-0 text-center border-bottom"><?= $destination->message_answer->message_choice->content ?></td>
-
-
-
-                                                <td class="col-md-4 border-top-0 text-center border-bottom"><?= $this->Text->autoparagraph($destination->message_answer->message) ?></td>
-
-
-
-                                                <td class="col-md-2 border-top-0 text-center border-bottom"><?= $destination->message_answer->modified->format("Y/m/d") ?></td>
-                                                <td class="col-md-1 border-top-0 text-right border-bottom"><?= $this->Html->link(__('編集'), ["controller" => "message_answers", 'action' => 'edit', $destination->message_answer->message_answers_id]) ?></td>
-                                            <?php else: ?>
-                                                <td class="col-md-3 border-top-0 border-bottom"></td>
-                                                <td class="col-md-4 border-top-0 border-bottom"></td>
-                                                <td class="col-md-2 border-top-0 border-bottom"></td>
-                                                <td class="col-md-1 border-top-0 border-bottom"></td>
-                                            <?php endif ?>
-                                        </tr>
-                                    <?php endforeach ?>
-                                </table>
+                                    </div>
+                                <?php endforeach ?>
                             </div>
                         </div>
                         <!--<h5>選択肢</h5>-->
@@ -156,45 +142,49 @@ default.ctp
                         <div class="row mt-4">
                             <div class="col-md-1 text-center align-self-center"><h6>選択肢</h6></div>
                             <div class="col-md-11">
-                                <table class="table">
-                                    <tr class="row border-bottom border-info">
-                                        <th class="col-md-4 border-top-0 text-info">選択肢</th>
-                                        <th class="col-md-2 border-top-0 text-center text-info">回答数</th>
-                                        <th class="col-md-4 border-top-0"></th>
-                                        <th class="col-md-2 border-top-0 text-right pr-0 text-info">編集・削除</th>
-                                    </tr>
+
+                                <div>
+                                    <div class="row border-bottom border-info">
+                                        <div class="col-md-4 border-top-0 text-info"><p class="tableHeader">選択肢</p></div>
+                                        <div class="col-md-2 border-top-0 text-center text-info"><p class="tableHeader">回答数</p></div>
+                                        <div class="col-md-4 border-top-0"></div>
+                                        <div class="col-md-2 border-top-0 text-right pr-0 text-info"><p class="tableHeader">編集・削除</p></div>
+                                    </div>
                                     <?php $choices = []; ?>
                                     <?php $choiceCount = count($messageBord->message_bord->message_choices) ?>
                                     <?php foreach($messageBord->message_bord->message_choices as $choice): ?>
                                         <?php $choices[$choice->message_choices_id] = $choice->content ?>
-                                        <tr class="row">
+                                        <div class="row">
                                             <?php if(array_key_exists($choice->message_choices_id, $count)): ?>
-                                                <td class="col-md-4 border-top-0 border-bottom"><?= h($choice->content) ?></td>
-                                                <td class="col-md-2 border-top-0 text-center border-bottom"><?= h($count[$choice->message_choices_id]) ?></td>
-                                                <td class="col-md-4 border-top-0 border-bottom"></td>
-                                                <td class="col-md-2 border-top-0 border-bottom text-right pr-0">
-                                                    <?= $this->Html->link(__('編集'), ["controller" => "message_choices", 'action' => 'edit', $choice->message_choices_id]) ?>
-                                                    <?php if($choiceCount != 1): ?>
-                                                        <?= $this->Form->postLink(__('削除'), ["controller" => "message_choices", 'action' => 'delete', $choice->message_choices_id], ['confirm' => __('{0} この選択肢を削除してよろしいですか？', $choice->content)]) ?>
-                                                    <?php endif ?>
-                                                </td>
+                                                <div class="col-md-4 border-top-0 border-bottom"><p><?= h($choice->content) ?></p></div>
+                                                <div class="col-md-2 border-top-0 text-center border-bottom"><p><?= h($count[$choice->message_choices_id]) ?></p></div>
+                                                <div class="col-md-4 border-top-0 border-bottom"></div>
+                                                <div class="col-md-2 border-top-0 border-bottom text-right pr-0">
+                                                    <div class="my-3">
+                                                        <span><?= $this->Html->link(__('編集'), ["controller" => "message_choices", 'action' => 'edit', $choice->message_choices_id]) ?></span>
+                                                        <?php if($choiceCount != 1): ?>
+                                                            <span><?= $this->Form->postLink(__('削除'), ["controller" => "message_choices", 'action' => 'delete', $choice->message_choices_id], ['confirm' => __('{0} この選択肢を削除してよろしいですか？', $choice->content)]) ?></span>
+                                                        <?php endif ?>
+                                                    </div>
+                                                </div>
                                             <?php else: ?>
-                                                <td class="col-md-4 border-top-0 border-bottom"><?= h($choice->content) ?></td>
-                                                <td class="col-md-2 border-top-0 text-center border-bottom"><?= 0 ?></td>
-                                                <td class="col-md-4 border-top-0 border-bottom"></td>
-                                                <td class="col-md-2 border-top-0 border-bottom text-right pr-0">
-                                                    <?= $this->Html->link(__('編集'), ["controller" => "message_choices", 'action' => 'edit', $choice->message_choices_id]) ?>
-                                                    <?php if($choiceCount != 1): ?>
-                                                        <?= $this->Form->postLink(__('削除'), ["controller" => "message_choices", 'action' => 'delete', $choice->message_choices_id], ['confirm' => __('この選択肢を削除しますか？ # {0}', $choice->content)]) ?>
-                                                    <?php endif ?>
-                                                </td>
+                                                <div class="col-md-4 border-top-0 border-bottom"><p><?= h($choice->content) ?></p></div>
+                                                <div class="col-md-2 border-top-0 text-center border-bottom"><p><?= 0 ?></p></div>
+                                                <div class="col-md-4 border-top-0 border-bottom"></div>
+                                                <div class="col-md-2 border-top-0 border-bottom text-right pr-0">
+                                                    <div class="my-3">
+                                                        <span><?= $this->Html->link(__('編集'), ["controller" => "message_choices", 'action' => 'edit', $choice->message_choices_id]) ?></span>
+                                                        <?php if($choiceCount != 1): ?>
+                                                            <span><?= $this->Form->postLink(__('削除'), ["controller" => "message_choices", 'action' => 'delete', $choice->message_choices_id], ['confirm' => __('この選択肢を削除しますか？ # {0}', $choice->content)]) ?></span>
+                                                        <?php endif ?>
+                                                    </div>
+                                                </div>
                                             <?php endif ?>
-                                        </tr>
+                                        </div>
                                     <?php endforeach ?>
-                                </table>
+                                </div>
                             </div>
                         </div>
-    
                         <?php
                             $flag = false; 
                             foreach($messageBord->message_bord->message_destinations as $destination){
@@ -206,7 +196,7 @@ default.ctp
                             } 
                         ?>
                         <?php if($flag): ?>
-                            <div class="mb-4 border-bottom">
+                            <div class="mb-4">
                             <?php
                                 echo $this->Form->create($messageAnswers, [
                                     "url" => [
@@ -238,40 +228,39 @@ default.ctp
                                 echo $this->Form->end();
                             ?>
                             </div>
-    
                         <?php endif ?>
-                    <?php $c++ ?>
                     <?php elseif($messageBord->message_bord->chronology_flag == true): ?>
                         <?php foreach($messageBord->message_bord->message_bord_chronologies as $chronology): ?>
-                            <table class="table mt-4 border-bottom border-info">
-                                <tr class="row">
-                                    <th class="col-md-4 pl-0 border-top-0 text-info"><?= h($chronology->user->first_name . $chronology->user->last_name) ?></th>
-                                    <th class="col-md-3 border-top-0 text-info"><?= h($chronology->created) ?></th>
-                                    <td class="col-md-3 border-top-0"></td>
-                                    <td class="col-md-2 border-top-0 text-right pr-0">
-                                        <?= $this->Html->link(__('編集'), ["controller" => "MessageBordChronologies", 'action' => 'edit', $chronology->message_bord_chronologies_id]) ?>
-                                        <?= $this->Form->postLink(__('削除'), ["controller" => "MessageBordChronologies", 'action' => 'delete', $chronology->message_bord_chronologies_id], ['confirm' => __('Are you sure you want to delete # {0}?', $chronology->message_bord_chronologies_id)]) ?>
-                                    </td>
-                                </tr>
-                            </table>
+                            <div class="mt-4 border-bottom border-info">
+                                <div class="row">
+                                    <div class="col-md-4 pl-0 border-top-0 text-info"><p class="tableHeader"><?= h($chronology->user->first_name . $chronology->user->last_name) ?></p></div>
+                                    <div class="col-md-3 border-top-0 text-info"><p class="tableHeader"><?= h($chronology->created) ?></p></div>
+                                    <div class="col-md-3 border-top-0"></div>
+                                    <div class="col-md-2 border-top-0 text-right pr-0">
+                                        <div class="my-3">
+                                            <span><?= $this->Html->link(__('編集'), ["controller" => "MessageBordChronologies", 'action' => 'edit', $chronology->message_bord_chronologies_id]) ?></span>
+                                            <span><?= $this->Form->postLink(__('削除'), ["controller" => "MessageBordChronologies", 'action' => 'delete', $chronology->message_bord_chronologies_id], ['confirm' => __('Are you sure you want to delete # {0}?', $chronology->message_bord_chronologies_id)]) ?></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         <div class="row">
-                            <div class="col-md-9 border-bottom pl-4">
-                                <?= $this->Text->autoparagraph($chronology->message) ?>
+                            <div class="col-md-9 pl-4">
+                                <div class="border-bottom">
+                                    <?= $this->Text->autoparagraph($chronology->message) ?>
+                                </div>
                             </div>
 
                             <div class="col-md-3 border-bottom pr-0">
                                 <?php foreach($chronology->message_chronology_files as $file): ?>
-                                    <table>
-                                        <tr class="border-bottom border-info">
-                                            <td class="col-md-10">
-                                                <?= $this->Html->link($file->file_name, ["controller" => "Download", 'action' => 'bordChronologyFileDownload', $file->message_chronology_files_id]) ?>
-                                            </td>
-                                            <!--<td><?= $file->file_size ?></td>-->
-                                            <td class="col-md-2 pl-0">
-                                                <?= $this->Form->postLink(__('削除'), ["controller" => "CommentFiles", 'action' => 'delete', $file->comment_files_id], ['confirm' => __('ファイルを削除しますか？ # {0}?', $file->file_name)]) ?>
-                                            </td>
-                                        </tr>
-                                    </table> 
+                                        <div class="border-bottom border-info row">
+                                            <div class="col-md-10">
+                                                <p class="mt-2"><?= $this->Html->link($file->file_name, ["controller" => "Download", 'action' => 'bordChronologyFileDownload', $file->message_chronology_files_id]) ?></p>
+                                            </div>
+                                            <div class="col-md-2 pl-0">
+                                                <span><?= $this->Form->postLink(__('削除'), ["controller" => "CommentFiles", 'action' => 'delete', $file->comment_files_id], ['confirm' => __('ファイルを削除しますか？ # {0}?', $file->file_name)]) ?></span>
+                                            </div>
+                                        </div>
                                 <?php endforeach ?>
                             </div>
                         </div>
@@ -293,15 +282,16 @@ default.ctp
                         echo $this->Form->control('message', ["label" => "メッセージ", "type" => "textarea", "class" => "form-control"]);
                         echo "</div>";
                         //filesへの入力
-                        echo "<div class='row'><div class='col mt-4'>";
+                        echo "<div class='row'><div class='col-md-8 mt-4'>";
                         echo $this->Form->file("file[]", ["multiple" => "true", "secure" => false, "class" => "form-control-file"]);
-                        echo "</div><div class='col'></div><div class='col'>";
+                        echo "</div><div class='col-md-4'>";
                         echo $this->Form->button('送信', ["class" => "btn btn-info mt-4 float-right"]);
                         echo "</div></div>";
                         echo $this->Form->end();
                     ?>
                     <?php endif ?>
                 </div>
+                <?php $i++ ?>
             <?php endforeach ?>
         </div>
     </div>

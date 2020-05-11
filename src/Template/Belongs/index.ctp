@@ -22,31 +22,27 @@ default.ctp
         </div>
         <div class="col-md-10">
             <h3 class="my-4"><?= __('班') ?></h3>
-            <table class="table">
-                <thead>
-                    <tr class="row">
-                        <td class="col-md-1 border-top-0"></td>
-                        <th class="col-md-3 text-left border-top-0"><?= __('班') ?></th>
-                        <th class="col-md-3 text-left border-top-0"><?= __('ソート番号') ?></th>
-                        <th class="col-md-3 text-center border-top-0"><?= __('編集・削除') ?></th>
-                        <td class="col-md-2 border-top-0"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($belongs as $belong): ?>
-                        <tr class="row">
-                            <td class="col-md-1 border-top-0"></td>
-                            <td class="col-md-3 text-left border-top-0"><?= h($belong->belong) ?></td>
-                            <td class="col-md-3 text-left border-top-0"><?= $this->Number->format($belong->belong_sort_number) ?></td>
-                            <td class="col-md-3 text-center border-top-0">
-                                <?= $this->Html->link(__('編集'), ['action' => 'edit', $belong->belongs_id]) ?>
-                                <?= $this->Form->postLink(__('削除'), ['action' => 'delete', $belong->belongs_id], ['confirm' => __('この班を削除してよろしいですか？ {0}?', $belong->belong)]) ?>
-                            </td>
-                            <td class="col-md-2 text-left border-top-0"></th>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+            <div class="row">
+                <div class="col-md-1 border-top-0"></div>
+                <div class="col-md-3 text-left border-top-0"><p class="tableHeader"><?= __('班') ?></p></div>
+                <div class="col-md-3 text-left border-top-0"><p class="tableHeader"><?= __('ソート番号') ?></p></div>
+                <div class="col-md-3 text-center border-top-0"><p class="tableHeader"><?= __('編集・削除') ?></p></div>
+                <div class="col-md-2 border-top-0"></div>
+            </div>
+            <?php foreach ($belongs as $belong): ?>
+                <div class="row">
+                    <div class="col-md-1 border-top-0"></div>
+                    <div class="col-md-3 text-left border-top-0"><p class="tableBody"><?= h($belong->belong) ?></p></div>
+                    <div class="col-md-3 text-left border-top-0"><p class="tableBody"><?= $this->Number->format($belong->belong_sort_number) ?></p></div>
+                    <div class="col-md-3 text-center border-top-0">
+                        <div class="my-3">
+                            <span><?= $this->Html->link(__('編集'), ['action' => 'edit', $belong->belongs_id]) ?></span>
+                            <span><?= $this->Form->postLink(__('削除'), ['action' => 'delete', $belong->belongs_id], ['confirm' => __('この班を削除してよろしいですか？ {0}?', $belong->belong)]) ?></span>
+                        </div>
+                    </div>
+                    <div class="col-md-2 text-left border-top-0"></div>
+                </div>
+            <?php endforeach; ?>
         </div>
     </div>
     <div class="paginator">

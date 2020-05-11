@@ -21,31 +21,25 @@ default.ctp
         </div>
         <div class="col-md-10">
             <h3 class="my-4"><?= __('カテゴリー') ?></h3>
-            <table class="table">
-                <thead>
-                    <tr class="row">
-                        <td class="col-md-1 border-top-0"></td>
-                        <th class="col-md-3 text-left border-top-0">カテゴリー</th>
-                        <th class="col-md-3 text-left border-top-0">ソート番号</th>
-                        <th class="col-md-3 text-center border-top-0">編集・削除</th>
-                        <td class="col-md-2 border-top-0"></td>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($categories as $category): ?>
-                        <tr class="row">
-                            <td class="col-md-1 border-top-0"></td>
-                            <td class="col-md-3 text-left border-top-0"><?= h($category->category) ?></td>
-                            <td class="col-md-3 text-left border-top-0"><?= $this->Number->format($category->category_sort_number) ?></td>
-                            <td class="col-md-3 text-center border-top-0">
-                                <?= $this->Html->link(__('編集'), ['action' => 'edit', $category->categories_id]) ?>
-                                <?= $this->Form->postLink(__('削除'), ['action' => 'delete', $category->categories_id], ['confirm' => __('Are you sure you want to delete # {0}?', $category->category)]) ?>
-                            </td>
-                            <td class="col-md-2 border-top-0"></td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+            <div class="row">
+                <div class="col-md-1 border-top-0"></div>
+                <div class="col-md-3 text-left border-top-0"><p class="tableHeader">カテゴリー</p></div>
+                <div class="col-md-3 text-left border-top-0"><p class="tableHeader">ソート番号</p></div>
+                <div class="col-md-3 text-center border-top-0"><p class="tableHeader">編集・削除</p></div>
+                <div class="col-md-2 border-top-0"></div>
+            </div>
+            <?php foreach ($categories as $category): ?>
+                <div class="row">
+                    <div class="col-md-1 border-top-0"></div>
+                    <div class="col-md-3 text-left border-top-0"><p class="tableBody"><?= h($category->category) ?></p></div>
+                    <div class="col-md-3 text-left border-top-0"><p class="tableBody"><?= $this->Number->format($category->category_sort_number) ?></p></div>
+                    <div class="col-md-3 text-center border-top-0">
+                        <span><?= $this->Html->link(__('編集'), ['action' => 'edit', $category->categories_id]) ?></span>
+                        <span><?= $this->Form->postLink(__('削除'), ['action' => 'delete', $category->categories_id], ['confirm' => __('Are you sure you want to delete # {0}?', $category->category)]) ?></span>
+                    </div>
+                    <div class="col-md-2 border-top-0"></div>
+                </div>
+            <?php endforeach; ?>
         </div>
     </div>
     <div class="paginator">

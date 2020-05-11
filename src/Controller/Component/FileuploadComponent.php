@@ -7,6 +7,7 @@ use Cake\Controller\ComponentRegistry;
 use Cake\Filesystem\File;
 use Cake\Controller\Component\FlashComponent;
 use Cake\datasource\ConnectionManager;
+use RuntimeException;
 
 /**
  * Fileupload component

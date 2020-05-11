@@ -43,26 +43,30 @@ default.ctp
                 <div class="col-md-1"></div>
                 <div class="col-md-3">
                     <h6 class="my-4"><?= __("{$today}の勤務者") ?></h6>
-                    <table class="table mb-4">
+                    <div class="mb-4">
                         <?php foreach($todayWorkers as $todayWorker): ?>
-                            <tr class="row">
-                                <td class="col-md-4 border-top-0 border-bottom p-0">
-                                    <?= $this->Form->postLink($todayWorker->user->first_name . $todayWorker->user->last_name, ['action' => 'delete', $todayWorker->workers_id], ['confirm' => __('{0} この申し送りを削除してよろしいですか？', $todayWorker->user->first_name . $todayWorker->user->last_name)]) ?>
-                                </td>
-                                <td class="col-md-3 border-top-0 border-bottom p-0"><?= $todayWorker->position->position ?></td>
+                            <div class="row">
+                                <div class="col-md-4 border-top-0 border-bottom p-0">
+                                    <div class="my-1">
+                                        <span class="worker">
+                                            <?= $this->Form->postLink($todayWorker->user->first_name . $todayWorker->user->last_name, ['action' => 'delete', $todayWorker->workers_id], ['confirm' => __('{0} この申し送りを削除してよろしいですか？', $todayWorker->user->first_name . $todayWorker->user->last_name)]) ?>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 border-top-0 border-bottom p-0"><p class="tableBody worker"><?= $todayWorker->position->position ?></p></div>
                                 <?php if($todayWorker->shift === null): ?>
-                                    <td class="col-md-3 border-top-0 border-bottom p-0"></td>
+                                    <div class="col-md-2 border-top-0 border-bottom p-0"></div>
                                 <?php else: ?>
-                                    <td class="col-md-3 border-top-0 border-bottom p-0"><?= $todayWorker->shift->shift ?></td>
+                                    <div class="col-md-2 border-top-0 border-bottom p-0"><p class="tableBody worker"><?= $todayWorker->shift->shift ?></p></div>
                                 <?php endif ?>
                                 <?php if($todayWorker->duty != null): ?>
-                                    <td class="col-md-2 border-top-0 border-bottom p-0"><?= $todayWorker->duty->duty ?></td>
+                                    <div class="col-md-4 border-top-0 border-bottom p-0"><p class="tableBody worker"><?= $todayWorker->duty->duty ?></p></div>
                                 <?php else: ?>
-                                    <td class="col-md-2 border-top-0 border-bottom p-0"></td>
+                                    <div class="col-md-4 border-top-0 border-bottom p-0"></div>
                                 <?php endif ?>
-                            </tr>
+                            </div>
                         <?php endforeach ?>
-                    </table>
+                    </div>
                 </div>
                 <div class="col-md-1"></div>
             </div>

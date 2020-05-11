@@ -37,7 +37,7 @@ class MessageBordsController extends AppController
               "MessageBords.MessageFiles"
             ],
             "order" => ["message_bords_id" => "desc"],
-            "maxLimit" => 5
+            "maxLimit" => 3
           ];
 
         $loginUser = $this->getRequest()->getSession()->read("Auth.User.users_id");
@@ -87,7 +87,7 @@ class MessageBordsController extends AppController
             'contain' => ['MessageDestinations.Users']
         ]);
 
-        $this->set(compact('messageBords', "addUser"));
+        $this->set(compact('messageBords'));
     }
 
     public function choiceView($id = null)

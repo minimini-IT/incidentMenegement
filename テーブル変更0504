@@ -1,0 +1,1 @@
+alter table message_statuses add status_sort_number int(11) not null;

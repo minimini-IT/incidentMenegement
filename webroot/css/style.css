@@ -540,6 +540,37 @@ th, td
     margin-bottom: 0;
 }
 
+.tableHeader
+{
+    font-size: 0.9rem;
+}
+
+/*
+.tableBody
+{
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+*/
+
+.continueThread
+{
+    margin-bottom: 0px;
+    font-size: 0.9rem;
+}
+
+.worker
+{
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+p
+{
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
 /*
 .choiceContent{
   display: none;

@@ -23,15 +23,15 @@ $(function(){
     });
 
     //詳細の表示非表示
-    $('.branch tr:nth-child(1)').click(function(){
-        $(this).parents("table").next(".node").slideToggle();
-        if($(this).children("td").hasClass("text-success"))
+    $('.branch').click(function(){
+        $(this).next(".node").slideToggle();
+        if($(this).find("p").hasClass("text-success"))
         {
-            $(this).children("td").removeClass("text-success");
+            $(this).find("p").removeClass("text-success");
         }
         else
         {
-            $(this).children("td").addClass("text-success");
+            $(this).find("p").addClass("text-success");
         }
     });
     
