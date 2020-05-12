@@ -54,8 +54,10 @@
     <?php endif ?>
 </header>
 <div class="container-fluid">
+<!--<div>-->
     <div class="row mx-auto">
-        <div class="col-md-2 mt-4">
+        <!--<div class="col-md-2 mt-4">-->
+        <div class="col-lg-2 mt-4">
             <?= $this->fetch('content') ?>
 <!--
 fetch(content)内でdiv閉じてる

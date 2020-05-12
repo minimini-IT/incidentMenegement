@@ -31,29 +31,29 @@ default.ctp
         <div class="col-md-10">
             <h3 class="my-4"><?= __('メッセージボード') ?></h3>
             <div class="row border-bottom">
-                <div class="col-md-2 text-center border-top-0 font-weight-bold"><p class="tableHeader mb-0 align-self-center"><?= __("インシデントID") ?></p></div>
-                <div class="col-md-2 text-center border-top-0 font-weight-bold"><p class="tableHeader"><?= __("作成者") ?></p></div>
-                <div class="col-md-4 text-center border-top-0 font-weight-bold"><p class="tableHeader"><?= __("タイトル") ?></p></div>
-                <div class="col-md-1 text-center border-top-0 font-weight-bold px-0"><p class="tableHeader"><?= __("ステータス") ?></p></div>
-                <div class="col-md-1 text-center border-top-0 font-weight-bold px-0"><p class="tableHeader"><?= __("期限") ?></p></div>
-                <div class="col-md-1 text-center border-top-0 font-weight-bold"><p class="tableHeader"><?= __("作成日時") ?></p></div>
-                <div class="col-md-1 text-center border-top-0 px-0 font-weight-bold"><p class="tableHeader"><?= __('編集・削除') ?></p></div>
+                <div class="col-md-2 text-center border-top-0 font-weight-bold align-self-center"><p class="tableHeader"><?= __("インシデントID") ?></p></div>
+                <div class="col-md-2 text-center border-top-0 font-weight-bold align-self-center"><p class="tableHeader"><?= __("作成者") ?></p></div>
+                <div class="col-md-4 border-top-0 font-weight-bold align-self-center"><p class="tableHeader"><?= __("タイトル") ?></p></div>
+                <div class="col-md-1 text-center border-top-0 font-weight-bold px-0 align-self-center"><p class="tableHeader"><?= __("ステータス") ?></p></div>
+                <div class="col-md-1 text-center border-top-0 font-weight-bold px-0 align-self-center"><p class="tableHeader"><?= __("期限") ?></p></div>
+                <div class="col-md-1 text-center border-top-0 font-weight-bold align-self-center"><p class="tableHeader"><?= __("作成日時") ?></p></div>
+                <div class="col-md-1 text-center border-top-0 px-0 font-weight-bold align-self-center"><p class="tableHeader"><?= __('編集・削除') ?></p></div>
             </div>
             <?php $i = 0 ?>
             <?php foreach ($messageBords as $messageBord): ?>
                 <div class="branch border-bottom row">
-                    <div class="col-md-2 text-left border-top-0"><p class="incidentManagementsId" name="incidentId[<?= $i ?>]"><?= 
+                    <div class="col-md-2 text-left border-top-0 align-self-center"><p class="incidentManagementsId" name="incidentId[<?= $i ?>]"><?= 
                         h($messageBord->message_bord->incident_management->management_prefix->management_prefix) . "-" .  
                         $messageBord->message_bord->incident_management->created->format("Ymd") . "-" .  
                         h($messageBord->message_bord->incident_management->number)
                     ?></p></div>
-                    <div class="col-md-2 text-center border-top-0"><p><?= h($messageBord->message_bord->user->first_name . $messageBord->message_bord->user->last_name) ?></p></div>
-                    <div class="col-md-4 text-center border-top-0"><p><?= h($messageBord->message_bord->title) ?></p></div>
-                    <div class="col-md-1 text-center border-top-0 px-0"><p><?= $messageBord->message_bord->message_status->status ?></p></div>
-                    <div class="col-md-1 text-center border-top-0"><p><?= h($messageBord->message_bord->period) ?></p></div>
-                    <div class="col-md-1 text-center border-top-0"><p><?= h($messageBord->message_bord->modified->format("Y/m/d")) ?></p></div>
+                    <div class="col-md-2 text-center border-top-0 align-self-center"><p><?= h($messageBord->message_bord->user->first_name . $messageBord->message_bord->user->last_name) ?></p></div>
+                    <div class="col-md-4 border-top-0 align-self-center"><p><?= h($messageBord->message_bord->title) ?></p></div>
+                    <div class="col-md-1 text-center border-top-0 px-0 align-self-center"><p><?= $messageBord->message_bord->message_status->status ?></p></div>
+                    <div class="col-md-1 text-center border-top-0 align-self-center"><p><?= h($messageBord->message_bord->period) ?></p></div>
+                    <div class="col-md-1 text-center border-top-0 align-self-center"><p><?= h($messageBord->message_bord->modified->format("Y/m/d")) ?></p></div>
                     <div class="col-md-1 text-center border-top-0">
-                        <div class="my-3">
+                        <div class="my-3 align-self-center">
                             <!-- chronoloならchronoloEditへ -->
                             <?php if($messageBord->message_bord->chronology_flag): ?>
                                 <span><?= $this->Html->link(__('編集'), ['action' => 'chronoloEdit', $messageBord->message_bord->message_bords_id]) ?></span>
@@ -73,11 +73,11 @@ default.ctp
                         <div class="col-md-3 pr-0">
                             <div>
                                 <?php foreach($messageBord->message_bord->message_files as $file): ?>
-                                    <div class="border-bottom border-info row">
-                                        <div class="border-top-0 col-md-10">
+                                    <div class="row border-bottom border-info">
+                                        <div class="col-md-10">
                                             <p><?= $this->Html->link($file->file_name, ["controller" => "Download", 'action' => 'bordFileDownload', $file->message_files_id]) ?></p>
                                         </div>
-                                        <div class="border-top-0 col-md-2 pl-0">
+                                        <div class="col-md-2 pl-0">
                                             <p><?= $this->Form->postLink(__('削除'), ["controller" => "MessageFiles", 'action' => 'delete', $file->message_files_id], ['confirm' => __('ファイルを削除しますか？ # {0}?', $file->file_name)]) ?></p>
                                         </div>
                                     </div>
