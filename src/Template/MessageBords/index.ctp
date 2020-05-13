@@ -30,6 +30,110 @@ default.ctp
         </div>
         <div class="col-md-10">
             <h3 class="my-4"><?= __('メッセージボード') ?></h3>
+
+            <h5 class="my-4 branch text-info"><?= __('検索') ?></h5>
+            <div class="node">
+                <?= $this->Form->create("", [
+                    "type" => "get",
+                    "url" => [
+                        "controller" => "message_bords",
+                        "action" => "index"
+                    ]
+                ]) ?> 
+                    <div class="row mt-4">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-3">
+                            <?= str_replace(";", " ", $this->Form->control('users_id', ["label" => "作成者", "class" => "form-control", "options" => $users, "empty" => true])) ?>
+                        </div>
+                        <div class="col-md-5">
+                            <?= $this->Form->control('title', ["label" => "タイトル", "class" => "form-control"]) ?>
+                        </div>
+                        <div class="col-md-3"></div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-10">
+                            <p class="my-0" style="color: red;">入力する場合は１と２の両方入力してください</p>
+                        </div>
+                        <div class="col-md-1"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-3">
+                            <?= $this->Form->control('period_start', ["label" => "期限１", "class" => "datepicker form-control"]) ?>
+                        </div>
+                        <div class="col-md-3">
+                            <?= $this->Form->control('period_end', ["label" => "期限２", "class" => "datepicker form-control"]) ?>
+                        </div>
+                        <div class="col-md-3">
+                            <?= $this->Form->control('choice', ["label" => "選択肢", "class" => "form-control"]) ?>
+                        </div>
+                        <div class="col-md-2"></div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-10">
+                            <p class="my-0" style="color: red;">入力する場合は１と２の両方入力してください</p>
+                        </div>
+                        <div class="col-md-1"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-3">
+                            <?= $this->Form->control('created_start', ["label" => "作成日１", "class" => "datepicker form-control"]) ?>
+                        </div>
+                        <div class="col-md-3">
+                            <?= $this->Form->control('created_end', ["label" => "作成日２", "class" => "datepicker form-control"]) ?>
+                        </div>
+                        <div class="col-md-3">
+                            <?= $this->Form->control('message_statuses_id', ["label" => "ステータス", "class" => "form-control", "options" => $message_statuses, "empty" => true]) ?>
+                        </div>
+                        <div class="col-md-1"></div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-10">
+                            <p class="my-0" style="color: red;">複数の要素を入れる場合はスペース（全角）をあけてください</p>
+                        </div>
+                        <div class="col-md-1"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-8">
+                            <?= $this->Form->control('message', ["label" => "メッセージ", "class" => "form-control"]) ?>
+                        </div>
+                        <div class="col-md-2">
+                            <label>クロノロジー</label>
+                            <?= $this->Form->select("chronology", ["no", "yes"], ["class" => "form-control", "empty" => true]) ?>
+                        </div>
+                        <div class="col-md-1"></div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-md-11">
+                            <?= $this->Form->button('検索', ["class" => "btn btn-info mt-4 float-right"]) ?>
+                        </div>
+                        <div class="col-md-1"></div>
+                    </div>
+                <?= $this->Form->end() ?>
+
+                <!-- 検索初期化 -->
+                <?= $this->Form->create("", [
+                    "type" => "post",
+                    "url" => [
+                        "controller" => "message_bords",
+                        "action" => "index"
+                    ]
+                ]) ?> 
+                    <div class="row mt-4">
+                        <div class="col-md-11">
+                            <?= $this->Form->button('検索初期化', ["class" => "btn btn-info float-right"]) ?>
+                        </div>
+                        <div class="col-md-1"></div>
+                    </div>
+                <?= $this->Form->end() ?>
+            </div>
+
+
             <div class="row border-bottom">
                 <div class="col-md-2 text-center border-top-0 font-weight-bold align-self-center"><p class="tableHeader"><?= __("インシデントID") ?></p></div>
                 <div class="col-md-2 text-center border-top-0 font-weight-bold align-self-center"><p class="tableHeader"><?= __("作成者") ?></p></div>
@@ -276,7 +380,7 @@ default.ctp
                         ]); 
                         echo "<div class='row'><div class='col mt-4'>";
                         echo $this->Form->control('message_bords_id', ["type" => "hidden", "value" => $messageBord->message_bord->message_bords_id]); 
-                        echo str_replace(";", " ", $this->Form->control('users_id', ["type" => "select", "options" => $normalUsers, "label" => "ユーザ", "value" => $loginUser, "class" => "form-control"]));
+                        echo str_replace(";", " ", $this->Form->control('users_id', ["type" => "select", "options" => $users, "label" => "ユーザ", "value" => $loginUser, "class" => "form-control"]));
                         echo "</div><div class='col'></div><div class='col'></div></div>";
                         echo "<div class='mt-4'>";
                         echo $this->Form->control('message', ["label" => "メッセージ", "type" => "textarea", "class" => "form-control"]);

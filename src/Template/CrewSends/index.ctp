@@ -40,33 +40,67 @@ default.ctp
                 ]) ?> 
                     <div class="row mt-4">
                         <div class="col-md-1"></div>
-                        <div class="col-md-6">
-                            <?= $this->Form->control('title', ["label" => "タイトル", "class" => "form-control"]) ?>
-                        </div>
-                        <div class="col-md-5"></div>
-                    </div>
-                    <div class="row mt-4">
-                        <div class="col-md-1"></div>
                         <div class="col-md-3">
                             <?= str_replace(";", " ", $this->Form->control('users_id', ["label" => "作成者", "class" => "form-control", "options" => $users, "empty" => true])) ?>
                         </div>
+                        <div class="col-md-5">
+                            <?= $this->Form->control('title', ["label" => "タイトル", "class" => "form-control"]) ?>
+                        </div>
+                        <div class="col-md-3"></div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-10">
+                            <p class="my-0" style="color: red;">入力する場合は１と２の両方入力してください</p>
+                        </div>
+                        <div class="col-md-1"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-1"></div>
                         <div class="col-md-3">
-                            <?= $this->Form->control('categories_id', ["label" => "カテゴリー", "class" => "form-control", "options" => $categories, "empty" => true]) ?>
+                            <?= $this->Form->control('period_start', ["label" => "期限１", "class" => "datepicker form-control"]) ?>
                         </div>
                         <div class="col-md-3">
-                            <?= $this->Form->control('statuses_id', ["label" => "ステータス", "class" => "form-control", "options" => $statuses, "empty" => true]) ?>
+                            <?= $this->Form->control('period_end', ["label" => "期限２", "class" => "datepicker form-control"]) ?>
+                        </div>
+                        <div class="col-md-3">
+                            <?= $this->Form->control('categories_id', ["label" => "カテゴリー", "class" => "form-control", "options" => $categories, "empty" => true]) ?>
                         </div>
                         <div class="col-md-2"></div>
                     </div>
                     <div class="row mt-4">
                         <div class="col-md-1"></div>
-                        <div class="col-md-5">
-                            <?= $this->Form->control('period', ["label" => "期限", "class" => "datepicker form-control"]) ?>
-                        </div>
-                        <div class="col-md-5">
-                            <?= $this->Form->control('created', ["label" => "作成日", "class" => "datepicker form-control"]) ?>
+                        <div class="col-md-10">
+                            <p class="my-0" style="color: red;">入力する場合は１と２の両方入力してください</p>
                         </div>
                         <div class="col-md-1"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-3">
+                            <?= $this->Form->control('created_start', ["label" => "作成日１", "class" => "datepicker form-control"]) ?>
+                        </div>
+                        <div class="col-md-3">
+                            <?= $this->Form->control('created_end', ["label" => "作成日２", "class" => "datepicker form-control"]) ?>
+                        </div>
+                        <div class="col-md-3">
+                            <?= $this->Form->control('statuses_id', ["label" => "ステータス", "class" => "form-control", "options" => $statuses, "empty" => true]) ?>
+                        </div>
+                        <div class="col-md-1"></div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-10">
+                            <p class="my-0" style="color: red;">複数の要素を入れる場合はスペース（全角）をあけてください</p>
+                        </div>
+                        <div class="col-md-1"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-8">
+                            <?= $this->Form->control('comment', ["label" => "コメント", "class" => "form-control"]) ?>
+                        </div>
+                        <div class="col-md-3"></div>
                     </div>
                     <div class="row mt-4">
                         <div class="col-md-11">
@@ -75,14 +109,24 @@ default.ctp
                         <div class="col-md-1"></div>
                     </div>
                 <?= $this->Form->end() ?>
+
+                <!-- 検索初期化 -->
+                <?= $this->Form->create("", [
+                    "type" => "post",
+                    "url" => [
+                        "controller" => "crew_sends",
+                        "action" => "index"
+                    ]
+                ]) ?> 
+                    <div class="row mt-4">
+                        <div class="col-md-11">
+                            <?= $this->Form->button('検索初期化', ["class" => "btn btn-info float-right"]) ?>
+                        </div>
+                        <div class="col-md-1"></div>
+                    </div>
+                <?= $this->Form->end() ?>
             </div>
 
-
-            <?php if($close == null): ?>
-                <p><?= $this->Form->postLink(__('ステータス「クローズ」非表示'), ['action' => 'closeHidden']) ?></p>
-            <?php elseif($close == "close"): ?>
-                <p><?= $this->Form->postLink(__('ステータス「クローズ」表示'), ['action' => 'closeOpen']) ?></p>
-            <?php endif ?>
 
             <div class="row border-bottom">
                 <div class="col-lg-2 text-center border-top-0 font-weight-bold align-self-center"><p class="tableHeader mb-0"><?= __("インシデントID") ?></p></div>

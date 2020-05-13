@@ -19,7 +19,103 @@ class MessageBordsController extends AppController
      */
     public function index()
     {
-        $this->loadModels(["MessageAnswers", "MessageBordChronologies", "Users", "PrivateMessages"]);
+        $this->loadModels(["MessageAnswers", "MessageBordChronologies", "Users", "PrivateMessages", "MessageStatuses"]);
+        $loginUser = $this->getRequest()->getSession()->read("Auth.User.users_id");
+
+        //検索結果用
+        $data = $this->request->query();
+        if($this->request->is("get") && $data != null)
+        {
+            //pageのみは検索処理しない
+            if(count($data) > 1)
+            {
+                $between = null;
+                if($data["period_start"] != "" && $data["period_end"] != "")
+                {
+                    $periodSearchStartDay = $data["period_start"];
+                    $periodSearchEndDay = $data["period_end"];
+                    //betweenはfindより先に定義する必要がある
+                    $between = ["conditions" => ["CrewSends.period between '" . $periodSearchStartDay . "' and '" . $periodSearchEndDay . "'"]];
+                }
+
+                if($data["created_start"] != "" && $data["created_end"] != "")
+                {
+                    $createdSearchStartDay = $data["created_start"];
+                    $createdSearchEndDay = $data["created_end"];
+                    if($between === null)
+                    {
+                        $between = ["conditions" => ["CrewSends.created between '" . $createdSearchStartDay . "' and '" . $createdSearchEndDay . "'"]];
+                    }
+                    else
+                    {
+                        array_push($between["conditions"], "CrewSends.created between '" . $createdSearchStartDay . "' and '" . $createdSearchEndDay . "'");
+                    }
+                }
+
+                if($between === null)
+                {
+                    $messageBords = $this->PrivateMessages->MessageBords->find("all")
+                        //->where(["OR" => [["PrivateMessages.users_id" => $loginUser], ["PrivateMessages.users_id" => 45]]]);
+                        ->where(["OR" => [["PrivateMessages.users_id" => $loginUser], ["PrivateMessages.users_id" => 7]]]);
+                    //$messageBords = $this->MessageBords->find("all");
+                }
+                else
+                {
+                    $messageBords = $this->PrivateMessages->MessageBords->find("all", $between)
+                        //->where(["OR" => [["PrivateMessages.users_id" => $loginUser], ["PrivateMessages.users_id" => 45]]]);
+                        ->where(["OR" => [["PrivateMessages.users_id" => $loginUser], ["PrivateMessages.users_id" => 7]]]);
+                    //$messageBords = $this->MessageBords->find("all", $between);
+                }
+                foreach($data as $key => $value)
+                {
+                    if($value != "")
+                    {
+                        if($key == "title")
+                        {
+                            $messageBords = $messageBords->where(["MessageBords.{$key} like" => "%{$value}%"]);
+                        }
+                        else if($key == "message")
+                        {
+                            $value = explode("　", $value);
+                            foreach($value as $val)
+                            {
+                                $messageBords = $messageBords->where(["MessageBords.{$key} like" => "%{$value}%"]);
+                            }
+                        }
+                        else if($key == "choice")
+                        {
+                            $messageBords = $messageBords->where(["MessageBords.{$key} like" => "%{$value}%"]);
+                        }
+                        else if($key == "period_start" || $key == "period_end" || $key == "created_start" || $key == "created_end" || $key == "page")
+                        {
+                            //何もしない
+                        }
+                        else
+                        {
+                            $messageBords = $messageBords->where(["MessageBords." . $key => (int)$value]);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                //$messageBords = $this->MessageBords->find("all");
+                $messageBords = $this->PrivateMessages->find("all")
+                    //->where(["OR" => [["PrivateMessages.users_id" => $loginUser], ["PrivateMessages.users_id" => 14]]]);
+                    ->where(["OR" => [["PrivateMessages.users_id" => $loginUser], ["PrivateMessages.users_id" => 7]]]);
+            }
+        }
+        else
+        {
+            //$messageBords = $this->MessageBords->find("all");
+            $messageBords = $this->PrivateMessages->find("all")
+                //->where(["OR" => [["PrivateMessages.users_id" => $loginUser], ["PrivateMessages.users_id" => 14]]]);
+                ->where(["OR" => [["PrivateMessages.users_id" => $loginUser], ["PrivateMessages.users_id" => 7]]]);
+        }
+
+
+
+
         $messageAnswers = $this->MessageAnswers->newEntity();
         $messageBordChronologies = $this->MessageBordChronologies->newEntity();
 
@@ -40,15 +136,22 @@ class MessageBordsController extends AppController
             "maxLimit" => 3
           ];
 
-        $loginUser = $this->getRequest()->getSession()->read("Auth.User.users_id");
+        /*
         $privateMessages = $this->PrivateMessages->find("all")
             //->where(["OR" => [["PrivateMessages.users_id" => $loginUser], ["PrivateMessages.users_id" => 14]]]);
             ->where(["OR" => [["PrivateMessages.users_id" => $loginUser], ["PrivateMessages.users_id" => 7]]]);
-        $messageBords = $this->paginate($privateMessages);
-        $normalUsers = $this->Users->find('list', ['limit' => 200])
+         */
+        $messageBords = $this->paginate($messageBords);
+        $users = $this->Users->find('list', ['limit' => 200])
             ->where(["delete_flag" => 0])
             ->order(["user_sort_number" => "asc"]);
-        $this->set(compact('messageBords', "messageAnswers", "messageBordChronologies", "normalUsers", "loginUser"));
+        $users = $this->Users->find('list', ['limit' => 200])
+            ->where(["users_id !=" => 1])
+            ->where(["users_id !=" => 45])
+            ->where(["delete_flag" => 0])
+            ->order(["user_sort_number" => "asc"]);
+        $message_statuses = $this->MessageStatuses->find("list", ["limit" => 200]);
+        $this->set(compact('messageBords', "messageAnswers", "messageBordChronologies", "users", "loginUser", "message_statuses"));
     }
 
     /**
@@ -979,12 +1082,6 @@ class MessageBordsController extends AppController
                 "users_id" => $loginUser
             ];
         }
-
-        /*
-        $normalUsers = $this->Users->find('list', ['limit' => 200])
-            ->where(["delete_flag" => 0])
-            ->order(["user_sort_number" => "asc"]);
-         */
 
 
         $privateMessages = $this->PrivateMessages->newEntities($privateEntity);

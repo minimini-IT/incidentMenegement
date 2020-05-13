@@ -68,11 +68,11 @@ default.ctp
                         </div>
                         <div class="col-md-3 mb-2 pt-4">
                             <label>添付ファイル</label>
-                            <?= $this->Form->select("attachment", ["なし", "あり"], ["label" => "リンク", "empty" => true]) ?>
+                            <?= $this->Form->select("attachment", ["なし", "あり"], ["empty" => true]) ?>
                         </div>
                         <div class="col-md-3 mb-2 pt-4">
                             <label>リンク</label>
-                            <?= $this->Form->select("link", ["なし", "あり"], ["label" => "リンク", "empty" => true]) ?>
+                            <?= $this->Form->select("link", ["なし", "あり"], ["empty" => true]) ?>
                         </div>
                         <div class="col-md-3 mb-2"></div>
                         <div class="col-md-8 mb-2">

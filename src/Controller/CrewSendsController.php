@@ -27,7 +27,86 @@ class CrewSendsController extends AppController
     
     public function index()
     {
-        $close = $this->request->session()->read("CrewSend.close");
+        //$close = $this->request->session()->read("CrewSend.close");
+
+
+        //検索結果用
+        $data = $this->request->query();
+        if($this->request->is("get") && $data != null)
+        {
+            //pageのみは検索処理しない
+            if(count($data) > 1)
+            {
+                $between = null;
+                if($data["period_start"] != "" && $data["period_end"] != "")
+                {
+                    $periodSearchStartDay = $data["period_start"];
+                    $periodSearchEndDay = $data["period_end"];
+                    //betweenはfindより先に定義する必要がある
+                    $between = ["conditions" => ["CrewSends.period between '" . $periodSearchStartDay . "' and '" . $periodSearchEndDay . "'"]];
+                }
+
+                if($data["created_start"] != "" && $data["created_end"] != "")
+                {
+                    $createdSearchStartDay = $data["created_start"];
+                    $createdSearchEndDay = $data["created_end"];
+                    if($between === null)
+                    {
+                        $between = ["conditions" => ["CrewSends.created between '" . $createdSearchStartDay . "' and '" . $createdSearchEndDay . "'"]];
+                    }
+                    else
+                    {
+                        array_push($between["conditions"], "CrewSends.created between '" . $createdSearchStartDay . "' and '" . $createdSearchEndDay . "'");
+                    }
+                }
+
+                if($between === null)
+                {
+                    $crewSends = $this->CrewSends->find("all");
+                }
+                else
+                {
+                    $crewSends = $this->CrewSends->find("all", $between);
+                }
+                foreach($data as $key => $value)
+                {
+                    if($value != "")
+                    {
+                        if($key == "title")
+                        {
+                            $crewSends = $crewSends->where(["CrewSends.{$key} like" => "%{$value}%"]);
+                        }
+                        else if($key == "comment")
+                        {
+                            $value = explode("　", $value);
+                            foreach($value as $val)
+                            {
+                                $crewSends = $crewSends->where(["CrewSends.{$key} like" => "%{$val}%"]);
+                            }
+                        }
+                        else if($key == "period_start" || $key == "period_end" || $key == "created_start" || $key == "created_end" || $key == "page")
+                        {
+                            //何もしない
+                        }
+                        else
+                        {
+                            $crewSends = $crewSends->where(["CrewSends." . $key => (int)$value]);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                $crewSends = $this->CrewSends->find("all");
+            }
+        }
+        else
+        {
+            $crewSends = $this->CrewSends->find("all");
+        }
+
+
+
         $this->paginate = [
             "contain" => [
                 "Categories", 
@@ -48,6 +127,7 @@ class CrewSendsController extends AppController
         ];
         $this->loadModels(["CrewSendComments"]);
         $crewSendComment = $this->CrewSendComments->newEntity();
+        /*
         if($close == "close")
         {
             $crewSends = $this->CrewSends->find("all")
@@ -58,13 +138,22 @@ class CrewSendsController extends AppController
         {
             $crewSends = $this->paginate($this->CrewSends);
         }
+         */
+        $crewSends = $this->paginate($crewSends);
 
         $users = $this->CrewSends->Users->find('list', ['limit' => 200])
-            ->where(["delete_flag" => 0]);
+            ->where(["users_id !=" => 1])
+            ->where(["users_id !=" => 45])
+            ->where(["delete_flag" => 0])
+            ->order(["user_sort_number" => "asc"]);
+        $categories = $this->CrewSends->Categories->find("list", ["limit" => 200]);
+        $statuses = $this->CrewSends->Statuses->find("list", ["limit" => 200]);
+
         
         $loginUser = $this->request->session()->read("Auth.User.users_id");
 
-        $this->set(compact('crewSends', "users", "crewSendComment", "close", "loginUser"));
+        //$this->set(compact('crewSends', "users", "crewSendComment", "close", "loginUser", "categories", "statuses"));
+        $this->set(compact('crewSends', "users", "crewSendComment", "loginUser", "categories", "statuses"));
     }
 
     /**
