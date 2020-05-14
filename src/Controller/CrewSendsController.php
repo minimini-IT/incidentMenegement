@@ -97,12 +97,19 @@ class CrewSendsController extends AppController
             }
             else
             {
-                $crewSends = $this->CrewSends->find("all");
+                $crewSends = $this->CrewSends->find("all")
+                    ->where(["CrewSends.statuses_id !=" => 2])
+                    ->where(["CrewSends.statuses_id !=" => 3])
+                    ->where(["CrewSends.statuses_id !=" => 5]);
+
             }
         }
         else
         {
-            $crewSends = $this->CrewSends->find("all");
+            $crewSends = $this->CrewSends->find("all")
+                    ->where(["CrewSends.statuses_id !=" => 2])
+                    ->where(["CrewSends.statuses_id !=" => 3])
+                    ->where(["CrewSends.statuses_id !=" => 5]);
         }
 
 

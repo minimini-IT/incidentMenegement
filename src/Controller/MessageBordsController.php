@@ -35,36 +35,32 @@ class MessageBordsController extends AppController
                     $periodSearchStartDay = $data["period_start"];
                     $periodSearchEndDay = $data["period_end"];
                     //betweenはfindより先に定義する必要がある
-                    $between = ["conditions" => ["CrewSends.period between '" . $periodSearchStartDay . "' and '" . $periodSearchEndDay . "'"]];
+                    $between = ["conditions" => ["MessageBords.period between '" . $periodSearchStartDay . "' and '" . $periodSearchEndDay . "'"]];
                 }
 
                 if($data["created_start"] != "" && $data["created_end"] != "")
                 {
-                    $createdSearchStartDay = $data["created_start"];
-                    $createdSearchEndDay = $data["created_end"];
+                    $createdSearchStartDay = $data['created_start'];
+                    $createdSearchEndDay = $data['created_end'];
                     if($between === null)
                     {
-                        $between = ["conditions" => ["CrewSends.created between '" . $createdSearchStartDay . "' and '" . $createdSearchEndDay . "'"]];
+                        $between = ["conditions" => ["MessageBords.created between '" . $createdSearchStartDay . "' and '" . $createdSearchEndDay . "'"]];
                     }
                     else
                     {
-                        array_push($between["conditions"], "CrewSends.created between '" . $createdSearchStartDay . "' and '" . $createdSearchEndDay . "'");
+                        array_push($between["conditions"], "MessageBords.created between '" . $createdSearchStartDay . "' and '" . $createdSearchEndDay . "'");
                     }
                 }
 
                 if($between === null)
                 {
-                    $messageBords = $this->PrivateMessages->MessageBords->find("all")
-                        //->where(["OR" => [["PrivateMessages.users_id" => $loginUser], ["PrivateMessages.users_id" => 45]]]);
-                        ->where(["OR" => [["PrivateMessages.users_id" => $loginUser], ["PrivateMessages.users_id" => 7]]]);
-                    //$messageBords = $this->MessageBords->find("all");
+                    $messageBords = $this->MessageBords->PrivateMessages->find("all")
+                        ->where(["OR" => [["PrivateMessages.users_id" => $loginUser], ["PrivateMessages.users_id" => 45]]]);
                 }
                 else
                 {
-                    $messageBords = $this->PrivateMessages->MessageBords->find("all", $between)
-                        //->where(["OR" => [["PrivateMessages.users_id" => $loginUser], ["PrivateMessages.users_id" => 45]]]);
-                        ->where(["OR" => [["PrivateMessages.users_id" => $loginUser], ["PrivateMessages.users_id" => 7]]]);
-                    //$messageBords = $this->MessageBords->find("all", $between);
+                    $messageBords = $this->MessageBords->PrivateMessages->find("all", $between)
+                        ->where(["OR" => [["PrivateMessages.users_id" => $loginUser], ["PrivateMessages.users_id" => 45]]]);
                 }
                 foreach($data as $key => $value)
                 {
@@ -79,12 +75,8 @@ class MessageBordsController extends AppController
                             $value = explode("　", $value);
                             foreach($value as $val)
                             {
-                                $messageBords = $messageBords->where(["MessageBords.{$key} like" => "%{$value}%"]);
+                                $messageBords = $messageBords->where(["MessageBords.{$key} like" => "%{$val}%"]);
                             }
-                        }
-                        else if($key == "choice")
-                        {
-                            $messageBords = $messageBords->where(["MessageBords.{$key} like" => "%{$value}%"]);
                         }
                         else if($key == "period_start" || $key == "period_end" || $key == "created_start" || $key == "created_end" || $key == "page")
                         {
@@ -99,18 +91,16 @@ class MessageBordsController extends AppController
             }
             else
             {
-                //$messageBords = $this->MessageBords->find("all");
-                $messageBords = $this->PrivateMessages->find("all")
-                    //->where(["OR" => [["PrivateMessages.users_id" => $loginUser], ["PrivateMessages.users_id" => 14]]]);
-                    ->where(["OR" => [["PrivateMessages.users_id" => $loginUser], ["PrivateMessages.users_id" => 7]]]);
+                $messageBords = $this->MessageBords->PrivateMessages->find("all")
+                    ->where(["OR" => [["PrivateMessages.users_id" => $loginUser], ["PrivateMessages.users_id" => 45]]])
+                    ->where(["MessageBords.message_statuses_id !=" => 2]);
             }
         }
         else
         {
-            //$messageBords = $this->MessageBords->find("all");
-            $messageBords = $this->PrivateMessages->find("all")
-                //->where(["OR" => [["PrivateMessages.users_id" => $loginUser], ["PrivateMessages.users_id" => 14]]]);
-                ->where(["OR" => [["PrivateMessages.users_id" => $loginUser], ["PrivateMessages.users_id" => 7]]]);
+            $messageBords = $this->MessageBords->PrivateMessages->find("all")
+                ->where(["OR" => [["PrivateMessages.users_id" => $loginUser], ["PrivateMessages.users_id" => 45]]])
+                ->where(["MessageBords.message_statuses_id !=" => 2]);
         }
 
 
@@ -124,25 +114,25 @@ class MessageBordsController extends AppController
               "MessageBords.Users",
               "MessageBords.IncidentManagements.ManagementPrefixes",
               'MessageBords.MessageStatuses', 
-              "MessageBords.MessageDestinations.Users", 
+              "MessageBords.MessageDestinations.Users" => [
+                    "sort" => ["MessageDestinations.Users.user_sort_number" => "asc"]
+              ], 
+              //"MessageBords.MessageDestinations.Users",
               "MessageBords.MessageDestinations.MessageAnswers.MessageChoices", 
               "MessageBords.MessageChoices", 
               "MessageBords.MessageBordChronologies.Users",
               "MessageBords.MessageBordChronologies.MessageChronologyFiles",
-              "MessageBords.PrivateMessages.Users", 
+              "Users", 
               "MessageBords.MessageFiles"
             ],
             "order" => ["message_bords_id" => "desc"],
-            "maxLimit" => 3
+            "maxLimit" => 5
           ];
 
-        /*
-        $privateMessages = $this->PrivateMessages->find("all")
-            //->where(["OR" => [["PrivateMessages.users_id" => $loginUser], ["PrivateMessages.users_id" => 14]]]);
-            ->where(["OR" => [["PrivateMessages.users_id" => $loginUser], ["PrivateMessages.users_id" => 7]]]);
-         */
         $messageBords = $this->paginate($messageBords);
         $users = $this->Users->find('list', ['limit' => 200])
+            ->where(["delete_flag" => 1])
+            ->where(["delete_flag" => 45])
             ->where(["delete_flag" => 0])
             ->order(["user_sort_number" => "asc"]);
         $users = $this->Users->find('list', ['limit' => 200])
@@ -453,35 +443,34 @@ class MessageBordsController extends AppController
         //各班ごとでユーザ取得
         $soukatu = $this->Users->find("list", ["limit" => 200])
             ->where(["belongs_id" => 1])
-            //->where(["users_id !=" => 14])
-            ->where(["users_id !=" => 7])
+            ->where(["users_id !=" => 1])
+            ->where(["users_id !=" => 45])
             ->where(["users_id !=" => $loginUser])
             ->where(["delete_flag" => 0]);
         $kenkyo = $this->Users->find("list", ["limit" => 200])
             ->where(["belongs_id" => 2])
-            //->where(["users_id !=" => 14])
-            ->where(["users_id !=" => 7])
+            ->where(["users_id !=" => 1])
+            ->where(["users_id !=" => 45])
             ->where(["users_id !=" => $loginUser])
             ->where(["delete_flag" => 0]);
         $system = $this->Users->find("list", ["limit" => 200])
             ->where(["belongs_id" => 3])
-            //->where(["users_id !=" => 14])
-            ->where(["users_id !=" => 7])
+            ->where(["users_id !=" => 1])
+            ->where(["users_id !=" => 45])
             ->where(["users_id !=" => $loginUser])
             ->where(["delete_flag" => 0]);
         $kintai = $this->Users->find("list", ["limit" => 200])
             ->where(["belongs_id" => 4])
-            //->where(["users_id !=" => 14])
-            ->where(["users_id !=" => 7])
+            ->where(["users_id !=" => 1])
+            ->where(["users_id !=" => 45])
             ->where(["users_id !=" => $loginUser])
             ->where(["delete_flag" => 0]);
         $allUser = $this->Users->find("list", ["limit" => 200])
-            //->where(["users_id" => 14]);
-            ->where(["users_id" => 7]);
+            ->where(["users_id" => 45]);
         $users = $this->Users->find('list', ['limit' => 200])
             ->order(["user_sort_number" => "asc"])
-            //->where(["users_id !=" => 14])
-            ->where(["users_id !=" => 7])
+            ->where(["users_id !=" => 1])
+            ->where(["users_id !=" => 45])
             ->where(["delete_flag" => 0]);
         $createUser = $this->Users->find("list", ["limit" => 200])
             ->where(["users_id" => $loginUser]);
@@ -921,26 +910,26 @@ class MessageBordsController extends AppController
         //private用
         $privateSoukatu = $this->Users->find("list", ["limit" => 200])
             ->where(["belongs_id" => 1])
-            //->where(["users_id !=" => 14])
-            ->where(["users_id !=" => 7])
+            ->where(["users_id !=" => 1])
+            ->where(["users_id !=" => 45])
             ->where(["users_id !=" => $entity])
             ->where(["delete_flag" => 0]);
         $privateKenkyo = $this->Users->find("list", ["limit" => 200])
             ->where(["belongs_id" => 2])
-            //->where(["users_id !=" => 14])
-            ->where(["users_id !=" => 7])
+            ->where(["users_id !=" => 1])
+            ->where(["users_id !=" => 45])
             ->where(["users_id !=" => $entity])
             ->where(["delete_flag" => 0]);
         $privateSystem = $this->Users->find("list", ["limit" => 200])
             ->where(["belongs_id" => 3])
-            //->where(["users_id !=" => 14])
-            ->where(["users_id !=" => 7])
+            ->where(["users_id !=" => 1])
+            ->where(["users_id !=" => 45])
             ->where(["users_id !=" => $entity])
             ->where(["delete_flag" => 0]);
         $privateKintai = $this->Users->find("list", ["limit" => 200])
             ->where(["belongs_id" => 4])
-            //->where(["users_id !=" => 14])
-            ->where(["users_id !=" => 7])
+            ->where(["users_id !=" => 1])
+            ->where(["users_id !=" => 45])
             ->where(["users_id !=" => $entity])
             ->where(["delete_flag" => 0]);
 
@@ -968,13 +957,12 @@ class MessageBordsController extends AppController
 
         $users = $this->Users->find('list', ['limit' => 200])
             ->order(["user_sort_number" => "asc"])
-            //->where(["users_id !=" => 14])
-            ->where(["users_id !=" => 7])
+            ->where(["users_id !=" => 1])
+            ->where(["users_id !=" => 45])
             ->where(["delete_flag" => 0]);
 
         $allUser = $this->Users->find("list", ["limit" => 200])
-            //->where(["users_id" => 14]);
-            ->where(["users_id" => 7]);
+            ->where(["users_id !=" => 45]);
 
         $createUser = $messageBord->users_id;
 
@@ -992,7 +980,6 @@ class MessageBordsController extends AppController
             "privateKintai", 
             "privateUser"
         ));
-
     }
 
     public function delete($id = null)

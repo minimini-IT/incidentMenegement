@@ -59,7 +59,9 @@ class CrewSendCommentsController extends AppController
             $data = $this->request->getData();
             $crewSendComment = $this->CrewSendComments->patchEntity($crewSendComment, $data);
             if ($this->CrewSendComments->save($crewSendComment)) {
-                $this->Flash->success(__('The crew send comment has been saved.'));
+
+                //CrewSendsのmodifiedを更新
+
 
                 //ファイルあればアップロード処理
                 if(!empty($data["file"][0]["tmp_name"])){

@@ -17,12 +17,8 @@ default.ctp
                     <?= $this->Html->link(__('サイバー攻撃等'), ["controller" => "RiskDetections", 'action' => 'index'], ["class" => $sideberClass]) ?>
                     <?= $this->Html->link(__('メッセージボード'), ["controller" => "MessageBords", 'action' => 'index'], ["class" => $sideberClass]) ?>
                 </div>
-                <p>申し送り事項のページ</p>
-                <p>行をクリックすると詳細が表示される</p>
-                <p>詳細からその申し送りに対してコメントを作成できる</p>
-                <p>詳細、コメントに対してファイルを添付できる</p>
-                <p>左側のACTIONSから必要に応じてカテゴリー、ステータスを追加できる</p>
-                <p>作成者の欄はデフォルトでログイン中のユーザが選ばれている</p>
+                <p style="color: red;">ステータス「対処完了・収束・クローズ」をデフォルトで非表示にしました</p>
+                <p style="color: red;">検索機能を追加しました</p>
             </nav>
         </div>
         <div class="col-lg-10">
@@ -129,7 +125,7 @@ default.ctp
 
 
             <div class="row border-bottom">
-                <div class="col-lg-2 text-center border-top-0 font-weight-bold align-self-center"><p class="tableHeader mb-0"><?= __("インシデントID") ?></p></div>
+                <div class="col-lg-2 text-center border-top-0 font-weight-bold align-self-center"><p class="tableHeader"><?= __("インシデントID") ?></p></div>
                 <div class="col-lg-2 text-center border-top-0 font-weight-bold align-self-center"><p class="tableHeader"><?= __("作成者") ?></p></div>
                 <div class="col-lg-4 border-top-0 font-weight-bold align-self-center"><p class="tableHeader"><?= __("タイトル") ?></p></div>
                 <div class="col-lg-1 text-center border-top-0 font-weight-bold px-0 align-self-center"><p class="tableHeader"><?= __("カテゴリー") ?></p></div>

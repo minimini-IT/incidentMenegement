@@ -17,15 +17,8 @@ default.ctp
                     <?= $this->Html->link(__('サイバー攻撃等'), ["controller" => "RiskDetections", 'action' => 'index'], ["class" => $sideberClass]) ?>
                     <?= $this->Html->link(__('クルー申し送り'), ["controller" => "CrewSends", 'action' => 'index'], ["class" => $sideberClass]) ?>
                 </div>
-                <p>任意のユーザに対してメッセージを作成できる</p>
-                <p>用途としては主にアンケート形式での隊務を想定</p>
-                <p>行を選択して詳細を表示できる</p>
-                <p>メッセージにファイルを添付できる</p>
-                <p>メッセージの返事は選択肢の選択は必須、コメントはなくても可</p>
-                <p>選択肢は一つのみ選択可</p>
-                <p style="color:red;">選択肢なしでメッセージボードを作成すると、メッセージボード作成後の、選択したユーザがメッセージボードに対してのコメントできなくなる</p>
-                <p style="color:red;">公開区分作成中</p>
-                <p style="color:red;">ファイルアップロードサイズ上限->200M</p>
+                <p style="color: red;">ステータス「完了」をデフォルトで非表示にしました</p>
+                <p style="color: red;">検索機能を追加しました</p>
             </nav>
         </div>
         <div class="col-md-10">
@@ -65,10 +58,11 @@ default.ctp
                         <div class="col-md-3">
                             <?= $this->Form->control('period_end', ["label" => "期限２", "class" => "datepicker form-control"]) ?>
                         </div>
-                        <div class="col-md-3">
-                            <?= $this->Form->control('choice', ["label" => "選択肢", "class" => "form-control"]) ?>
+                        <div class="col-md-2">
+                            <label>クロノロジー</label>
+                            <?= $this->Form->select("chronology_flag", ["no", "yes"], ["class" => "form-control", "empty" => true]) ?>
                         </div>
-                        <div class="col-md-2"></div>
+                        <div class="col-md-3"></div>
                     </div>
                     <div class="row mt-4">
                         <div class="col-md-1"></div>
@@ -102,11 +96,7 @@ default.ctp
                         <div class="col-md-8">
                             <?= $this->Form->control('message', ["label" => "メッセージ", "class" => "form-control"]) ?>
                         </div>
-                        <div class="col-md-2">
-                            <label>クロノロジー</label>
-                            <?= $this->Form->select("chronology", ["no", "yes"], ["class" => "form-control", "empty" => true]) ?>
-                        </div>
-                        <div class="col-md-1"></div>
+                        <div class="col-md-3"></div>
                     </div>
                     <div class="row mt-4">
                         <div class="col-md-11">
@@ -155,7 +145,7 @@ default.ctp
                     <div class="col-md-4 border-top-0 align-self-center"><p><?= h($messageBord->message_bord->title) ?></p></div>
                     <div class="col-md-1 text-center border-top-0 px-0 align-self-center"><p><?= $messageBord->message_bord->message_status->status ?></p></div>
                     <div class="col-md-1 text-center border-top-0 align-self-center"><p><?= h($messageBord->message_bord->period) ?></p></div>
-                    <div class="col-md-1 text-center border-top-0 align-self-center"><p><?= h($messageBord->message_bord->modified->format("Y/m/d")) ?></p></div>
+                    <div class="col-md-1 text-center border-top-0 align-self-center"><p><?= h($messageBord->message_bord->created->format("Y/m/d")) ?></p></div>
                     <div class="col-md-1 text-center border-top-0">
                         <div class="my-3 align-self-center">
                             <!-- chronoloならchronoloEditへ -->
@@ -208,6 +198,7 @@ default.ctp
                                 </div>
                                 <?php $user = [] ?>
                                 <?php foreach($messageBord->message_bord->message_destinations as $destination): ?>
+<?php debug($destination) ?>
                                     <?php if(null == $destination->message_answer): ?>
                                         <?php $user[$destination->message_destinations_id] = $destination->user->first_name . $destination->user->last_name ?>
                                     <?php endif ?>

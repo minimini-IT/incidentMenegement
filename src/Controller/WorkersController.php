@@ -52,6 +52,8 @@ class WorkersController extends AppController
     {
         $worker = $this->Workers->newEntity();
         if ($this->request->is('post')) {
+            $this->log("data", LOG_DEBUG);
+            $this->log($this->request->getData(), LOG_DEBUG);
             $worker = $this->Workers->patchEntity($worker, $this->request->getData());
             if ($this->Workers->save($worker)) {
                 $this->Flash->success(__('The worker has been saved.'));
@@ -75,8 +77,11 @@ class WorkersController extends AppController
             ->where(["date" => $today]);
         $todayWorkers = $this->paginate($todayWorkers);
         $users = $this->Workers->Users->find('list', ['limit' => 200])
-            ->where(["users_id !=" => 7])
-            ->where(["delete_flag" => 0]);
+            ->where(["users_id !=" => 1])
+            ->where(["users_id !=" => 45])
+            ->where(["delete_flag" => 0])
+            ->where(["belongs_id" => 4])
+            ->order(["user_sort_number" => "asc"]);
         foreach($todayWorkers as $today)
         {
             $users->where(["users_id !=" => $today->users_id]);
