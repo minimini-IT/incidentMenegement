@@ -98,20 +98,20 @@ default.ctp
                         <div class="row border-bottom m-0">
                             <div class="col-lg-5 px-0 align-self-center">
                                 <p class="continueThread text-info crewSendTransition mt-0" id="<?= 
-                                    h($thread->crew_send->incident_management->management_prefix->management_prefix) . "-" .  
-                                    $thread->crew_send->incident_management->created->format("Ymd") . "-" .  
-                                    h($thread->crew_send->incident_management->number) 
+                                    h($thread->incident_management->management_prefix->management_prefix) . "-" .  
+                                    $thread->incident_management->created->format("Ymd") . "-" .  
+                                    h($thread->incident_management->number) 
                                 ?>">
                                     <?=
-                                        h($thread->crew_send->incident_management->management_prefix->management_prefix) . "-" .  
-                                        $thread->crew_send->incident_management->created->format("Ymd") . "-" .  
-                                        h($thread->crew_send->incident_management->number) 
+                                        h($thread->incident_management->management_prefix->management_prefix) . "-" .  
+                                        $thread->incident_management->created->format("Ymd") . "-" .  
+                                        h($thread->incident_management->number) 
                                     ?>
                                 </p>
                             </div>
                             <div class="col-lg-7 px-0">
                                 <p class="continueThread mt-0"><?=
-                                    $thread->crew_send->title
+                                    $thread->title
                                 ?></p>
                             </div>
                         </div>
@@ -120,7 +120,7 @@ default.ctp
 
 
                     <div class="text-center border-bottom"><?= __('メッセージボード') ?></div>
-                    <?php foreach($messageBordLatestThread as $thread): ?>
+                    <?php foreach($messageBordUpdateThread as $thread): ?>
                         <div class="row border-bottom m-0">
                             <div class="col-lg-5 px-0 align-self-center">
                                 <p class="continueThread text-info messageBordTransition mt-0" id="<?= 
@@ -247,6 +247,7 @@ default.ctp
                     </table>
                 </div>
                 <div class="col-lg-5 px-0 border-right">
+<!--
                     <div class="text-center p-2 border-bottom bg-secondary"><?= __('継続中のスレッド') ?></div>
                     <div class="text-center border-bottom"><?= __('クルー申し送り') ?></div>
                     <?php foreach($crewSendContinueThread as $thread): ?>
@@ -294,6 +295,7 @@ default.ctp
                             </div>
                         </div>
                     <?php endforeach ?>
+                    -->
                 </div>
             </div>
         </div>

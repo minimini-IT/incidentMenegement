@@ -61,23 +61,31 @@ class CrewSendCommentsController extends AppController
             if ($this->CrewSendComments->save($crewSendComment)) {
 
                 //CrewSendsのmodifiedを更新
+                $crewSendsId = $crewSendComment->crew_sends_id;
+                $this->loadModels(["CrewSends"]);
+                $crewSend = $this->CrewSends->get($crewSendsId);
+                $modified = $crewSendComment->created;
+                $crewSend["modified"] = $modified;
+                if ($this->CrewSends->save($crewSend)) 
+                {
+                    //ファイルあればアップロード処理
+                    if(!empty($data["file"][0]["tmp_name"])){
+                        $this->Fileupload = $this->loadComponent("Fileupload");
+                        $this->loadModels(["CommentFiles"]);
 
-
-                //ファイルあればアップロード処理
-                if(!empty($data["file"][0]["tmp_name"])){
-                    $commentId = $crewSendComment->crew_send_comments_id;
-                    $this->Fileupload = $this->loadComponent("Fileupload");
-                    $this->loadModels(["CommentFiles"]);
-
-                    //ファイルアップロード
-                    $entity = $this->Fileupload->default_upload($data["file"], $commentId, "crew_send_comments");
-                    $file = $this->CommentFiles->newEntities($entity);
-                    if($this->CommentFiles->saveMany($file)) {
-                        $this->Flash->success(__('The file has been saved.'));
-                    }else{
-                        $this->Flash->error(__('ファイルのアップロードに失敗しました。'));
+                        //ファイルアップロード
+                        $entity = $this->Fileupload->default_upload($data["file"], $commentId, "crew_send_comments");
+                        $file = $this->CommentFiles->newEntities($entity);
+                        if($this->CommentFiles->saveMany($file)) {
+                            $this->Flash->success(__('The file has been saved.'));
+                        }else{
+                            $this->Flash->error(__('ファイルのアップロードに失敗しました。'));
+                        }
                     }
+
                 }
+
+
                 return $this->redirect(["controller" => "CrewSends", 'action' => 'index']);
             }
             $this->Flash->error(__('The crew send comment could not be saved. Please, try again.'));

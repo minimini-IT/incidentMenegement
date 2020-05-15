@@ -57,22 +57,31 @@ class MessageBordChronologiesController extends AppController
             if ($this->MessageBordChronologies->save($messageBordChronology)) {
                 $this->Flash->success(__('The message bord chronology has been saved.'));
 
-                //ファイルあればアップロード処理
-                if(!empty($data["file"][0]["tmp_name"])){
-                    $id = $messageBordChronology->message_bord_chronologies_id;
-                    $this->Fileupload = $this->loadComponent("Fileupload");
-                    $this->loadModels(["MessageChronologyFiles"]);
 
-                    //ファイルアップロード
-                    $entity = $this->Fileupload->default_upload($data["file"], $id, "message_bord_chronologies");
-                    $file = $this->MessageChronologyFiles->newEntities($entity);
-                    if($this->MessageChronologyFiles->saveMany($file)) {
-                        $this->Flash->success(__('The file has been saved.'));
-                    }else{
-                        $this->Flash->error(__('ファイルのアップロードに失敗しました。'));
+                //MessageBordsのmodifiedを更新
+                $messageBordsId = $messageBordChronology->message_bords_id;
+                $this->loadModels(["MessageBords"]);
+                $messageBord = $this->MessageBords->get($messageBordsId);
+                $modified = $messageBordChronology->created;
+                $messageBord["modified"] = $modified;
+                if ($this->MessageBords->save($messageBord)) 
+                {
+                    //ファイルあればアップロード処理
+                    if(!empty($data["file"][0]["tmp_name"])){
+                        $id = $messageBordChronology->message_bord_chronologies_id;
+                        $this->Fileupload = $this->loadComponent("Fileupload");
+                        $this->loadModels(["MessageChronologyFiles"]);
+
+                        //ファイルアップロード
+                        $entity = $this->Fileupload->default_upload($data["file"], $id, "message_bord_chronologies");
+                        $file = $this->MessageChronologyFiles->newEntities($entity);
+                        if($this->MessageChronologyFiles->saveMany($file)) {
+                            $this->Flash->success(__('The file has been saved.'));
+                        }else{
+                            $this->Flash->error(__('ファイルのアップロードに失敗しました。'));
+                        }
                     }
                 }
-
                 return $this->redirect(["controller" => "message_bords", 'action' => 'index']);
             }
             $this->Flash->error(__('The message bord chronology could not be saved. Please, try again.'));
@@ -100,7 +109,6 @@ class MessageBordChronologiesController extends AppController
         if ($this->request->is(['patch', 'post', 'put'])) {
             $messageBordChronology = $this->MessageBordChronologies->patchEntity($messageBordChronology, $this->request->getData());
             if ($this->MessageBordChronologies->save($messageBordChronology)) {
-                $this->Flash->success(__('The message bord chronology has been saved.'));
 
                 return $this->redirect(["controller" => "MessageBords", 'action' => 'index']);
             }

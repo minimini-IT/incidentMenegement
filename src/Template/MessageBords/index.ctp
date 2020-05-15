@@ -18,7 +18,10 @@ default.ctp
                     <?= $this->Html->link(__('クルー申し送り'), ["controller" => "CrewSends", 'action' => 'index'], ["class" => $sideberClass]) ?>
                 </div>
                 <p style="color: red;">ステータス「完了」をデフォルトで非表示にしました</p>
+                <p style="color: red;">ステータス「完了」へのコメントはできないようにしました</p>
+                <p style="color: red;">コメントする場合にはステータスを変えてください</p>
                 <p style="color: red;">検索機能を追加しました</p>
+                <p style="color: red;">なにも入力せず検索すると全検索になります</p>
             </nav>
         </div>
         <div class="col-md-10">
@@ -198,7 +201,15 @@ default.ctp
                                 </div>
                                 <?php $user = [] ?>
                                 <?php foreach($messageBord->message_bord->message_destinations as $destination): ?>
-<?php debug($destination) ?>
+
+
+
+
+                                <!-- userのソート考える -->
+
+
+
+
                                     <?php if(null == $destination->message_answer): ?>
                                         <?php $user[$destination->message_destinations_id] = $destination->user->first_name . $destination->user->last_name ?>
                                     <?php endif ?>
@@ -292,36 +303,38 @@ default.ctp
                         ?>
                         <?php if($flag): ?>
                             <div class="mb-4">
-                            <?php
-                                echo $this->Form->create($messageAnswers, [
-                                    "url" => [
-                                      "controller" => "message_answers",
-                                      "action" => "add"
-                                    ],
-                                    "class" => "my-4",
-                                ]); 
-                                echo "<fieldset>";
-                                echo "<div class='row mb-4'><div class='col-md-1'></div><div class='col-md-4'>";
-                                echo $this->Form->control('message_destinations_id', ["type" => "select", "options" => $user, "label" => "ユーザ", "class" => "form-control"]); 
-                                echo "</div><div class='col-md-6 form-check'>";
-                                //echo $this->Form->control('message_choices_id', ["type" => "radio", "options" => $choices, "label" => ["text" => "選択肢", "class" => "form-check-label"], "class" => "form-check-input"]);
-                                //echo $this->Form->radio('message_choices_id', ["options" => $choices, "label" => "選択肢", "class" => "form-check-input"]);
-                                echo "<label>選択肢</label>";
-                                echo $this->Form->input('message_choices_id', [
-                                    "type" => "radio", 
-                                    "options" => $choices, 
-                                    "label" => false, 
-                                    "class" => "form-check-input",
-                                    "templates" => [
-                                        "nestingLabel" => "<div class='form-check'>{{input}}<label class='form-check-lebel'>{{text}}</label></div>"
-                                    ]
-                                ]);
-                                echo "</div><div class='col-md-1'></div></div>";
-                                echo $this->Form->control('message', ["label" => "メッセージ", "type" => "textarea", "class" => "form-control"]);
-                                echo $this->Form->button('送信', ["class" => "btn btn-info mt-4 float-right"]);
-                                echo "</fieldset>";
-                                echo $this->Form->end();
-                            ?>
+                                <?php if($messageBord->message_bord->message_statuses_id != 2): ?>
+                                    <?php
+                                        echo $this->Form->create($messageAnswers, [
+                                            "url" => [
+                                              "controller" => "message_answers",
+                                              "action" => "add"
+                                            ],
+                                            "class" => "my-4",
+                                        ]); 
+                                        echo "<fieldset>";
+                                        echo "<div class='row mb-4'><div class='col-md-1'></div><div class='col-md-4'>";
+                                        echo $this->Form->control('message_destinations_id', ["type" => "select", "options" => $user, "label" => "ユーザ", "class" => "form-control"]); 
+                                        echo "</div><div class='col-md-6 form-check'>";
+                                        //echo $this->Form->control('message_choices_id', ["type" => "radio", "options" => $choices, "label" => ["text" => "選択肢", "class" => "form-check-label"], "class" => "form-check-input"]);
+                                        //echo $this->Form->radio('message_choices_id', ["options" => $choices, "label" => "選択肢", "class" => "form-check-input"]);
+                                        echo "<label>選択肢</label>";
+                                        echo $this->Form->input('message_choices_id', [
+                                            "type" => "radio", 
+                                            "options" => $choices, 
+                                            "label" => false, 
+                                            "class" => "form-check-input",
+                                            "templates" => [
+                                                "nestingLabel" => "<div class='form-check'>{{input}}<label class='form-check-lebel'>{{text}}</label></div>"
+                                            ]
+                                        ]);
+                                        echo "</div><div class='col-md-1'></div></div>";
+                                        echo $this->Form->control('message', ["label" => "メッセージ", "type" => "textarea", "class" => "form-control"]);
+                                        echo $this->Form->button('送信', ["class" => "btn btn-info mt-4 float-right"]);
+                                        echo "</fieldset>";
+                                        echo $this->Form->end();
+                                    ?>
+                                <?php endif ?>
                             </div>
                         <?php endif ?>
                     <?php elseif($messageBord->message_bord->chronology_flag == true): ?>
@@ -339,51 +352,54 @@ default.ctp
                                     </div>
                                 </div>
                             </div>
-                        <div class="row">
-                            <div class="col-md-9 pl-4">
-                                <div class="border-bottom">
-                                    <?= $this->Text->autoparagraph($chronology->message) ?>
+                            <div class="row">
+                                <div class="col-md-9 pl-4">
+                                    <div class="border-bottom">
+                                        <?= $this->Text->autoparagraph($chronology->message) ?>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3 border-bottom pr-0">
+                                    <?php foreach($chronology->message_chronology_files as $file): ?>
+                                            <div class="border-bottom border-info row">
+                                                <div class="col-md-10">
+                                                    <p class="mt-2"><?= $this->Html->link($file->file_name, ["controller" => "Download", 'action' => 'bordChronologyFileDownload', $file->message_chronology_files_id]) ?></p>
+                                                </div>
+                                                <div class="col-md-2 pl-0">
+                                                    <span><?= $this->Form->postLink(__('削除'), ["controller" => "CommentFiles", 'action' => 'delete', $file->comment_files_id], ['confirm' => __('ファイルを削除しますか？ # {0}?', $file->file_name)]) ?></span>
+                                                </div>
+                                            </div>
+                                    <?php endforeach ?>
                                 </div>
                             </div>
-
-                            <div class="col-md-3 border-bottom pr-0">
-                                <?php foreach($chronology->message_chronology_files as $file): ?>
-                                        <div class="border-bottom border-info row">
-                                            <div class="col-md-10">
-                                                <p class="mt-2"><?= $this->Html->link($file->file_name, ["controller" => "Download", 'action' => 'bordChronologyFileDownload', $file->message_chronology_files_id]) ?></p>
-                                            </div>
-                                            <div class="col-md-2 pl-0">
-                                                <span><?= $this->Form->postLink(__('削除'), ["controller" => "CommentFiles", 'action' => 'delete', $file->comment_files_id], ['confirm' => __('ファイルを削除しますか？ # {0}?', $file->file_name)]) ?></span>
-                                            </div>
-                                        </div>
-                                <?php endforeach ?>
-                            </div>
-                        </div>
-                    <?php endforeach ?>
-                    <?php
-                        echo $this->Form->create($messageBordChronologies, [
-                            "url" => [
-                              "controller" => "message_bord_chronologies",
-                              "action" => "add"
-                            ],
-                            "class" => "mb-5",
-                            "type" => "file"
-                        ]); 
-                        echo "<div class='row'><div class='col mt-4'>";
-                        echo $this->Form->control('message_bords_id', ["type" => "hidden", "value" => $messageBord->message_bord->message_bords_id]); 
-                        echo str_replace(";", " ", $this->Form->control('users_id', ["type" => "select", "options" => $users, "label" => "ユーザ", "value" => $loginUser, "class" => "form-control"]));
-                        echo "</div><div class='col'></div><div class='col'></div></div>";
-                        echo "<div class='mt-4'>";
-                        echo $this->Form->control('message', ["label" => "メッセージ", "type" => "textarea", "class" => "form-control"]);
-                        echo "</div>";
-                        //filesへの入力
-                        echo "<div class='row'><div class='col-md-8 mt-4'>";
-                        echo $this->Form->file("file[]", ["multiple" => "true", "secure" => false, "class" => "form-control-file"]);
-                        echo "</div><div class='col-md-4'>";
-                        echo $this->Form->button('送信', ["class" => "btn btn-info mt-4 float-right"]);
-                        echo "</div></div>";
-                        echo $this->Form->end();
-                    ?>
+                        <?php endforeach ?>
+                        <!-- 終了したステータスでは表示しない -->
+                        <?php if($messageBord->message_bord->message_statuses_id != 2): ?>
+                            <?php
+                                echo $this->Form->create($messageBordChronologies, [
+                                    "url" => [
+                                      "controller" => "message_bord_chronologies",
+                                      "action" => "add"
+                                    ],
+                                    "class" => "mb-5",
+                                    "type" => "file"
+                                ]); 
+                                echo "<div class='row'><div class='col mt-4'>";
+                                echo $this->Form->control('message_bords_id', ["type" => "hidden", "value" => $messageBord->message_bord->message_bords_id]); 
+                                echo str_replace(";", " ", $this->Form->control('users_id', ["type" => "select", "options" => $users, "label" => "ユーザ", "value" => $loginUser, "class" => "form-control"]));
+                                echo "</div><div class='col'></div><div class='col'></div></div>";
+                                echo "<div class='mt-4'>";
+                                echo $this->Form->control('message', ["label" => "メッセージ", "type" => "textarea", "class" => "form-control"]);
+                                echo "</div>";
+                                //filesへの入力
+                                echo "<div class='row'><div class='col-md-8 mt-4'>";
+                                echo $this->Form->file("file[]", ["multiple" => "true", "secure" => false, "class" => "form-control-file"]);
+                                echo "</div><div class='col-md-4'>";
+                                echo $this->Form->button('送信', ["class" => "btn btn-info mt-4 float-right"]);
+                                echo "</div></div>";
+                                echo $this->Form->end();
+                            ?>
+                        <?php endif ?>
                     <?php endif ?>
                 </div>
                 <?php $i++ ?>

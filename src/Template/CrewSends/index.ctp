@@ -18,7 +18,10 @@ default.ctp
                     <?= $this->Html->link(__('メッセージボード'), ["controller" => "MessageBords", 'action' => 'index'], ["class" => $sideberClass]) ?>
                 </div>
                 <p style="color: red;">ステータス「対処完了・収束・クローズ」をデフォルトで非表示にしました</p>
+                <p style="color: red;">ステータス「対処完了・収束・クローズ」へのコメントはできないようにしました</p>
+                <p style="color: red;">コメントする場合にはステータスを変えてください</p>
                 <p style="color: red;">検索機能を追加しました</p>
+                <p style="color: red;">なにも入力せず検索すると全検索になります</p>
             </nav>
         </div>
         <div class="col-lg-10">
@@ -211,30 +214,33 @@ default.ctp
                         </div>
                     <?php endforeach ?>
                     <!-- コメント書き込み -->
-                    <?php
-                        echo $this->Form->create($crewSendComment, [
-                            "url" => [
-                              "controller" => "crew_send_comments",
-                              "action" => "add"
-                            ],
-                            "class" => "mb-5",
-                            "type" => "file"
-                        ]); 
-                        echo "<div class='row'><div class='col mt-4'>";
-                        echo str_replace(";", " ", $this->Form->control('users_id', ["label" => "ユーザ", "value" => $loginUser, "type" => "select", "options" => $users, "class" => "form-control"])); 
-                        echo "</div><div class='col'></div><div class='col'></div></div>";
-                        echo "<div class='mt-4'>";
-                        echo $this->Form->control('comment', ["label" => "コメント", "type" => "textarea", "value" => "", "class" => "form-control"]);
-                        echo "</div>";
-                        echo $this->Form->control('crew_sends_id', ["type" => "hidden", 'value' => $crewSend->crew_sends_id]);
-                        //filesへの入力
-                        echo "<div class='row'><div class='col-lg-8 mt-4'>";
-                        echo $this->Form->file("file[]", ["multiple" => "true", "secure" => false, "class" => "form-control-file"]);
-                        echo "</div><div class='col-lg-4'>";
-                        echo $this->Form->button('送信', ["class" => "btn btn-info mt-4 float-right"]);
-                        echo "</div></div>";
-                        echo $this->Form->end();
-                    ?>
+                    <!-- 終わりのステータスではコメント入力は非表示 -->
+                    <?php if($crewSend->statuses_id != 2 && $crewSend->statuses_id != 3): ?>
+                        <?php
+                            echo $this->Form->create($crewSendComment, [
+                                "url" => [
+                                  "controller" => "crew_send_comments",
+                                  "action" => "add"
+                                ],
+                                "class" => "mb-5",
+                                "type" => "file"
+                            ]); 
+                            echo "<div class='row'><div class='col mt-4'>";
+                            echo str_replace(";", " ", $this->Form->control('users_id', ["label" => "ユーザ", "value" => $loginUser, "type" => "select", "options" => $users, "class" => "form-control"])); 
+                            echo "</div><div class='col'></div><div class='col'></div></div>";
+                            echo "<div class='mt-4'>";
+                            echo $this->Form->control('comment', ["label" => "コメント", "type" => "textarea", "value" => "", "class" => "form-control"]);
+                            echo "</div>";
+                            echo $this->Form->control('crew_sends_id', ["type" => "hidden", 'value' => $crewSend->crew_sends_id]);
+                            //filesへの入力
+                            echo "<div class='row'><div class='col-lg-8 mt-4'>";
+                            echo $this->Form->file("file[]", ["multiple" => "true", "secure" => false, "class" => "form-control-file"]);
+                            echo "</div><div class='col-lg-4'>";
+                            echo $this->Form->button('送信', ["class" => "btn btn-info mt-4 float-right"]);
+                            echo "</div></div>";
+                            echo $this->Form->end();
+                        ?>
+                    <?php endif ?>
                 </div>
                 <?php $i++ ?>
             <?php endforeach ?>

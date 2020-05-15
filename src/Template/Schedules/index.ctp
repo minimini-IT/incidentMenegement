@@ -21,43 +21,35 @@ default.ctp
         </div>
         <div class="col-md-10">
             <h3 class="my-4"><?= __("{$today}の予定一覧") ?></h3>
-            <table class="table">
-                <thead>
-                    <tr class="row">
-                        <th class="col-md-2 text-center"><?= __("インシデントID") ?></th>
-                        <th class="col-md-3 text-center"><?= __("スケジュール") ?></th>
-                        <th class="col-md-2 text-center"><?= __("開始日") ?></th>
-                        <th class="col-md-2 text-center"><?= __("終了日") ?></th>
-                        <th class="col-md-1 text-center"><?= __("開始時刻") ?></th>
-                        <th class="px-0 col-md-1 text-center"><?= __("繰り返し指定") ?></th>
-                        <th class="px-0 col-md-1 text-center"><?= __("編集・削除") ?></th>
-                    </tr>
-                </thead>
-            </table>
+            <div class="row border-bottom">
+                <div class="col-lg-2 text-center border-top-0 font-weight-bold align-self-center"><p class="tableHeader"><?= __("インシデントID") ?></p></div>
+                <div class="col-lg-3 text-center border-top-0 font-weight-bold align-self-center"><p class="tableHeader"><?= __("スケジュール") ?></p></div>
+                <div class="col-lg-2 border-top-0 font-weight-bold align-self-center"><p class="tableHeader"><?= __("開始日") ?></p></div>
+                <div class="col-lg-2 text-center border-top-0 font-weight-bold px-0 align-self-center"><p class="tableHeader"><?= __("終了日") ?></p></div>
+                <div class="col-lg-1 text-center border-top-0 font-weight-bold px-0 align-self-center"><p class="tableHeader"><?= __("開始時刻") ?></p></div>
+                <div class="col-lg-1 text-center border-top-0 font-weight-bold align-self-center"><p class="tableHeader"><?= __("繰り返し指定") ?></p></div>
+                <div class="col-lg-1 text-center border-top-0 px-0 font-weight-bold align-self-center"><p class="tableHeader"><?= __('編集・削除') ?></p></div>
+            </div>
             <?php foreach ($today_schedules as $schedule): ?>
                 <?php if(!empty($schedule->schedule_repeats)): ?>
                     <?php foreach($schedule->schedule_repeats as $repeat): ?>
                         <?php if($repeat->repeats_id == $todayDayOfWeek): ?>
-                            <table class="branch border-bottom table">
-                                <tbody>
-                                    <tr class="row">
-                                        <td class="border-top-0 col-md-2"><?=
-                                            h($schedule->incident_management->management_prefix->management_prefix) . "-" .  
-                                            $schedule->incident_management->created->format("Ymd") . "-" .  
-                                            h($schedule->incident_management->number)
-                                        ?></td>
-                                        <td class="border-top-0 col-md-3 text-center"><?= h($schedule->schedule) ?></td>
-                                        <td class="border-top-0 col-md-2 text-center"><?= $schedule->schedule_start_date->format("Y-m-d") ?></td>
-                                        <td class="border-top-0 col-md-2 text-center"><?= $schedule->schedule_end_date->format("Y-m-d") ?></td>
-                                        <td class="border-top-0 col-md-1 text-center"><?= $schedule->schedule_start_time->format("H:i") ?></td>
-                                        <td class="border-top-0 col-md-1 text-center"><?= $schedule->repe_flag == (true) ? "○":"✖︎" ?></td>
-                                        <td class="border-top-0 col-md-1 text-center px-0">
-                                          <?= $this->Html->link(__('編集'), ['action' => 'edit', $schedule->schedules_id]) ?>
-                                          <?= $this->Form->postLink(__('削除'), ['action' => 'delete', $schedule->schedules_id], ['confirm' => __('{0} このスケジュールを削除してよろしいですか？', $schedule->schedule)]) ?>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <div class"row border-bottom branch">
+                                <div class="col-lg-2 text-left border-top-0 align-self-center"><p><?=
+                                    h($schedule->incident_management->management_prefix->management_prefix) . "-" .  
+                                    $schedule->incident_management->created->format("Ymd") . "-" .  
+                                    h($schedule->incident_management->number)
+                                ?></p></div>
+                                <div class="col-lg-3 text-center border-top-0 align-self-center"><p><?= h($schedule->schedule) ?></p></div>
+                                <div class="col-lg-2 border-top-0 align-self-center"><p><?= $schedule->schedule_start_date->format("Y-m-d") ?></p></div>
+                                <div class="col-lg-2 text-center border-top-0 px-0 align-self-center"><p><?= $schedule->schedule_end_date->format("Y-m-d") ?></p></div>
+                                <div class="col-lg-1 text-center border-top-0 align-self-center"><p><?= $schedule->schedule_start_time->format("H:i") ?></p></div>
+                                <div class="col-lg-1 text-center border-top-0 align-self-center"><p><?= $schedule->repe_flag == (true) ? "○":"✖︎" ?></p></div>
+                                <div class="col-lg-1 text-center border-top-0 align-self-center">
+                                          <span><?= $this->Html->link(__('編集'), ['action' => 'edit', $schedule->schedules_id]) ?></span>
+                                          <span><?= $this->Form->postLink(__('削除'), ['action' => 'delete', $schedule->schedules_id], ['confirm' => __('{0} このスケジュールを削除してよろしいですか？', $schedule->schedule)]) ?></span>
+                                </div>
+                            </div>
                             <?php if($schedule->repe_flag): ?>
                                 <div class="node px-4">
                                     <div class="row mb-4">
@@ -81,26 +73,22 @@ default.ctp
                         <?php endif ?>
                     <?php endforeach ?>
                 <?php else: ?>
-                    <table class="branch border-bottom table">
-                        <tbody>
-                            <tr class="row">
-                                <td class="border-top-0 col-md-2"><?=
-                                    h($schedule->incident_management->management_prefix->management_prefix) . "-" .  
-                                    $schedule->incident_management->created->format("Ymd") . "-" .  
-                                    h($schedule->incident_management->number)
-                                ?></td>
-                                        <td class="border-top-0 col-md-3 text-center"><?= h($schedule->schedule) ?></td>
-                                        <td class="border-top-0 col-md-2 text-center"><?= $schedule->schedule_start_date->format("Y-m-d") ?></td>
-                                        <td class="border-top-0 col-md-2 text-center"><?= $schedule->schedule_end_date->format("Y-m-d") ?></td>
-                                        <td class="border-top-0 col-md-1 text-center"><?= $schedule->schedule_start_time->format("H:i") ?></td>
-                                        <td class="border-top-0 col-md-1 text-center"><?= $schedule->repe_flag == (true) ? "○":"✖︎" ?></td>
-                                        <td class="border-top-0 col-md-1 text-center px-0">
-                                  <?= $this->Html->link(__('編集'), ['action' => 'edit', $schedule->schedules_id]) ?>
-                                  <?= $this->Form->postLink(__('削除'), ['action' => 'delete', $schedule->schedules_id], ['confirm' => __('{0} このスケジュールを削除してよろしいですか？', $schedule->schedule)]) ?>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="branch border-bottom row">
+                        <div class="border-top-0 col-md-2"><p><?=
+                            h($schedule->incident_management->management_prefix->management_prefix) . "-" .  
+                            $schedule->incident_management->created->format("Ymd") . "-" .  
+                            h($schedule->incident_management->number)
+                        ?></p></div>
+                        <div class="border-top-0 col-md-3 text-center"><p><?= h($schedule->schedule) ?></p></div>
+                        <div class="border-top-0 col-md-2 text-center"><p><?= $schedule->schedule_start_date->format("Y-m-d") ?></p></div>
+                        <div class="border-top-0 col-md-2 text-center"><p><?= $schedule->schedule_end_date->format("Y-m-d") ?></p></div>
+                        <div class="border-top-0 col-md-1 text-center"><p><?= $schedule->schedule_start_time->format("H:i") ?></p></div>
+                        <div class="border-top-0 col-md-1 text-center"><p><?= $schedule->repe_flag == (true) ? "○":"✖︎" ?></p></div>
+                        <div class="border-top-0 col-md-1 text-center px-0"><p>
+                            <?= $this->Html->link(__('編集'), ['action' => 'edit', $schedule->schedules_id]) ?>
+                            <?= $this->Form->postLink(__('削除'), ['action' => 'delete', $schedule->schedules_id], ['confirm' => __('{0} このスケジュールを削除してよろしいですか？', $schedule->schedule)]) ?>
+                        </p></div>
+                    </div>
                     <?php if($schedule->repe_flag): ?>
                         <div class="node px-4">
                             <div class="row mb-4">

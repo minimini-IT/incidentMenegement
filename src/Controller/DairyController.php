@@ -88,7 +88,9 @@ class DairyController extends AppController{
         }
 
         //-----継続中のスレッド------
+        //いらない？
             //クルー申し送り
+        /*
         $crewSendContinueThread = $this->CrewSends->find("all", [
             "contain" => [
                 "IncidentManagements.ManagementPrefixes"
@@ -110,6 +112,7 @@ class DairyController extends AppController{
         ])
             ->where(["OR" => [["PrivateMessages.users_id" => $loginUser], ["PrivateMessages.users_id" => 45]]])
             ->where(["message_statuses_id" => 1]);
+         */
         /*
         $messageBordContinueThread = $this->MessageBords->find("all", [
             "contain" => [
@@ -122,33 +125,19 @@ class DairyController extends AppController{
 
         //-----更新されたスレッド------
             //クルー申し送り
-        $crewSendLatestThread = $this->CrewSends->find("all", [
+        $crewSendUpdateThread = $this->CrewSends->find("all", [
             "contain" => [
                 "IncidentManagements.ManagementPrefixes",
-                "CrewSendComments"
-            ],
-            "limit" => 5
-        ])
-            ->where(["statuses_id !=" => 2])
-            ->where(["statuses_id !=" => 3])
-            ->where(["statuses_id !=" => 5])
-            //->order(["crew_sends_id" => "desc"]);
-            ->order(["CrewSendComments.modified" => "desc"]);
-            //->distinct(["crew_sends_id"]);
-
-        $crewSendUpdateThread = $this->CrewSends->CrewSendComments->find("all", [
-            "contain" => [
-                "CrewSends.IncidentManagements.ManagementPrefixes"
             ],
             "limit" => 5
         ])
             ->where(["CrewSends.statuses_id !=" => 2])
             ->where(["CrewSends.statuses_id !=" => 3])
             ->where(["CrewSends.statuses_id !=" => 5])
-            ->order(["CrewSendComments.modified" => "desc"]);
+            ->order(["CrewSends.modified" => "desc"]);
 
             //メッセージボード
-        $messageBordLatestThread = $this->PrivateMessages->find("all", [
+        $messageBordUpdateThread = $this->PrivateMessages->find("all", [
             "contain" => [
                 "MessageBords.IncidentManagements.ManagementPrefixes"
             ],
@@ -156,7 +145,8 @@ class DairyController extends AppController{
             "order" => ["MessageBords.message_bords_id" => "desc"]
         ])
             ->where(["OR" => [["PrivateMessages.users_id" => $loginUser], ["PrivateMessages.users_id" => 45]]])
-            ->where(["message_statuses_id" => 1]);
+            ->where(["message_statuses_id" => 1])
+            ->order(["MessageBords.modified" => "desc"]);
 
 
         //明日から６日分の日付取得
@@ -269,11 +259,9 @@ class DairyController extends AppController{
         //$workers = $this->paginate($workers);
 
 
-        //$this->set(compact('today_schedules', "weekry_schedules", "orderNews", "today", "workers", "statuses", "nowStatus", "todayDayOfWeek", "allDayWorkers", "allDayCount"));
-        //$this->set(compact('today_schedules', "weekry_schedules", "orderNews", "today", "workers", "statuses", "nowStatus", "todayDayOfWeek", "allDayCount", "dayCrewCount", "nightCrewCount", "dutyCount"));
-        //$this->set(compact('today_schedules', "weekry_schedules", "today", "workers", "statuses", "nowStatus", "todayDayOfWeek", "allDayCount", "dayCrewCount", "nightCrewCount", "dutyCount"));
-        //$this->set(compact("loginUser", 'today_schedules', "today", "workers", "statuses", "nowStatus", "todayDayOfWeek", "allDayCount", "dayCrewCount", "nightCrewCount", "crewSendContinueThread", "messageBordContinueThread", "crewSendLatestThread", "messageBordLatestThread"));
-        $this->set(compact("loginUser", 'today_schedules', "today", "workers", "statuses", "nowStatus", "todayDayOfWeek", "allDayCount", "dayCrewCount", "nightCrewCount", "crewSendContinueThread", "messageBordContinueThread", "crewSendLatestThread", "messageBordLatestThread", "crewSendUpdateThread"));
+        //$this->set(compact("loginUser", 'today_schedules', "today", "workers", "statuses", "nowStatus", "todayDayOfWeek", "allDayCount", "dayCrewCount", "nightCrewCount", "crewSendContinueThread", "messageBordContinueThread", "messageBordLatestThread", "crewSendUpdateThread"));
+        //$this->set(compact("loginUser", 'today_schedules', "today", "workers", "statuses", "nowStatus", "todayDayOfWeek", "allDayCount", "dayCrewCount", "nightCrewCount", "crewSendContinueThread", "messageBordContinueThread", "messageBordUpdateThread", "crewSendUpdateThread"));
+        $this->set(compact("loginUser", 'today_schedules', "today", "workers", "statuses", "nowStatus", "todayDayOfWeek", "allDayCount", "dayCrewCount", "nightCrewCount", "messageBordUpdateThread", "crewSendUpdateThread"));
     
     }
 }
