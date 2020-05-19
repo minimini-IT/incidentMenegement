@@ -887,6 +887,14 @@ class CreateForeignKeyFirst extends AbstractMigration
             ->addColumn('comment', 'text', [
                 'default' => null,
                 'null' => true,
+            ])
+            ->addColumn('created', 'datetime', [
+                'default' => null,
+                'null' => false,
+            ])
+            ->addColumn('modified', 'datetime', [
+                'default' => null,
+                'null' => false,
             ])->create();
 
         $this->table('risk_detections')

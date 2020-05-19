@@ -8,6 +8,12 @@ default.ctp
     <div class="row mx-auto">
         <div class="col-lg-2">
 -->
+            <!-- datepickerの選んだ日付のフォーマットを変更 -->
+            <script>
+                $(function(){
+                    $("input[name='created']").datepicker("option", "dateFormat", "yymmdd");    
+                });
+            </script>
             <nav>
                 <div class="list-group">
                     <?= $this->Html->link(__('TOP'), ["controller" => "Dairy", 'action' => 'index'], ["class" => $sideberClass]) ?>
@@ -36,33 +42,7 @@ default.ctp
             </nav>
         </div>
         <div class="col-lg-10">
-            <div class="row">
-                <div class="col-lg-1"></div>
-                <div class="col-lg-5">
-                    <?= $this->Form->create("", [
-                        "type" => "get",
-                        "url" => [
-                            "controller" => "Dairy",
-                            "action" => "search"
-                        ]
-                    ]) ?>
-                        <div class="row">
-                            <div class="col-lg-9 p-0">
-                                <?= $this->Form->control('incidentID', ["label" => false, "type" => "text", "class" => "form-control-sm"]) ?>
-                            </div>
-                            <div class="col-lg-3 p-0">
-                                <?= $this->Form->button('検索', ["class" => "btn-sm btn-info"]) ?>
-                            </div>
-                        </div>
-                    <?= $this->Form->end() ?>
-                </div>
-                <div class="col-lg-6"></div>
-            </div>
-
-
-
-
-            <div class="row border border-bottom-0">
+            <div class="row border border-bottom-0 mt-4">
                 <div class="col-lg-4 px-0 border-right">
                     <div class="text-center p-2 border-bottom bg-secondary"><?= $this->Html->link(__('今日の予定'), ["controller" => "Schedules", 'action' => 'index']) ?></div>
                     <?php foreach ($today_schedules as $schedule): ?>
@@ -247,55 +227,29 @@ default.ctp
                     </table>
                 </div>
                 <div class="col-lg-5 px-0 border-right">
-<!--
-                    <div class="text-center p-2 border-bottom bg-secondary"><?= __('継続中のスレッド') ?></div>
-                    <div class="text-center border-bottom"><?= __('クルー申し送り') ?></div>
-                    <?php foreach($crewSendContinueThread as $thread): ?>
-                        <div class="row border-bottom m-0">
-                            <div class="col-lg-5 px-0 align-self-center">
-                                <p class="continueThread text-info crewSendTransition mt-0" id="<?= 
-                                    h($thread->incident_management->management_prefix->management_prefix) . "-" .  
-                                    $thread->incident_management->created->format("Ymd") . "-" .  
-                                    h($thread->incident_management->number) 
-                                ?>">
-                                    <?=
-                                        h($thread->incident_management->management_prefix->management_prefix) . "-" .  
-                                        $thread->incident_management->created->format("Ymd") . "-" .  
-                                        h($thread->incident_management->number) 
-                                    ?>
-                                </p>
+                    <div class="text-center p-2 border-bottom bg-secondary"><?= __('インシデントID検索') ?></div>
+                    <div class="search">
+                        <div class="row m-0">
+                            <div class="col-lg-3 px-0">
+                                <?= $this->Form->control('prefix', ["label" => false, "type" => "select", "options" => $prefix, "empty" => true, "class" => "form-control form-control-sm"]) ?>
                             </div>
-                            <div class="col-lg-7 px-0">
-                                <p class="continueThread mt-0"><?=
-                                    $thread->title
-                                ?></p>
+                            <div class="col-lg-1 px-0"><p class="text-center my-0">-</p></div>
+                            <div class="col-lg-3 px-0">
+                                <?= $this->Form->control('created', ["label" => false, "type" => "text", "class" => "datepicker form-control form-control-sm"]) ?>
+                            </div>
+                            <div class="col-lg-1 px-0"><p class="text-center my-0">-</p></div>
+                            <div class="col-lg-2 px-0">
+                                <?= $this->Form->control('number', ["label" => false, "type" => "text", "class" => "form-control form-control-sm"]) ?>
+                            </div>
+                            <div class="col-lg-2 text-center">
+                                <?= $this->Form->button('検索', ["class" => "btn-sm btn-info"]) ?>
                             </div>
                         </div>
-                    <?php endforeach ?>
-                    <div class="text-center border-bottom "><?= __('メッセージボード') ?></div>
-                    <?php foreach($messageBordContinueThread as $thread): ?>
-                        <div class="row border-bottom m-0">
-                            <div class="col-lg-5 px-0 align-self-center">
-                                <p class="continueThread text-info messageBordTransition mt-0" id="<?= 
-                                    h($thread->message_bord->incident_management->management_prefix->management_prefix) . "-" .  
-                                    $thread->message_bord->incident_management->created->format("Ymd") . "-" .  
-                                    h($thread->message_bord->incident_management->number) 
-                                ?>">
-                                    <?=
-                                        h($thread->message_bord->incident_management->management_prefix->management_prefix) . "-" .  
-                                        $thread->message_bord->incident_management->created->format("Ymd") . "-" .  
-                                        h($thread->message_bord->incident_management->number) 
-                                    ?>
-                                </p>
-                            </div>
-                            <div class="col-lg-7 px-0">
-                                <p class="continueThread mt-0"><?=
-                                    $thread->message_bord->title
-                                ?></p>
-                            </div>
-                        </div>
-                    <?php endforeach ?>
-                    -->
+                    </div>
+                </div>
+                <div class="col-lg-3 px-0 border-right">
+
+
                 </div>
             </div>
         </div>

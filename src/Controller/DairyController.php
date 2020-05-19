@@ -9,11 +9,12 @@ class DairyController extends AppController{
 
     public function index()
     {
+        $this->loadModels(["OrderNews", "Workers", "Statuses", "RiskDetections", "Schedules", "IncidentManagements", "CrewSends", "PrivateMessages", "ManagementPrefixes"]);
+
         //ログインユーザ
         $loginUser = $this->getRequest()->getSession()->read("Auth.User.users_id");
 
         //-----今日の予定------
-        $this->loadModels(["OrderNews", "Workers", "Statuses", "RiskDetections", "Schedules", "IncidentManagements", "CrewSends", "PrivateMessages"]);
         //日付部分はクォーテーション必要
         //今日の日付を取得
         $today = date("Y-m-d");
@@ -148,6 +149,9 @@ class DairyController extends AppController{
             ->where(["message_statuses_id" => 1])
             ->order(["MessageBords.modified" => "desc"]);
 
+        //インシデントID検索
+        $prefixes = $this->ManagementPrefixes->find("list");
+
 
         //明日から６日分の日付取得
         $days = array();
@@ -259,9 +263,98 @@ class DairyController extends AppController{
         //$workers = $this->paginate($workers);
 
 
-        //$this->set(compact("loginUser", 'today_schedules', "today", "workers", "statuses", "nowStatus", "todayDayOfWeek", "allDayCount", "dayCrewCount", "nightCrewCount", "crewSendContinueThread", "messageBordContinueThread", "messageBordLatestThread", "crewSendUpdateThread"));
         //$this->set(compact("loginUser", 'today_schedules', "today", "workers", "statuses", "nowStatus", "todayDayOfWeek", "allDayCount", "dayCrewCount", "nightCrewCount", "crewSendContinueThread", "messageBordContinueThread", "messageBordUpdateThread", "crewSendUpdateThread"));
-        $this->set(compact("loginUser", 'today_schedules', "today", "workers", "statuses", "nowStatus", "todayDayOfWeek", "allDayCount", "dayCrewCount", "nightCrewCount", "messageBordUpdateThread", "crewSendUpdateThread"));
+        $this->set(compact("loginUser", 'today_schedules', "today", "workers", "statuses", "nowStatus", "todayDayOfWeek", "allDayCount", "dayCrewCount", "nightCrewCount", "messageBordUpdateThread", "crewSendUpdateThread", "prefix"));
     
+    }
+    public function search()
+    {
+        $this->loadModels(["CrewSends", "MessageBords", "RiskDetections", "Schedules"]);
+        //検索結果用
+        $data = $this->request->query();
+        if($this->request->is("get") && $data != null)
+        {
+            $prefix = null;
+            $created = null;
+            $number = null;
+            foreach($data as $key => $value)
+            {
+                if($value != "")
+                {
+                    if($key == "prefix")
+                    {
+                        $prefix = $value;
+                    }
+                    else if($key == "created")
+                    {
+                        $created = $value;
+                    }
+                    else if($key == "number")
+                    {
+                        $number = $value;
+                    }
+                    else
+                    {
+                        //なにもしない
+                    }
+                }
+            }
+
+            $incidentIdSearch = [];
+            if($prefix != null)
+            {
+                $incidentIdSearch["crewSends"] = $this->CrewSends->find()
+                    ->contain(
+                        "IncidentManagements.ManagementPrefixes", function(Query $q){
+                            return $q
+                                ->where(["ManagementPrefixes.prefix" => $prefix]);
+                        }
+                    );
+                $incidentIdSearch["messageBords"] = $this->MessageBords->find()
+                    ->contain(
+                        "IncidentManagements.ManagementPrefixes", function(Query $q){
+                            return $q
+                                ->where(["ManagementPrefixes.prefix" => $prefix]);
+                        }
+                    );
+                $incidentIdSearch["riskDetections"] = $this->RiskDetections->find()
+                    ->contain(
+                        "IncidentManagements.ManagementPrefixes", function(Query $q){
+                            return $q
+                                ->where(["ManagementPrefixes.prefix" => $prefix]);
+                        }
+                    );
+                $incidentIdSearch["schedules"] = $this->Schedules->find()
+                    ->contain(
+                        "IncidentManagements.ManagementPrefixes", function(Query $q){
+                            return $q
+                                ->where(["ManagementPrefixes.prefix" => $prefix]);
+                        }
+                    );
+            }
+            else
+            {
+                $incidentIdSearch["crewSends"] = $this->CrewSends->find("all", [
+                    "contain" => [
+                        "IncidentManagements.ManagementPrefixes"
+                    ]
+                ]);
+                $incidentIdSearch["messageBords"] = $this->MessageBords->find("all", [
+                    "contain" => [
+                        "IncidentManagements.ManagementPrefixes"
+                    ]
+                ]);
+                $incidentIdSearch["riskDetections"] = $this->RiskDetections->find("all", [
+                    "contain" => [
+                        "IncidentManagements.ManagementPrefixes"
+                    ]
+                ]);
+                $incidentIdSearch["schedules"] = $this->Schedules->find("all", [
+                    "contain" => [
+                        "IncidentManagements.ManagementPrefixes"
+                    ]
+                ]);
+            }
+        }
     }
 }

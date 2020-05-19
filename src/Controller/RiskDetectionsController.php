@@ -205,7 +205,7 @@ class RiskDetectionsController extends AppController
                 "IncidentChronologies.Users",
                 'InfectionRoutes'
             ],
-            "limit" => 3,
+            "limit" => 5,
             "order" => ["risk_detections_id" => "desc"]
         ];
         //incident_caseがウイルス検知のもののみ

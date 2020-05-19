@@ -201,12 +201,11 @@ class MessageBordsController extends AppController
         if ($this->request->is('post')) {
             $this->IncidentManagement = $this->loadComponent("IncidentAdd");
             $data = $this->request->getdata();
-            $this->log("--- data ---", LOG_DEBUG);
-            $this->log($data, LOG_DEBUG);
             $messageBord = $this->MessageBords->patchEntity($messageBord, $data);
 
             //MessageBord save前にincident_managements更新
-            if(is_int($incidentNumber = $this->IncidentManagement->incident_number(4)))
+            //メッセージボードのprefixはtubakiなのでincident_numberの引数は１
+            if(is_int($incidentNumber = $this->IncidentManagement->incident_number(1)))
             {
                 //インシデント番号生成成功したら
                 $data = array_merge($data, ["incident_managements_id" => $incidentNumber]);
