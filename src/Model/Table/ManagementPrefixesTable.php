@@ -33,6 +33,10 @@ class ManagementPrefixesTable extends Table
         $this->setTable('management_prefixes');
         $this->setDisplayField('management_prefix');
         $this->setPrimaryKey('management_prefixes_id');
+
+        $this->hasMany("IncidentManagements", [
+            "foreignKey" => "management_prefixes_id"
+        ]);
     }
 
     /**

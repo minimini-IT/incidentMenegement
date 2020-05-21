@@ -229,22 +229,30 @@ default.ctp
                 <div class="col-lg-5 px-0 border-right">
                     <div class="text-center p-2 border-bottom bg-secondary"><?= __('インシデントID検索') ?></div>
                     <div class="search">
-                        <div class="row m-0">
-                            <div class="col-lg-3 px-0">
-                                <?= $this->Form->control('prefix', ["label" => false, "type" => "select", "options" => $prefix, "empty" => true, "class" => "form-control form-control-sm"]) ?>
+                        <?= $this->Form->create("", [
+                            "type" => "get",
+                            "url" => [
+                                "controller" => "Dairy",
+                                "action" => "search"
+                            ]
+                        ]) ?> 
+                            <div class="row m-0">
+                                <div class="col-lg-3 px-0">
+                                    <?= $this->Form->control('management_prefixes_id', ["label" => false, "type" => "select", "options" => $prefixes, "empty" => true, "class" => "form-control form-control-sm"]) ?>
+                                </div>
+                                <div class="col-lg-1 px-0"><p class="text-center my-0">-</p></div>
+                                <div class="col-lg-3 px-0">
+                                    <?= $this->Form->control('created', ["label" => false, "type" => "text", "class" => "datepicker form-control form-control-sm"]) ?>
+                                </div>
+                                <div class="col-lg-1 px-0"><p class="text-center my-0">-</p></div>
+                                <div class="col-lg-2 px-0">
+                                    <?= $this->Form->control('number', ["label" => false, "type" => "text", "class" => "form-control form-control-sm"]) ?>
+                                </div>
+                                <div class="col-lg-2 text-center">
+                                    <?= $this->Form->button('検索', ["class" => "btn-sm btn-info"]) ?>
+                                </div>
                             </div>
-                            <div class="col-lg-1 px-0"><p class="text-center my-0">-</p></div>
-                            <div class="col-lg-3 px-0">
-                                <?= $this->Form->control('created', ["label" => false, "type" => "text", "class" => "datepicker form-control form-control-sm"]) ?>
-                            </div>
-                            <div class="col-lg-1 px-0"><p class="text-center my-0">-</p></div>
-                            <div class="col-lg-2 px-0">
-                                <?= $this->Form->control('number', ["label" => false, "type" => "text", "class" => "form-control form-control-sm"]) ?>
-                            </div>
-                            <div class="col-lg-2 text-center">
-                                <?= $this->Form->button('検索', ["class" => "btn-sm btn-info"]) ?>
-                            </div>
-                        </div>
+                        <?= $this->Form->end() ?>
                     </div>
                 </div>
                 <div class="col-lg-3 px-0 border-right">

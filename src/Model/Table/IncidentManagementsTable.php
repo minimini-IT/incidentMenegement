@@ -56,6 +56,10 @@ class IncidentManagementsTable extends Table
         $this->hasMany("RiskDetections", [
             "foreignKey" => "incident_managements_id"
         ]);
+
+        $this->hasMany("Schedules", [
+            "foreignKey" => "incident_managements_id"
+        ]);
     }
 
     /**
