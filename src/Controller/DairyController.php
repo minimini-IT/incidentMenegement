@@ -90,41 +90,6 @@ class DairyController extends AppController{
             $i++;
         }
 
-        //-----継続中のスレッド------
-        //いらない？
-            //クルー申し送り
-        /*
-        $crewSendContinueThread = $this->CrewSends->find("all", [
-            "contain" => [
-                "IncidentManagements.ManagementPrefixes"
-            ],
-            "limit" => 5
-        ])
-            ->where(["statuses_id !=" => 2])
-            ->where(["statuses_id !=" => 3])
-            ->where(["statuses_id !=" => 5])
-            ->order(["crew_sends_id" => "desc"]);
-
-            //メッセージボード
-        $messageBordContinueThread = $this->PrivateMessages->find("all", [
-            "contain" => [
-                "MessageBords.IncidentManagements.ManagementPrefixes"
-            ],
-            "limit" => 5,
-            "order" => ["MessageBords.message_bords_id" => "desc"]
-        ])
-            ->where(["OR" => [["PrivateMessages.users_id" => $loginUser], ["PrivateMessages.users_id" => 45]]])
-            ->where(["message_statuses_id" => 1]);
-         */
-        /*
-        $messageBordContinueThread = $this->MessageBords->find("all", [
-            "contain" => [
-                "IncidentManagements.ManagementPrefixes"
-            ],
-        ])
-            ->order(["message_bords_id" => "desc"])
-            ->where(["message_statuses_id !=" => 2]);
-         */
 
         //-----更新されたスレッド------
             //クルー申し送り
@@ -273,19 +238,18 @@ class DairyController extends AppController{
     {
         if ($this->request->is("get")) 
         {
-            $this->loadModels(["CrewSends", "MessageBords", "RiskDetections", "Schedules", "ManagementPrefixes"]);
+            $this->loadModels(["IncidentManagements"]);
             //検索結果用
             $data = $this->request->query();
-            $this->log("data", LOG_DEBUG);
-            $this->log($data, LOG_DEBUG);
 
 
             $this->paginate = [
                 "contain" => [
-                    "IncidentManagements.CrewSends",
-                    "IncidentManagements.MessageBords",
-                    "IncidentManagements.RiskDetections",
-                    "IncidentManagements.Schedules"
+                    "CrewSends",
+                    "MessageBords",
+                    "RiskDetections",
+                    "Schedules",
+                    "ManagementPrefixes"
                 ]
             ];
 
@@ -296,37 +260,47 @@ class DairyController extends AppController{
             if($data["created"] != "")
             {
                 //betweenはfindより先に定義する必要がある
-                $between = ["conditions" => ["ManagementPrefixes.created between {$data['created']} and {$data['created']}"]];
+                $between = ["conditions" => ["IncidentManagements.created between {$data['created']} and {$data['created']}"]];
             }
 
 
 
             if($between != null)
             {
-                $incidentManagement = $this->ManagementPrefixes->find("all", $between);
+                $incidentManagements = $this->IncidentManagements->find("all", $between);
             }
             else
             {
-                $incidentManagement = $this->ManagementPrefixes->find("all");
+                $incidentManagements = $this->IncidentManagements->find("all");
             }
 
             if($data != null)
             {
                 foreach($data as $key => $value)
                 {
-                    if($key != "created")
+                    $this->log("key", LOG_DEBUG);
+                    $this->log($key, LOG_DEBUG);
+                    $this->log("value", LOG_DEBUG);
+                    $this->log($value, LOG_DEBUG);
+                    if($key != "created" && $value != "")
                     {
-                        $incidentManagement->where(["ManagementPrefixes.{$key}" => $value]);
+                        $this->log("where add", LOG_DEBUG);
+                        $this->log("key", LOG_DEBUG);
+                        $this->log($key, LOG_DEBUG);
+                        $this->log("value", LOG_DEBUG);
+                        $this->log($value, LOG_DEBUG);
+                        $incidentManagements->where(["IncidentManagements.{$key}" => (int)$value]);
                     }
                 }
             }
 
-            $incidentManagement = $this->paginate($incidentManagement);
+            $incidentManagements = $this->paginate($incidentManagements);
+            $types = ["schedules" => "スケジュール", "message_bords" => "メッセージボード", "risk_detections" => "サイバー攻撃等", "crew_sends" => "クルー申し送り"];
         }
         else
         {
             return $this->redirect(["controller" => "Dairy", 'action' => 'index']);
         }
-        $this->set(compact("incidentManagement"));
+        $this->set(compact("incidentManagements", "types"));
     }
 }

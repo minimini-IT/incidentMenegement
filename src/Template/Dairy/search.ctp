@@ -18,31 +18,34 @@ default.ctp
             </nav>
         </div>
         <div class="col-lg-10">
-<?php foreach($incidentManagements as $incident): ?>
-<?php debug($incident) ?>
-<?php endforeach ?>
             <div class="row border-bottom">
                 <div class="col-lg-1"></div>
                 <div class="col-lg-4 text-center border-top-0 font-weight-bold align-self-center"><p class="tableHeader"><?= __("インシデントID") ?></p></div>
                 <div class="col-lg-4 text-center border-top-0 font-weight-bold align-self-center"><p class="tableHeader"><?= __("種類") ?></p></div>
                 <div class="col-lg-3"></div>
             </div>
-<!--
-            <?php foreach($incidentIdSearch as $search): ?>
-                <?php foreach($search as $data): ?>
-                    <div class="row branch border-bottom">
-                        <div class="col-lg-1"></div>
-                        <div class="col-lg-4 text-left border-top-0 align-self-center"><p class="incidentManagementsId" name="incidentId[<?= $i ?>]"><?= 
-                            h($data->incident_management->management_prefix->management_prefix) . "-" .  
-                            $data->incident_management->created->format("Ymd") . "-" .  
-                            h($data->incident_management->number)
-                        ?></p></div>
-                        <div class="col-lg-4 border-top-0 align-self-center"><p><?= array_keys($incidentIdSearch)[$i] ?></p></div>
-                        <div class="col-lg-3"></div>
-                    </div>
+            <?php foreach($incidentManagements as $incident): ?>
+                <?php foreach($types as $type => $jpType): ?>
+                    <?php if($incident->$type != null): ?>
+                        <div class="row branch border-bottom">
+                            <div class="col-lg-1"></div>
+                            <div class="col-lg-4 text-center border-top-0 align-self-center"> 
+                            <?php $id = $type . "_id" ?>
+                              <?= $this->Html->link(
+                                h($incident->management_prefix->management_prefix) . "-" .  
+                                $incident->created->format("Ymd") . "-" .  
+                                h($incident->number),
+                                ["controller" => $type, 'action' => 'index', $incident->$type[0]->$id]) ?>
+                            </div>
+                            <div class="col-lg-4 border-top-0 text-center align-self-center">
+                                <p><?= h($jpType) ?></p>
+                            </div>
+                            <div class="col-lg-3"></div>
+                        </div>
+                        <?php break ?>
+                    <?php endif ?>
                 <?php endforeach ?>
             <?php endforeach ?>
-            -->
         </div>
     </div>
 </div>

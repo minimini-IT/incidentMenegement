@@ -25,7 +25,7 @@ class CrewSendsController extends AppController
      * @return \Cake\Http\Response|null
      */
     
-    public function index()
+    public function index($id = null)
     {
         //$close = $this->request->session()->read("CrewSend.close");
 
@@ -134,18 +134,6 @@ class CrewSendsController extends AppController
         ];
         $this->loadModels(["CrewSendComments"]);
         $crewSendComment = $this->CrewSendComments->newEntity();
-        /*
-        if($close == "close")
-        {
-            $crewSends = $this->CrewSends->find("all")
-                ->where(["CrewSends.statuses_id !=" => 5]);
-            $crewSends = $this->paginate($crewSends);
-        }
-        else if($close == null)
-        {
-            $crewSends = $this->paginate($this->CrewSends);
-        }
-         */
         $crewSends = $this->paginate($crewSends);
 
         $users = $this->CrewSends->Users->find('list', ['limit' => 200])

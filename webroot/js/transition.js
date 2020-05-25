@@ -1,11 +1,11 @@
 $(function(){
 
-    $(".crewSendTransition").click(function(){
-        window.location.href = "crew-sends" + "?page=1" + "?transition" + "?" + this.id;
+    $(".crew_sendsTransition").click(function(){
+        window.location.href = "http://192.168.33.10/crew-sends" + "?page=1" + "?transition" + "?" + this.id;
     })
 
-    $(".messageBordTransition").click(function(){
-        window.location.href = "message-bords" + "?page=1" + "?transition" + "?" + this.id;
+    $(".message_bordsTransition").click(function(){
+        window.location.href = "http://192.168.33.10/message-bords" + "?page=1" + "?transition" + "?" + this.id;
     })
 
     var url = location.href;

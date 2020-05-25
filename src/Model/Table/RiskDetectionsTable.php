@@ -89,6 +89,9 @@ class RiskDetectionsTable extends Table
         $this->hasMany('SuspiciousDestinationAddresses', [
             'foreignKey' => 'risk_detections_id'
         ]);
+        $this->hasMany('SuspiciousSenderAddresses', [
+            'foreignKey' => 'risk_detections_id'
+        ]);
         $this->hasMany('SuspiciousLinks', [
             'foreignKey' => 'risk_detections_id'
         ]);

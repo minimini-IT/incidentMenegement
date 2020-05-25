@@ -27,9 +27,6 @@ default.ctp
                                 <th class="border-top-0"><?= $this->Html->link(__('リスク検知'), ['action' => 'risk']) ?></th>
                             </tr>
                             <tr>
-                                <th class="border-top-0"><?= $this->Html->link(__('不審メール'), ['action' => 'malmail']) ?></th>
-                            </tr>
-                            <tr>
                                 <th class="border-top-0"><?= $this->Html->link(__('インシデント集計表'), ['action' => 'spreadsheet']) ?></th>
                             </tr>
                             <tr>

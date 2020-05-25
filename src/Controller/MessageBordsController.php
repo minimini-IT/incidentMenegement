@@ -17,77 +17,95 @@ class MessageBordsController extends AppController
      *
      * @return \Cake\Http\Response|null
      */
-    public function index()
+    public function index($id = null)
     {
         $this->loadModels(["MessageAnswers", "MessageBordChronologies", "Users", "PrivateMessages", "MessageStatuses"]);
         $loginUser = $this->getRequest()->getSession()->read("Auth.User.users_id");
 
         //検索結果用
         $data = $this->request->query();
-        if($this->request->is("get") && $data != null)
+        if($this->request->is("get"))
         {
-            //pageのみは検索処理しない
-            if(count($data) > 1)
+            if(!empty($data))
             {
-                $between = null;
-                if($data["period_start"] != "" && $data["period_end"] != "")
+                //page or 検索時
+                //pageのみは検索処理しない
+                if(count($data) > 1)
                 {
-                    $periodSearchStartDay = $data["period_start"];
-                    $periodSearchEndDay = $data["period_end"];
-                    //betweenはfindより先に定義する必要がある
-                    $between = ["conditions" => ["MessageBords.period between '" . $periodSearchStartDay . "' and '" . $periodSearchEndDay . "'"]];
-                }
-
-                if($data["created_start"] != "" && $data["created_end"] != "")
-                {
-                    $createdSearchStartDay = $data['created_start'];
-                    $createdSearchEndDay = $data['created_end'];
-                    if($between === null)
+                    $between = null;
+                    if($data["period_start"] != "" && $data["period_end"] != "")
                     {
-                        $between = ["conditions" => ["MessageBords.created between '" . $createdSearchStartDay . "' and '" . $createdSearchEndDay . "'"]];
+                        $periodSearchStartDay = $data["period_start"];
+                        $periodSearchEndDay = $data["period_end"];
+                        //betweenはfindより先に定義する必要がある
+                        $between = ["conditions" => ["MessageBords.period between '" . $periodSearchStartDay . "' and '" . $periodSearchEndDay . "'"]];
                     }
-                    else
-                    {
-                        array_push($between["conditions"], "MessageBords.created between '" . $createdSearchStartDay . "' and '" . $createdSearchEndDay . "'");
-                    }
-                }
 
-                if($between === null)
-                {
-                    $messageBords = $this->MessageBords->PrivateMessages->find("all")
-                        ->where(["OR" => [["PrivateMessages.users_id" => $loginUser], ["PrivateMessages.users_id" => 45]]]);
-                }
-                else
-                {
-                    $messageBords = $this->MessageBords->PrivateMessages->find("all", $between)
-                        ->where(["OR" => [["PrivateMessages.users_id" => $loginUser], ["PrivateMessages.users_id" => 45]]]);
-                }
-                foreach($data as $key => $value)
-                {
-                    if($value != "")
+                    if($data["created_start"] != "" && $data["created_end"] != "")
                     {
-                        if($key == "title")
+                        $createdSearchStartDay = $data['created_start'];
+                        $createdSearchEndDay = $data['created_end'];
+                        if($between === null)
                         {
-                            $messageBords = $messageBords->where(["MessageBords.{$key} like" => "%{$value}%"]);
-                        }
-                        else if($key == "message")
-                        {
-                            $value = explode("　", $value);
-                            foreach($value as $val)
-                            {
-                                $messageBords = $messageBords->where(["MessageBords.{$key} like" => "%{$val}%"]);
-                            }
-                        }
-                        else if($key == "period_start" || $key == "period_end" || $key == "created_start" || $key == "created_end" || $key == "page")
-                        {
-                            //何もしない
+                            $between = ["conditions" => ["MessageBords.created between '" . $createdSearchStartDay . "' and '" . $createdSearchEndDay . "'"]];
                         }
                         else
                         {
-                            $messageBords = $messageBords->where(["MessageBords." . $key => (int)$value]);
+                            array_push($between["conditions"], "MessageBords.created between '" . $createdSearchStartDay . "' and '" . $createdSearchEndDay . "'");
+                        }
+                    }
+
+                    if($between === null)
+                    {
+                        $messageBords = $this->MessageBords->PrivateMessages->find("all")
+                            ->where(["OR" => [["PrivateMessages.users_id" => $loginUser], ["PrivateMessages.users_id" => 45]]]);
+                    }
+                    else
+                    {
+                        $messageBords = $this->MessageBords->PrivateMessages->find("all", $between)
+                            ->where(["OR" => [["PrivateMessages.users_id" => $loginUser], ["PrivateMessages.users_id" => 45]]]);
+                    }
+                    foreach($data as $key => $value)
+                    {
+                        if($value != "")
+                        {
+                            if($key == "title")
+                            {
+                                $messageBords = $messageBords->where(["MessageBords.{$key} like" => "%{$value}%"]);
+                            }
+                            else if($key == "message")
+                            {
+                                $value = explode("　", $value);
+                                foreach($value as $val)
+                                {
+                                    $messageBords = $messageBords->where(["MessageBords.{$key} like" => "%{$val}%"]);
+                                }
+                            }
+                            else if($key == "period_start" || $key == "period_end" || $key == "created_start" || $key == "created_end" || $key == "page")
+                            {
+                                //何もしない
+                            }
+                            else
+                            {
+                                $messageBords = $messageBords->where(["MessageBords." . $key => (int)$value]);
+                            }
                         }
                     }
                 }
+                else
+                {
+                    $messageBords = $this->MessageBords->PrivateMessages->find("all")
+                        ->where(["OR" => [["PrivateMessages.users_id" => $loginUser], ["PrivateMessages.users_id" => 45]]])
+                        ->where(["MessageBords.message_statuses_id !=" => 2]);
+                }
+            }
+            elseif($id != null)
+            {
+                $this->log("このログ見えてるはず", LOG_DEBUG);
+                //インシデントIDから検索かけた時
+                $messageBords = $this->MessageBords->PrivateMessages->find("all")
+                    ->where(["OR" => [["PrivateMessages.users_id" => $loginUser], ["PrivateMessages.users_id" => 45]]])
+                    ->where(["MessageBords.message_bords_id" => $id]);
             }
             else
             {

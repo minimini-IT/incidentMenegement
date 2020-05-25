@@ -77,7 +77,7 @@ default.ctp
                     <?php foreach($crewSendUpdateThread as $thread): ?>
                         <div class="row border-bottom m-0">
                             <div class="col-lg-5 px-0 align-self-center">
-                                <p class="continueThread text-info crewSendTransition mt-0" id="<?= 
+                                <p class="continueThread text-info crew_sendsTransition mt-0" id="<?= 
                                     h($thread->incident_management->management_prefix->management_prefix) . "-" .  
                                     $thread->incident_management->created->format("Ymd") . "-" .  
                                     h($thread->incident_management->number) 
@@ -103,7 +103,7 @@ default.ctp
                     <?php foreach($messageBordUpdateThread as $thread): ?>
                         <div class="row border-bottom m-0">
                             <div class="col-lg-5 px-0 align-self-center">
-                                <p class="continueThread text-info messageBordTransition mt-0" id="<?= 
+                                <p class="continueThread text-info message_bordsTransition mt-0" id="<?= 
                                     h($thread->message_bord->incident_management->management_prefix->management_prefix) . "-" .  
                                     $thread->message_bord->incident_management->created->format("Ymd") . "-" .  
                                     h($thread->message_bord->incident_management->number) 

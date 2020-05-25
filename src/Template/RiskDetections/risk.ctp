@@ -18,7 +18,7 @@ default.ctp
                     <?= $this->Html->link(__('システム追加'), ['controller' => 'Systems', 'action' => 'add'], ["class" => $sideberClass]) ?>
                     <?= $this->Html->link(__('基地追加'), ['controller' => 'Bases', 'action' => 'add'], ["class" => $sideberClass]) ?>
                     <?= $this->Html->link(__('部隊追加'), ['controller' => 'Units', 'action' => 'add'], ["class" => $sideberClass]) ?>
-                    <?= $this->Html->link(__('ステータス追加'), ['controller' => 'Statuses', 'action' => 'add'], ["class" => $sideberClass]) ?>
+                    <?= $this->Html->link(__('ステータス'), ['controller' => 'Statuses', 'action' => 'index'], ["class" => $sideberClass]) ?>
                     <?= $this->Html->link(__('報告有無追加'), ['controller' => 'Reports', 'action' => 'add'], ["class" => $sideberClass]) ?>
                     <?= $this->Html->link(__('検知状況追加'), ['controller' => 'Positives', 'action' => 'add'], ["class" => $sideberClass]) ?>
                     <?= $this->Html->link(__('SecLevel追加'), ['controller' => 'SecLevels', 'action' => 'add'], ["class" => $sideberClass]) ?>
@@ -107,11 +107,9 @@ default.ctp
             <div class="row border-bottom">
                 <div class="col-md-2 text-center border-top-0 font-weight-bold"><p class="tableHeader"><?= __("インシデントID") ?></p></div>
                 <div class="col-md-2 text-center border-top-0 font-weight-bold"><p class="tableHeader"><?= __("対処開始時刻") ?></p></div>
-                <div class="col-md-2 text-center border-top-0 font-weight-bold"><p class="tableHeader"><?= __("システム") ?></p></div>
-                <div class="col-md-1 text-center border-top-0 font-weight-bold"><p class="tableHeader"><?= __("基地") ?></p></div>
+                <div class="col-md-2 text-center border-top-0 font-weight-bold"><p class="tableHeader"><?= __("基地") ?></p></div>
+                <div class="col-md-3 text-center border-top-0 font-weight-bold"><p class="tableHeader"><?= __("システム") ?></p></div>
                 <div class="col-md-2 text-center border-top-0 font-weight-bold px-0"><p class="tableHeader"><?= __("ステータス") ?></p></div>
-                <div class="col-md-1 text-center border-top-0 px-0 font-weight-bold"><p class="tableHeader"><?= __("報告の有無") ?></p></div>
-                <div class="col-md-1 text-center border-top-0 px-0 font-weight-bold"><p class="tableHeader"><?= __("Sec Level") ?></p></div>
                 <div class="col-md-1 text-center border-top-0 px-0 font-weight-bold"><p class="tableHeader"><?= __("編集・削除") ?></p></div>
             </div>
             <?php $i = 0 ?>
@@ -123,13 +121,11 @@ default.ctp
                         h($riskDetection->incident_management->number)
                     ?></p></div>
                     <div class="col-md-2 text-center border-top-0"><p><?= h($riskDetection->response_start_time->format("Y-m-d H:i")) ?></p></div>
-                    <div class="col-md-2 text-center border-top-0"><p><?= $riskDetection->system->system ?></p></div>
-                    <div class="col-md-1 text-center border-top-0">
+                    <div class="col-md-2 text-center border-top-0">
                         <?= $riskDetection->basis != null ? "<p>".h($riskDetection->basis->base)."</p>" : "<p style='color: red;'>未入力</p>" ?>
                     </div>
+                    <div class="col-md-3 text-center border-top-0"><p><?= $riskDetection->system->system ?></p></div>
                     <div class="col-md-2 text-center border-top-0"><p><?= $riskDetection->status->status ?></p></div>
-                    <div class="col-md-1 text-center border-top-0"><p><?= $riskDetection->report->report ?></p></div>
-                    <div class="col-md-1 text-center border-top-0"><p><?= $riskDetection->sec_level->sec_level ?></p></div>
                     <div class="col-md-1 text-center border-top-0">
                         <div class="my-3">
                             <span><?= $this->Html->link(__('編集'), ['action' => 'edit', $riskDetection->risk_detections_id]) ?></span>
@@ -139,29 +135,61 @@ default.ctp
                 </div>
                 <div class="node px-4 border-bottom">
                     <div class="row">
-                        <div class="col-md-3 text-center border-top-0 font-weight-bold"><p class="tableHeader my-2"><?= __("侵入経路") ?></p></div>
-                        <div class="col-md-3 text-center border-top-0 font-weight-bold"><p class="tableHeader my-2"><?= __("部隊") ?></p></div>
-                        <div class="col-md-2 text-center border-top-0 font-weight-bold"><p class="tableHeader my-2"><?= __("正・誤検知") ?></p></div>
-                        <div class="col-md-2 text-center border-top-0 font-weight-bold"><p class="tableHeader my-2"><?= __("発生時刻") ?></p></div>
-                        <div class="col-md-2 text-center border-top-0 font-weight-bold"><p class="tableHeader my-2"><?= __("対処完了時刻") ?></p></div>
+                        <div class="col-md-2 text-center border-top-0 font-weight-bold px-0 align-self-center"><p class="tableHeader"><?= __("部隊") ?></p></div>
+                        <div class="col-md-2 text-center border-top-0 font-weight-bold px-0 align-self-center"><p class="tableHeader"><?= __("侵入経路") ?></p></div>
+                        <div class="col-md-2 text-center border-top-0 font-weight-bold px-0 align-self-center"><p class="tableHeader"><?= __("正・誤検知") ?></p></div>
+                        <div class="col-md-1 text-center border-top-0 font-weight-bold px-0 align-self-center"><p class="tableHeader"><?= __("Sec Level") ?></p></div>
+                        <div class="col-md-1 text-center border-top-0 font-weight-bold px-0 align-self-center"><p class="tableHeader"><?= __("報告の有無") ?></p></div>
+                        <div class="col-md-2 text-center border-top-0 font-weight-bold px-0 align-self-center"><p class="tableHeader"><?= __("発生時刻") ?></p></div>
+                        <div class="col-md-2 text-center border-top-0 font-weight-bold px-0 align-self-center"><p class="tableHeader"><?= __("対処完了時刻") ?></p></div>
                     </div>
                     <div class="row">
-                        <div class="col-md-3 text-center border-top-0"><p class="mb-2 mt-0"><?= h($riskDetection->infection_route->infection_route) ?></p></div>
-                        <div class="col-md-3 text-center border-top-0">
-                            <?= $riskDetection->unit != null ? "<p class='mb-2 mt-0'>".h($riskDetection->unit->unit)."</p>" : "<p class='mb-2 mt-0' style='color: red;'>未入力</p>" ?></p>
+                        <div class="col-md-2 text-center border-top-0 px-0 align-self-center">
+                            <?= $riskDetection->unit != null ? "<p>".h($riskDetection->unit->unit)."</p>" : "<p style='color: red;'>未入力</p>" ?></p>
                         </div>
-                        <div class="col-md-2 text-center border-top-0"><p class="mb-2 mt-0"><?= h($riskDetection->positive->positive) ?></p></div>
-                        <div class="col-md-2 text-center border-top-0">
-                            <?= $riskDetection->occurrence_datetime != null ? "<p class='mb-2 mt-0'>".h($riskDetection->occurrence_datetime->format("Y-m-d H:i"))."</p>" : "<p class='mb-2 mt-0' style='color: red;'>未入力</p>" ?>
+                        <div class="col-md-2 text-center border-top-0 px-0 align-self-center"><p><?= h($riskDetection->infection_route->infection_route) ?></p></div>
+                        <div class="col-md-2 text-center border-top-0 px-0 align-self-center"><p><?= h($riskDetection->positive->positive) ?></p></div>
+                        <div class="col-md-1 text-center border-top-0 px-0 align-self-center"><p><?= h($riskDetection->sec_level->sec_level) ?></p></div>
+                        <div class="col-md-1 text-center border-top-0 px-0 align-self-center"><p><?= h($riskDetection->report->report) ?></p></div>
+                        <div class="col-md-2 text-center border-top-0 px-0 align-self-center">
+                            <?= $riskDetection->occurrence_datetime != null ? "<p>".h($riskDetection->occurrence_datetime->format("Y-m-d H:i"))."</p>" : "<p style='color: red;'>未入力</p>" ?>
                         </div>
-                        <div class="col-md-2 text-center border-top-0">
-                            <?= $riskDetection->response_end_time != null ? "<p class='mb-2 mt-0'>".h($riskDetection->response_end_time->format("Y-m-d H:i"))."</p>" : "<p class='mb-2 mt-0' style='color: red;'>未入力</p>" ?>
+                        <div class="col-md-2 text-center border-top-0 px-0 align-self-center">
+                            <?= $riskDetection->response_end_time != null ? "<p>".h($riskDetection->response_end_time->format("Y-m-d H:i"))."</p>" : "<p style='color: red;'>未入力</p>" ?>
                         </div>
                     </div>
+                    <?php if($riskDetection->infection_routes_id == 2): ?>
+                        <div class="row">
+                            <div class="col-md-2 font-weight-bold align-self-center"><p class="tableHeader"><?= __("リンク先") ?></p></div>
+                            <div class="col-md-10 border-bottom">
+                                <?php foreach($riskDetection->suspicious_links as $link): ?>
+                                    <p><?= $link->link ?></p>
+                                <?php endforeach ?>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2 font-weight-bold align-self-center"><p class="tableHeader"><?= __("宛先アドレス") ?></p></div>
+                            <div class="col-md-10 border-bottom">
+                                <?php foreach($riskDetection->suspicious_sender_addresses as $sendAddress): ?>
+                                    <p><?= $sendAddress->sender_address ?></p>
+                                <?php endforeach ?>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2 font-weight-bold align-self-center"><p class="tableHeader"><?= __("送信元アドレス") ?></p></div>
+                            <div class="col-md-10">
+                                <?php foreach($riskDetection->suspicious_destination_addresses as $destAddress): ?>
+                                    <p><?= $destAddress->destination_address ?></p>
+                                <?php endforeach ?>
+                            </div>
+                        </div>
+                    <?php endif ?>
+
+
+
                     <div class="row border-bottom">
-                        <div class="col-md-1 font-weight-bold"><p class="tableHeader"><?= __("基本情報") ?></p></div>
-                        <div class="col-md-10 border mb-3"><?= $this->Text->autoparagraph($riskDetection->comment) ?></p></div>
-                        <div class="col-md-1"></div>
+                        <div class="col-md-1 font-weight-bold align-self-center"><p class="tableHeader"><?= __("基本情報") ?></p></div>
+                        <div class="col-md-11 border mb-3"><?= $this->Text->autoparagraph($riskDetection->comment) ?></div>
                     </div>
                     <?php foreach ($riskDetection->incident_chronologies as $incident_chronology): ?>
                         <div class="row align-items-center border-bottom">
